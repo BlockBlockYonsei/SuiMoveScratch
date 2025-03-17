@@ -1,7 +1,16 @@
 import Routers from "./Routers";
+import { SuiClientProvider } from "@mysten/dapp-kit";
 
 function App() {
-  return <Routers></Routers>;
+  return (
+    <SuiClientProvider
+      networks={{
+        testnet: { url: "https://rpc-testnet.suiscan.xyz:443" },
+      }}
+    >
+      <Routers />
+    </SuiClientProvider>
+  );
 }
 
 export default App;
