@@ -6,7 +6,7 @@ export default function Main() {
   });
 
   if (isPending) {
-    return <div>Loading...</div>;
+    return <div>Loading....</div>;
   }
 
   if (error) {
