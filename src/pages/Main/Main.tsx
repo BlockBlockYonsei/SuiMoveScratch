@@ -1,9 +1,13 @@
 import { useSuiClientQuery } from "@mysten/dapp-kit";
 
 export default function Main() {
-  const { data, isPending, error } = useSuiClientQuery("getOwnedObjects", {
-    owner: "0x23c11df86fad8d628fe9b7fb6bf0b27be231f995b476ae1cff2a227575e96fad",
-  });
+  const { data, isPending, error } = useSuiClientQuery(
+    "getNormalizedMoveModulesByPackage",
+    {
+      package:
+        "0xb84460fd33aaf7f7b7f80856f27c51db6334922f79e326641fb90d40cc698175",
+    },
+  );
 
   if (isPending) {
     return <div>Loading...</div>;
