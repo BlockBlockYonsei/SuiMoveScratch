@@ -17,10 +17,14 @@ export default function Main() {
     return <div>Error: {error?.message || "error"}</div>;
   }
 
+  console.log(data)
+
+
+
   return (
     <div className="p-4">
       <div className="text-2xl font-bold mb-4">Blockblock</div>
-      <div className="text-lg mb-6">여기다 작업해주시면 됩니다.</div>
+      <div className="text-lg mb-6">안녕하세요</div>
 
       <div className="space-y-6">
         {Object.entries(data.blockblock.structs).map(
