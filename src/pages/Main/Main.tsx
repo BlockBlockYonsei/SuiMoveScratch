@@ -6,7 +6,7 @@ export default function Main() {
     {
       package:
         "0xb84460fd33aaf7f7b7f80856f27c51db6334922f79e326641fb90d40cc698175",
-    },
+    }
   );
 
   if (isPending) {
@@ -21,6 +21,13 @@ export default function Main() {
     <div className="p-4">
       <div className="text-2xl font-bold mb-4">Blockblock</div>
       <div className="text-lg mb-6">여기다 작업해주시면 됩니다.</div>
+
+      {/* Link to the Object Viewer from Task 1 */}
+      <div className="mb-4">
+        <a href="/objects" className="text-blue-500 underline">
+          View Objects from Sui Address
+        </a>
+      </div>
 
       <div className="space-y-6">
         {Object.entries(data.blockblock.structs).map(
@@ -61,7 +68,7 @@ export default function Main() {
                 </div>
               )}
             </div>
-          ),
+          )
         )}
       </div>
     </div>
