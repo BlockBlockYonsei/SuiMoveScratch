@@ -3,7 +3,8 @@ import {
   SuiClientProvider,
   WalletProvider,
 } from "@mysten/dapp-kit";
-// import { getFullnodeUrl } from "@mysten/sui/client";
+// Remove or fully comment out this line:
+// import { getFullnodeUrl } from "@mysten/sui.js/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Routers from "./Routers";
 
@@ -12,6 +13,7 @@ const { networkConfig } = createNetworkConfig({
   // mainnet: { url: getFullnodeUrl("mainnet") },
   testnet: { url: "https://rpc-testnet.suiscan.xyz:443" },
 });
+
 const queryClient = new QueryClient();
 
 function App() {

@@ -5,9 +5,9 @@ import { useSuiClient, useSuiClientQuery } from "@mysten/dapp-kit";
 import { useState, useEffect } from "react";
 
 function ObjectViewer() {
-  const [objects, setObjects] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [objects, setObjects] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   
   const client = useSuiClient();
   const address = "0x23c11df86fad8d628fe9b7fb6bf0b27be231f995b476ae1cff2a227575e96fad";
@@ -21,7 +21,7 @@ function ObjectViewer() {
         });
         setObjects(response);
         setLoading(false);
-      } catch (err) {
+      } catch (err: any) {
         console.error("Error fetching objects:", err);
         setError(err.message);
         setLoading(false);
