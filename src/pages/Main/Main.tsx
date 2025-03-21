@@ -16,24 +16,20 @@ export default function Main() {
   if (error) {
     return <div>Error: {error?.message || "error"}</div>;
   }
+  
 
   return (
     <div className="p-4">
-      <div className="text-2xl font-bold mb-4">Blockblock</div>
-      <div className="text-lg mb-6">여기다 작업해주시면 됩니다.</div>
+      <div className="text-2xl font-bold mb-10">Blockblock</div>
+      <div className="text-4xl mb-4">Structs</div>
 
-      <div className="space-y-6">
+      <div className="grid flex grid-cols-2 gap-6">
         {Object.entries(data.blockblock.structs).map(
           ([structName, structData]) => (
             <div key={structName} className="border p-4">
-              <div className="text-xl font-semibold mb-2">{structName}</div>
-
-              {/* abilities */}
-              <div className="mb-2">
-                <span className="font-medium">abilities: </span>
-                <span className="px-1 rounded">
-                  {structData.abilities.abilities}
-                </span>
+              <div className="flex gap-4">
+                <div className="text-xl font-semibold mb-2">{structName}</div>
+                <div className="text-red-600">has {structData.abilities.abilities}</div>
               </div>
 
               {/* type parameters */}
@@ -47,13 +43,13 @@ export default function Main() {
               {/* fields */}
               {structData.fields.length > 0 && (
                 <div>
-                  <span className="font-medium">fields: </span>
                   <div className="pl-4 space-y-1">
                     {structData.fields.map((field, index) => (
                       <div key={index}>
-                        <span className="text-blue-600">{field.name}:</span>
+                        <span className="text-blue-600">{field.name} : </span>
                         <span className="text-green-600">
-                          {JSON.stringify(field.type)}
+                          {typeof field.type === 'object' ? Object.entries(field.type).map(
+                            ([key, value]) => `${key}: ${value}`).join(", ") : field.type}
                         </span>
                       </div>
                     ))}
