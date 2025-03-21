@@ -1,4 +1,54 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useSuiClientQuery } from "@mysten/dapp-kit";
+
+const StructCard = ({
+  name,
+  abilities,
+  fields,
+}: {
+  name: string;
+  abilities: string[];
+  fields: { name: string; type: any }[];
+}) => {
+  return (
+    <div className="border p-4">
+      <div className="mb-2">
+        <span className="text-xl font-semibold">{name}</span>
+        <span className="text-pink-500 px-2">has</span>
+        <span className="border-2 rounded">{abilities.join(", ")}</span>
+      </div>
+      <div className="pl-4 space-y-1">
+        {fields.map((field, index) => (
+          <div key={index}>
+            <span className="text-blue-600 border-2 border-black rounded px-2">
+              {field.name}
+            </span>
+            <span className="px-2">:</span>
+            <span className="border-2 border-black rounded px-2">
+              {formatType(field.type)}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const formatType = (type: any): string => {
+  if (typeof type === "string") return type;
+  if (type.Struct) {
+    const {
+      address,
+      module,
+      name,
+    }: { address: string; module: string; name: string } = type.Struct;
+    return `${address}::${module}::${name}`;
+  }
+  if (type.Vector) {
+    return formatType(type.Vector);
+  }
+  return JSON.stringify(type);
+};
 
 export default function Main() {
   const { data, isPending, error } = useSuiClientQuery(
@@ -9,13 +59,8 @@ export default function Main() {
     },
   );
 
-  if (isPending) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error?.message || "error"}</div>;
-  }
+  if (isPending) return <div>Loading...</div>;
+  if (error) return <div>Error: {error?.message || "error"}</div>;
 
   return (
     <div className="p-4">
@@ -23,44 +68,21 @@ export default function Main() {
       <div className="text-lg mb-6">여기다 작업해주시면 됩니다.</div>
 
       <div className="space-y-6">
+        <div className="text-4xl">Structs</div>
         {Object.entries(data.blockblock.structs).map(
-          ([structName, structData]) => (
-            <div key={structName} className="border p-4">
-              <div className="text-xl font-semibold mb-2">{structName}</div>
-
-              {/* abilities */}
-              <div className="mb-2">
-                <span className="font-medium">abilities: </span>
-                <span className="px-1 rounded">
-                  {structData.abilities.abilities}
-                </span>
-              </div>
-
-              {/* type parameters */}
-              {structData.typeParameters.length > 0 && (
-                <div className="mb-2">
-                  <span className="font-medium">type parameters: </span>
-                  <div>{JSON.stringify(structData.typeParameters)}</div>
-                </div>
-              )}
-
-              {/* fields */}
-              {structData.fields.length > 0 && (
-                <div>
-                  <span className="font-medium">fields: </span>
-                  <div className="pl-4 space-y-1">
-                    {structData.fields.map((field, index) => (
-                      <div key={index}>
-                        <span className="text-blue-600">{field.name}:</span>
-                        <span className="text-green-600">
-                          {JSON.stringify(field.type)}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+          ([structName, structData]: [
+            string,
+            {
+              abilities: { abilities: string[] };
+              fields: { name: string; type: any }[];
+            },
+          ]) => (
+            <StructCard
+              key={structName}
+              name={structName}
+              abilities={structData.abilities.abilities}
+              fields={structData.fields}
+            />
           ),
         )}
       </div>
