@@ -17,7 +17,7 @@ const StructCard = ({
         <span className="text-pink-500 px-2">has</span>
         <span className="border-2 rounded">{abilities.join(", ")}</span>
       </div>
-      <div className="pl-4 space-y-1">
+      <div className="space-y-1">
         {fields.map((field, index) => (
           <div key={index}>
             <span className="text-blue-600 border-2 border-black rounded px-2">
@@ -69,22 +69,24 @@ export default function Main() {
 
       <div className="space-y-6">
         <div className="text-4xl">Structs</div>
-        {Object.entries(data.blockblock.structs).map(
-          ([structName, structData]: [
-            string,
-            {
-              abilities: { abilities: string[] };
-              fields: { name: string; type: any }[];
-            },
-          ]) => (
-            <StructCard
-              key={structName}
-              name={structName}
-              abilities={structData.abilities.abilities}
-              fields={structData.fields}
-            />
-          ),
-        )}
+        <div className="grid grid-cols-2 gap-4">
+          {Object.entries(data.blockblock.structs).map(
+            ([structName, structData]: [
+              string,
+              {
+                abilities: { abilities: string[] };
+                fields: { name: string; type: any }[];
+              },
+            ]) => (
+              <StructCard
+                key={structName}
+                name={structName}
+                abilities={structData.abilities.abilities}
+                fields={structData.fields}
+              />
+            ),
+          )}
+        </div>
       </div>
     </div>
   );
