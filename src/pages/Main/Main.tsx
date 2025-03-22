@@ -168,36 +168,27 @@ export default function Main() {
     <div>
       <div className="text-2xl">Blockblock</div>
       <div className="text-lg">여기다 작업해주시면 됩니다.</div>
+
       <h1 className="my-5 font-extrabold text-3xl">Structs</h1>
-      {Object.entries(data.blockblock.structs).map(
-        ([structName, structData]) => (
-          <div
-            key={structName}
-            className="border p-4 mb-6 rounded-lg shadow-md"
-          >
-            <h2 className="text-xl font-semibold mb-2">{structName}</h2>
-            <table className="w-full border-collapse border">
-              <thead>
-                <tr className="bg-gray-200">
-                  <th className="border p-2">Field Name</th>
-                  <th className="border p-2">Type</th>
-                </tr>
-              </thead>
-              <tbody>
-                {structData.fields.map((field) => (
-                  <tr key={field.name}>
-                    <td className="border p-2">{field.name}</td>
-                    <td className="border p-2">
-                      {typeof field.type === "string" ? field.type : "Struct"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )
-      )}
-      <h1 className="my-5 font-extrabold text-3xl">Exposed Function</h1>
+      <div className="grid grid-cols-2 gap-4">
+        {Object.entries(data.blockblock.structs).map(
+          ([structName, structData]: [
+            string,
+            {
+              abilities: { abilities: string[] };
+              fields: { name: string; type: any }[];
+            }
+          ]) => (
+            <StructCard
+              key={structName}
+              name={structName}
+              abilities={structData.abilities.abilities}
+              fields={structData.fields}
+            />
+          )
+        )}
+      </div>
+
       <h1 className="my-5 font-extrabold text-3xl">Exposed Functions</h1>
       {Object.entries(data.blockblock.exposedFunctions).map(
         ([funcName, funcData]) => (
