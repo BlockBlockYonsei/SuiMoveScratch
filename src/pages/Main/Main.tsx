@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useSuiClientQuery } from "@mysten/dapp-kit";
 import { SuiMoveNormalizedType } from "@mysten/sui/client";
+import { splitFormattedSuiType } from "./utils";
 
 const StructCard = ({
   name,
@@ -114,49 +115,10 @@ export default function Main() {
     "getNormalizedMoveModulesByPackage",
     {
       package:
-        "0xb84460fd33aaf7f7b7f80856f27c51db6334922f79e326641fb90d40cc698175",
+        // "0xb84460fd33aaf7f7b7f80856f27c51db6334922f79e326641fb90d40cc698175",
+        "0x31323c09dee186fae0b38e0dace096140f5765713e64d10d95f2537b4b699ab4",
     }
   );
-  function splitFormattedSuiType(type: SuiMoveNormalizedType): {
-    prefix: string;
-    core: string;
-  } {
-    if (typeof type === "string") {
-      return { prefix: "", core: type };
-    }
-
-    if ("Reference" in type) {
-      const inner = splitFormattedSuiType(type.Reference);
-      return { prefix: "&", core: inner.core };
-    }
-
-    if ("MutableReference" in type) {
-      const inner = splitFormattedSuiType(type.MutableReference);
-      return { prefix: "&mut", core: inner.core };
-    }
-
-    if ("Vector" in type) {
-      const inner = splitFormattedSuiType(type.Vector);
-      return { prefix: "", core: `vector<${inner.core}>` };
-    }
-
-    if ("TypeParameter" in type) {
-      return { prefix: "", core: `T${type.TypeParameter}` };
-    }
-
-    if ("Struct" in type) {
-      const { address, module, name, typeArguments } = type.Struct;
-      const typeArgs =
-        typeArguments.length > 0
-          ? `<${typeArguments
-              .map((t) => splitFormattedSuiType(t).core)
-              .join(", ")}>`
-          : "";
-      return { prefix: "", core: `${address}::${module}::${name}${typeArgs}` };
-    }
-
-    return { prefix: "", core: JSON.stringify(type) };
-  }
 
   if (isPending) return <div>Loading...</div>;
 
