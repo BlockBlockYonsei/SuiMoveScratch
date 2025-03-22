@@ -8,7 +8,7 @@ export const StructCard = ({
   fields: { name: string; type: any }[];
 }) => {
   return (
-    <div className="border p-4">
+    <div className="border p-4 rounded-md">
       <div className="mb-2">
         <span className="text-xl font-semibold">{name}</span>
         <span className="text-pink-500 px-2">has</span>
