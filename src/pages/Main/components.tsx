@@ -14,7 +14,9 @@ export const StructCard = ({
   return (
     <div className="border p-4 rounded-md">
       <div className="mb-2 flex">
-        <span className="text-xl font-semibold">{structName}</span>
+        <span className="text-xl font-semibold text-emerald-700">
+          {structName}
+        </span>
         {structData.typeParameters.length > 0 && (
           <span className="inline-flex whitespace-nowrap">
             {"<"}
@@ -62,12 +64,15 @@ export const FunctionCard = ({
 }) => {
   return (
     <div key={functionName} className="border p-4 mb-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-2">
-        <span>{functionData.isEntry ? "entry" : ""} </span>
+      <h2 className="flex gap-2 text-xl font-semibold">
+        {functionData.isEntry && (
+          <span className="text-pink-500">{"entry"} </span>
+        )}
         <span className="text-pink-500">
-          {functionData.visibility.toLocaleLowerCase()}{" "}
+          {functionData.visibility.toLocaleLowerCase()}
         </span>
-        {functionName}
+        <span className="text-blue-700">fun</span>
+        <span className="">{functionName}</span>
       </h2>
       <div className="mb-2"></div>
       <div className="mb-2">
