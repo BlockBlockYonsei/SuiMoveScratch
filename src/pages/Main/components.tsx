@@ -86,9 +86,12 @@ export const FunctionCard = ({
                   key={index}
                   className="border p-2 rounded-md flex items-center gap-2"
                 >
-                  <span className="border border-gray-400 rounded px-2 py-0.5 text-sm">
-                    {formatted.prefix}
-                  </span>
+                  <div className="flex flex-col items-center gap-2">
+                    <span>T{index}</span>
+                    <span className="border border-gray-400 rounded px-2 py-0.5 text-sm">
+                      {formatted.prefix}
+                    </span>
+                  </div>
                   {typeof formatted.core === "string" ? (
                     <div>{formatted.core}</div>
                   ) : (
