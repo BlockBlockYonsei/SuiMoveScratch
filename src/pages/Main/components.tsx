@@ -2,7 +2,7 @@ import {
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
 } from "@mysten/sui/client";
-import { formatType, parseSuiMoveNormalizedType, shortAddress } from "./utils";
+import { formatType, parseSuiMoveNormalizedType } from "./utils";
 
 export const StructCard = ({
   structName,
@@ -12,7 +12,7 @@ export const StructCard = ({
   structData: SuiMoveNormalizedStruct;
 }) => {
   return (
-    <div className="border p-4 rounded-md">
+    <div key={structName} className="border p-4 rounded-md">
       <div className="mb-2 flex">
         <span className="text-xl font-semibold text-emerald-700">
           {structName}
@@ -73,6 +73,13 @@ export const FunctionCard = ({
         </span>
         <span className="text-blue-700">fun</span>
         <span className="">{functionName}</span>
+        <span className="font-semibold text-emerald-500">
+          {functionData.typeParameters.map(
+            (t, index) =>
+              `<TypeParam${index}:
+              ${t.abilities.join("+ ")}>`
+          )}
+        </span>
       </h2>
       <div className="mb-2"></div>
       <div className="mb-2">
@@ -92,13 +99,16 @@ export const FunctionCard = ({
                       {formatted.prefix}
                     </span>
                   </div>
-                  {typeof formatted.core === "string" ? (
-                    <div>{formatted.core}</div>
+                  {typeof formatted.result === "string" ? (
+                    <div>{formatted.result}</div>
                   ) : (
                     <div className="flex flex-col items-center border border-blue-500 rounded px-2 py-0.5 text-sm font-mono">
-                      <span>{shortAddress(formatted.core.address)}</span>
-                      <span>{formatted.core.module}</span>
-                      <span>{formatted.core.name}</span>
+                      <span>{formatted.result.address}</span>
+                      <span>{formatted.result.module}</span>
+                      <span>{formatted.result.name}</span>
+                      <span className="font-semibold text-orange-600">
+                        {formatted.result.typeArgs}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -123,13 +133,14 @@ export const FunctionCard = ({
                   <span className="border border-gray-400 rounded px-2 py-0.5 text-sm">
                     {formatted.prefix}
                   </span>
-                  {typeof formatted.core === "string" ? (
-                    <div>{formatted.core}</div>
+                  {typeof formatted.result === "string" ? (
+                    <div>{formatted.result}</div>
                   ) : (
                     <div className="flex flex-col items-center border border-blue-500 rounded px-2 py-0.5 text-sm font-mono">
-                      <span>{shortAddress(formatted.core.address)}</span>
-                      <span>{formatted.core.module}</span>
-                      <span>{formatted.core.name}</span>
+                      <span>{formatted.result.address}</span>
+                      <span>{formatted.result.module}</span>
+                      <span>{formatted.result.name}</span>
+                      <span>{formatted.result.typeArgs}</span>
                     </div>
                   )}
                 </div>

@@ -34,7 +34,7 @@ export default function Main() {
 
   if (error) return <div>Error: {error?.message || "error"}</div>;
 
-  console.log(data);
+  // console.log(data);
 
   return (
     <div>
@@ -43,7 +43,7 @@ export default function Main() {
       {Object.entries(data).map(
         ([moduleName, moduleData]: [string, SuiMoveNormalizedModule]) => {
           return (
-            <div>
+            <div key={moduleName}>
               <h1 className="my-5 font-extrabold text-4xl">{moduleName}</h1>
               <div>
                 {/* Module Info */}

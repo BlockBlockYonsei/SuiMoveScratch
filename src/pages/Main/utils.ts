@@ -2,51 +2,89 @@ import { SuiMoveNormalizedType } from "@mysten/sui/client";
 
 export function parseSuiMoveNormalizedType(type: SuiMoveNormalizedType): {
   prefix: string;
-  core: { address: string; module: string; name: string } | string;
+  core: SuiMoveNormalizedType;
+  result:
+    | {
+        address: string;
+        module: string;
+        name: string;
+        typeArgs: string;
+      }
+    | string;
 } {
   if (typeof type === "string") {
-    return { prefix: "", core: type };
+    return { prefix: "primitive", core: type, result: type };
   }
 
-  if ("Reference" in type) {
-    const inner = parseSuiMoveNormalizedType(type.Reference);
-    return { prefix: "&", core: inner.core };
-  }
-
-  if ("MutableReference" in type) {
-    const inner = parseSuiMoveNormalizedType(type.MutableReference);
-    return { prefix: "&mut", core: inner.core };
+  if ("TypeParameter" in type) {
+    return {
+      prefix: "typeParameter",
+      core: type,
+      result: `TypeParam${type.TypeParameter}`,
+    };
   }
 
   if ("Vector" in type) {
     const inner = parseSuiMoveNormalizedType(type.Vector);
-    return { prefix: "", core: `vector<${inner.core}>` };
+    return {
+      prefix: "vector",
+      core: inner.core,
+      result: inner.result,
+    };
   }
 
-  if ("TypeParameter" in type) {
-    return { prefix: "", core: `T${type.TypeParameter}` };
+  if ("Reference" in type) {
+    const inner = parseSuiMoveNormalizedType(type.Reference);
+    return {
+      prefix: "&",
+      core: inner.core,
+      result: inner.result,
+    };
+  }
+
+  if ("MutableReference" in type) {
+    const inner = parseSuiMoveNormalizedType(type.MutableReference);
+    return {
+      prefix: "&mut",
+      core: inner.core,
+      result: inner.result,
+    };
   }
 
   if ("Struct" in type) {
     const { address, module, name, typeArguments } = type.Struct;
+
     const typeArgs =
       typeArguments.length > 0
         ? `<${typeArguments
-            .map((t) => parseSuiMoveNormalizedType(t).core)
+            .map((t) => {
+              const inner = parseSuiMoveNormalizedType(t);
+              return typeof inner.result === "string"
+                ? inner.result
+                : `${shortAddress(inner.result.address)}::${
+                    inner.result.module
+                  }::${inner.result.name}${inner.result.typeArgs}`;
+            })
             .join(", ")}>`
         : "";
+
     return {
-      prefix: "",
-      // core: `${shortAddress(address)}::${module}::${name}${typeArgs}`,
-      core: {
-        address,
+      prefix: "value",
+      core: type,
+      result: {
+        address: `${shortAddress(address)}`,
         module,
         name,
+        typeArgs,
       },
     };
   }
 
-  return { prefix: "", core: JSON.stringify(type) };
+  return {
+    prefix: "",
+    core: type,
+    result: JSON.stringify(type),
+  };
 }
 
 export const shortAddress = (addr: string) => {
