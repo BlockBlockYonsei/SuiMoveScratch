@@ -12,7 +12,8 @@ import { useState } from "react";
 export default function Main() {
   // const package = "0xb84460fd33aaf7f7b7f80856f27c51db6334922f79e326641fb90d40cc698175"
   const PACKAGE =
-    "0x31323c09dee186fae0b38e0dace096140f5765713e64d10d95f2537b4b699ab4";
+    // "0x31323c09dee186fae0b38e0dace096140f5765713e64d10d95f2537b4b699ab4";
+    "0x404fce2f29d21f1d26ba738925b77dff2e38fb629946f786ebd0fa3db9393643";
   const { data, isPending, error } = useSuiClientQuery(
     "getNormalizedMoveModulesByPackage",
     {
@@ -22,6 +23,15 @@ export default function Main() {
       enabled: true,
     }
   );
+  const [text, setText] = useState("");
+
+  const { data: data2 } = useSuiClientQuery("getObject", {
+    id: text,
+    options: {
+      showDisplay: true,
+      showContent: true,
+    },
+  });
 
   const [isStructsOpen, setIsStructsOpen] = useState<{
     [key: string]: boolean;
@@ -39,7 +49,14 @@ export default function Main() {
   return (
     <div>
       <div className="text-2xl">여기다 작업해주시면 됩니다.</div>
-
+      <h1>Get Object</h1>
+      <input
+        type="text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        className="border p-2"
+      />
+      ;<div className="border rounded-md p-2">{JSON.stringify(data2)}</div>
       {Object.entries(data).map(
         ([moduleName, moduleData]: [string, SuiMoveNormalizedModule]) => {
           return (
