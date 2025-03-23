@@ -2,7 +2,7 @@ import {
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
 } from "@mysten/sui/client";
-import { formatType, parseSuiMoveNormalizedType } from "./utils";
+import { formatType, parseSuiMoveNormalizedType, shortAddress } from "./utils";
 
 export const StructCard = ({
   structName,
@@ -62,57 +62,75 @@ export const FunctionCard = ({
 }) => {
   return (
     <div key={functionName} className="border p-4 mb-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-2">{functionName}</h2>
-      <div className="mb-2">
-        <span className="font-bold">Visibility:</span> {functionData.visibility}
-      </div>
-      <div className="mb-2">
-        <span className="font-bold">Entry:</span>{" "}
-        {functionData.isEntry ? "Yes" : "No"}
-      </div>
+      <h2 className="text-xl font-semibold mb-2">
+        <span>{functionData.isEntry ? "entry" : ""} </span>
+        <span className="text-pink-500">
+          {functionData.visibility.toLocaleLowerCase()}{" "}
+        </span>
+        {functionName}
+      </h2>
+      <div className="mb-2"></div>
       <div className="mb-2">
         <span className="font-bold">Parameters:</span>
-        <ul className="list-disc list-inside ml-4">
+        <div className="flex flex-wrap gap-4">
           {functionData.parameters.length > 0 ? (
             functionData.parameters.map((param, index) => {
               const formatted = parseSuiMoveNormalizedType(param); // ⬅ 아래 함수 참고
               return (
-                <li key={index} className="flex items-center gap-2">
+                <div
+                  key={index}
+                  className="border p-2 rounded-md flex items-center gap-2"
+                >
                   <span className="border border-gray-400 rounded px-2 py-0.5 text-sm">
                     {formatted.prefix}
                   </span>
-                  <span className="border border-blue-500 rounded px-2 py-0.5 text-sm font-mono">
-                    {formatted.core}
-                  </span>
-                </li>
+                  {typeof formatted.core === "string" ? (
+                    <div>{formatted.core}</div>
+                  ) : (
+                    <div className="flex flex-col items-center border border-blue-500 rounded px-2 py-0.5 text-sm font-mono">
+                      <span>{shortAddress(formatted.core.address)}</span>
+                      <span>{formatted.core.module}</span>
+                      <span>{formatted.core.name}</span>
+                    </div>
+                  )}
+                </div>
               );
             })
           ) : (
             <li>None</li>
           )}
-        </ul>
+        </div>
       </div>
       <div className="mb-2">
         <span className="font-bold">Return:</span>
-        <ul className="list-disc list-inside ml-4">
+        <div className="flex flex-wrap gap-4">
           {functionData.return.length > 0 ? (
             functionData.return.map((param, index) => {
               const formatted = parseSuiMoveNormalizedType(param); // ⬅ 아래 함수 참고
               return (
-                <li key={index} className="flex items-center gap-2">
+                <div
+                  key={index}
+                  className="border p-2 rounded-md flex items-center gap-2"
+                >
                   <span className="border border-gray-400 rounded px-2 py-0.5 text-sm">
                     {formatted.prefix}
                   </span>
-                  <span className="border border-blue-500 rounded px-2 py-0.5 text-sm font-mono">
-                    {formatted.core}
-                  </span>
-                </li>
+                  {typeof formatted.core === "string" ? (
+                    <div>{formatted.core}</div>
+                  ) : (
+                    <div className="flex flex-col items-center border border-blue-500 rounded px-2 py-0.5 text-sm font-mono">
+                      <span>{shortAddress(formatted.core.address)}</span>
+                      <span>{formatted.core.module}</span>
+                      <span>{formatted.core.name}</span>
+                    </div>
+                  )}
+                </div>
               );
             })
           ) : (
             <li>None</li>
           )}
-        </ul>
+        </div>
       </div>
     </div>
   );

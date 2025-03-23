@@ -2,7 +2,7 @@ import { SuiMoveNormalizedType } from "@mysten/sui/client";
 
 export function parseSuiMoveNormalizedType(type: SuiMoveNormalizedType): {
   prefix: string;
-  core: string;
+  core: { address: string; module: string; name: string } | string;
 } {
   if (typeof type === "string") {
     return { prefix: "", core: type };
@@ -37,7 +37,12 @@ export function parseSuiMoveNormalizedType(type: SuiMoveNormalizedType): {
         : "";
     return {
       prefix: "",
-      core: `${shortAddress(address)}::${module}::${name}${typeArgs}`,
+      // core: `${shortAddress(address)}::${module}::${name}${typeArgs}`,
+      core: {
+        address,
+        module,
+        name,
+      },
     };
   }
 
