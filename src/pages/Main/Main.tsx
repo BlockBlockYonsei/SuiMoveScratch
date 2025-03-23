@@ -62,7 +62,9 @@ export default function Main() {
                 <h1 className="my-5 font-semibold text-2xl">
                   <button
                     className={`hover:bg-blue-200 active:bg-blue-500 ${
-                      isStructsOpen[moduleName] ? "" : "bg-yellow-200"
+                      isStructsOpen[moduleName]
+                        ? "bg-blue-100"
+                        : "bg-yellow-200"
                     }`}
                     onClick={() => {
                       setIsStructsOpen((prev) => ({
@@ -95,7 +97,9 @@ export default function Main() {
                 <h1 className="my-5 font-semibold text-2xl">
                   <button
                     className={`hover:bg-blue-200 active:bg-blue-500 ${
-                      isExposedFunctionsOpen[moduleName] ? "" : "bg-yellow-200"
+                      isExposedFunctionsOpen[moduleName]
+                        ? "bg-blue-100"
+                        : "bg-yellow-200"
                     }`}
                     onClick={() => {
                       setIsExposedFunctionsOpen((prev) => ({
