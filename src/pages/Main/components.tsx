@@ -1,4 +1,8 @@
-import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
+import {
+  SuiMoveNormalizedFunction,
+  SuiMoveNormalizedStruct,
+} from "@mysten/sui/client";
+import { formatType, parseSuiMoveNormalizedType } from "./utils";
 
 export const StructCard = ({
   structName,
@@ -49,76 +53,67 @@ export const StructCard = ({
   );
 };
 
-const formatType = (type: any): string => {
-  if (typeof type === "string") return type;
-  if (type.Struct) {
-    const {
-      address,
-      module,
-      name,
-    }: { address: string; module: string; name: string } = type.Struct;
-    return `${shortAddress(address)}::${module}::${name}`;
-  }
-  if (type.Vector) {
-    return formatType(type.Vector);
-  }
-  return JSON.stringify(type);
-};
-
-const shortAddress = (addr: string) => {
-  if (addr.startsWith("0x") && addr.length > 12) {
-    return `${addr.slice(0, 7)}...${addr.slice(-5)}`;
-  }
-  return addr;
-};
-
 export const FunctionCard = ({
-  name,
-  parameters,
+  functionName,
+  functionData,
 }: {
-  name: string;
-  parameters: any[];
+  functionName: string;
+  functionData: SuiMoveNormalizedFunction;
 }) => {
   return (
-    <div className="border p-4">
-      <div className="text-xl font-semibold">{name}</div>
-      <div className="mt-2">
-        <div className="font-bold mb-1">Parameters:</div>
-        <div className="space-y-2">
-          {parameters.map((param, index) => {
-            const { referenceType, formattedType } = formatParameter(param);
-            return (
-              <div key={index} className="flex gap-2">
-                <span className="border-2 border-black rounded px-2">
-                  {index}
-                </span>
-                {referenceType && (
-                  <span className="border-2 border-black rounded px-2">
-                    {referenceType}
+    <div key={functionName} className="border p-4 mb-6 rounded-lg shadow-md">
+      <h2 className="text-xl font-semibold mb-2">{functionName}</h2>
+      <div className="mb-2">
+        <span className="font-bold">Visibility:</span> {functionData.visibility}
+      </div>
+      <div className="mb-2">
+        <span className="font-bold">Entry:</span>{" "}
+        {functionData.isEntry ? "Yes" : "No"}
+      </div>
+      <div className="mb-2">
+        <span className="font-bold">Parameters:</span>
+        <ul className="list-disc list-inside ml-4">
+          {functionData.parameters.length > 0 ? (
+            functionData.parameters.map((param, index) => {
+              const formatted = parseSuiMoveNormalizedType(param); // ⬅ 아래 함수 참고
+              return (
+                <li key={index} className="flex items-center gap-2">
+                  <span className="border border-gray-400 rounded px-2 py-0.5 text-sm">
+                    {formatted.prefix}
                   </span>
-                )}
-                <span className="border-2 border-black rounded px-2">
-                  {formattedType}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+                  <span className="border border-blue-500 rounded px-2 py-0.5 text-sm font-mono">
+                    {formatted.core}
+                  </span>
+                </li>
+              );
+            })
+          ) : (
+            <li>None</li>
+          )}
+        </ul>
+      </div>
+      <div className="mb-2">
+        <span className="font-bold">Return:</span>
+        <ul className="list-disc list-inside ml-4">
+          {functionData.return.length > 0 ? (
+            functionData.return.map((param, index) => {
+              const formatted = parseSuiMoveNormalizedType(param); // ⬅ 아래 함수 참고
+              return (
+                <li key={index} className="flex items-center gap-2">
+                  <span className="border border-gray-400 rounded px-2 py-0.5 text-sm">
+                    {formatted.prefix}
+                  </span>
+                  <span className="border border-blue-500 rounded px-2 py-0.5 text-sm font-mono">
+                    {formatted.core}
+                  </span>
+                </li>
+              );
+            })
+          ) : (
+            <li>None</li>
+          )}
+        </ul>
       </div>
     </div>
   );
-};
-
-export const formatParameter = (param: any) => {
-  let referenceType = "";
-
-  if (param.Reference) {
-    referenceType = "&";
-    param = param.Reference;
-  } else if (param.MutableReference) {
-    referenceType = "&mut";
-    param = param.MutableReference;
-  }
-
-  return { referenceType, formattedType: formatType(param) };
 };

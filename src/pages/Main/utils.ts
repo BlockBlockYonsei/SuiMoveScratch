@@ -44,9 +44,25 @@ export function parseSuiMoveNormalizedType(type: SuiMoveNormalizedType): {
   return { prefix: "", core: JSON.stringify(type) };
 }
 
-const shortAddress = (addr: string) => {
+export const shortAddress = (addr: string) => {
   if (addr.startsWith("0x") && addr.length > 12) {
     return `${addr.slice(0, 7)}...${addr.slice(-5)}`;
   }
   return addr;
+};
+
+export const formatType = (type: any): string => {
+  if (typeof type === "string") return type;
+  if (type.Struct) {
+    const {
+      address,
+      module,
+      name,
+    }: { address: string; module: string; name: string } = type.Struct;
+    return `${shortAddress(address)}::${module}::${name}`;
+  }
+  if (type.Vector) {
+    return formatType(type.Vector);
+  }
+  return JSON.stringify(type);
 };

@@ -2,7 +2,7 @@
 import { useSuiClientQuery } from "@mysten/dapp-kit";
 // import { SuiMoveNormalizedType } from "@mysten/sui/client";
 import { parseSuiMoveNormalizedType } from "./utils";
-import { StructCard } from "./components";
+import { FunctionCard, StructCard } from "./components";
 import {
   SuiMoveNormalizedModule,
   SuiMoveNormalizedStruct,
@@ -46,7 +46,7 @@ export default function Main() {
             <div>
               <h1 className="my-5 font-extrabold text-4xl">{moduleName}</h1>
               <div>
-                {/* Package Info */}
+                {/* Module Info */}
                 <h1 className="my-5 font-semibold text-2xl">Module Info</h1>
                 <div className="p-2 border rounded-md">
                   <p className="text-xl">Address: {moduleData.address}</p>
@@ -85,9 +85,6 @@ export default function Main() {
                           key={structName}
                           structName={structName}
                           structData={structData}
-                          // name={structName}
-                          // abilities={structData.abilities.abilities}
-                          // fields={structData.fields}
                         />
                       )
                     )}
@@ -113,77 +110,12 @@ export default function Main() {
                 {isExposedFunctionsOpen[moduleName] &&
                   Object.entries(moduleData.exposedFunctions).map(
                     ([funcName, funcData]) => (
-                      <div
-                        key={funcName}
-                        className="border p-4 mb-6 rounded-lg shadow-md"
-                      >
-                        <h2 className="text-xl font-semibold mb-2">
-                          {funcName}
-                        </h2>
-                        <div className="mb-2">
-                          <span className="font-bold">Visibility:</span>{" "}
-                          {funcData.visibility}
-                        </div>
-                        <div className="mb-2">
-                          <span className="font-bold">Entry:</span>{" "}
-                          {funcData.isEntry ? "Yes" : "No"}
-                        </div>
-                        <div className="mb-2">
-                          <span className="font-bold">Parameters:</span>
-                          <ul className="list-disc list-inside ml-4">
-                            {funcData.parameters.length > 0 ? (
-                              funcData.parameters.map((param, index) => {
-                                const formatted =
-                                  parseSuiMoveNormalizedType(param); // ⬅ 아래 함수 참고
-                                return (
-                                  <li
-                                    key={index}
-                                    className="flex items-center gap-2"
-                                  >
-                                    <span className="border border-gray-400 rounded px-2 py-0.5 text-sm">
-                                      {formatted.prefix}
-                                    </span>
-                                    <span className="border border-blue-500 rounded px-2 py-0.5 text-sm font-mono">
-                                      {formatted.core}
-                                    </span>
-                                  </li>
-                                );
-                              })
-                            ) : (
-                              <li>None</li>
-                            )}
-                          </ul>
-                        </div>
-                        <div className="mb-2">
-                          <span className="font-bold">Return:</span>
-                          <ul className="list-disc list-inside ml-4">
-                            {funcData.return.length > 0 ? (
-                              funcData.return.map((param, index) => {
-                                const formatted =
-                                  parseSuiMoveNormalizedType(param); // ⬅ 아래 함수 참고
-                                return (
-                                  <li
-                                    key={index}
-                                    className="flex items-center gap-2"
-                                  >
-                                    <span className="border border-gray-400 rounded px-2 py-0.5 text-sm">
-                                      {formatted.prefix}
-                                    </span>
-                                    <span className="border border-blue-500 rounded px-2 py-0.5 text-sm font-mono">
-                                      {formatted.core}
-                                    </span>
-                                  </li>
-                                );
-                              })
-                            ) : (
-                              <li>None</li>
-                            )}
-                          </ul>
-                        </div>
-                      </div>
+                      <FunctionCard
+                        functionName={funcName}
+                        functionData={funcData}
+                      />
                     )
                   )}
-
                 <h2 className="my-5  text-2xl">enums</h2>
                 <div>{JSON.stringify(moduleData.enums)}</div>
               </div>
