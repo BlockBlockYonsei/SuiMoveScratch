@@ -3,7 +3,10 @@ import { useSuiClientQuery } from "@mysten/dapp-kit";
 // import { SuiMoveNormalizedType } from "@mysten/sui/client";
 import { parseSuiMoveNormalizedType } from "./utils";
 import { StructCard } from "./components";
-import { SuiMoveNormalizedModule } from "@mysten/sui/client";
+import {
+  SuiMoveNormalizedModule,
+  SuiMoveNormalizedStruct,
+} from "@mysten/sui/client";
 import { useState } from "react";
 
 export default function Main() {
@@ -73,19 +76,18 @@ export default function Main() {
                 </h1>
                 {isStructsOpen[moduleName] && (
                   <div className="grid grid-cols-2 gap-4">
-                    {Object.entries(data.blockblock.structs).map(
+                    {Object.entries(moduleData.structs).map(
                       ([structName, structData]: [
                         string,
-                        {
-                          abilities: { abilities: string[] };
-                          fields: { name: string; type: any }[];
-                        }
+                        SuiMoveNormalizedStruct
                       ]) => (
                         <StructCard
                           key={structName}
-                          name={structName}
-                          abilities={structData.abilities.abilities}
-                          fields={structData.fields}
+                          structName={structName}
+                          structData={structData}
+                          // name={structName}
+                          // abilities={structData.abilities.abilities}
+                          // fields={structData.fields}
                         />
                       )
                     )}
@@ -109,7 +111,7 @@ export default function Main() {
                   </button>
                 </h1>
                 {isExposedFunctionsOpen[moduleName] &&
-                  Object.entries(data.blockblock.exposedFunctions).map(
+                  Object.entries(moduleData.exposedFunctions).map(
                     ([funcName, funcData]) => (
                       <div
                         key={funcName}

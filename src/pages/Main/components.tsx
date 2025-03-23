@@ -1,21 +1,39 @@
+import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
+
 export const StructCard = ({
-  name,
-  abilities,
-  fields,
+  structName,
+  structData,
 }: {
-  name: string;
-  abilities: string[];
-  fields: { name: string; type: any }[];
+  structName: string;
+  structData: SuiMoveNormalizedStruct;
 }) => {
   return (
     <div className="border p-4 rounded-md">
-      <div className="mb-2">
-        <span className="text-xl font-semibold">{name}</span>
+      <div className="mb-2 flex">
+        <span className="text-xl font-semibold">{structName}</span>
+        {structData.typeParameters.length > 0 && (
+          <span className="inline-flex whitespace-nowrap">
+            {"<"}
+            {structData.typeParameters.map((tp, index) => (
+              <span>
+                <span className="text-pink-600">
+                  {tp.isPhantom && "phantom "}
+                </span>
+                <span>
+                  T{index}:{tp.constraints.abilities.join("+ ")}
+                </span>
+              </span>
+            ))}
+            {">"}
+          </span>
+        )}
         <span className="text-pink-500 px-2">has</span>
-        <span className="border-2 rounded">{abilities.join(", ")}</span>
+        <span className="border-2 rounded">
+          {structData.abilities.abilities.join(", ")}
+        </span>
       </div>
       <div className="space-y-1">
-        {fields.map((field, index) => (
+        {structData.fields.map((field, index) => (
           <div key={index}>
             <span className="text-blue-600 border-2 border-black rounded px-2">
               {field.name}
