@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SuiMoveNormalizedType } from "@mysten/sui/client";
 
 export function parseSuiMoveNormalizedType(type: SuiMoveNormalizedType): {
