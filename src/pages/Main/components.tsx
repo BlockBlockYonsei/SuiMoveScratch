@@ -18,13 +18,10 @@ const BlockCard = ({
   bgColor = "bg-white",
   textColor = "text-black",
   className = "",
-  onClick,
 }: BlockCardProps) => {
   return (
     <div
       className={`border-2 border-black rounded px-2 py-1 ${bgColor} ${textColor} ${className}`}
-      onClick={onClick}
-      role={onClick ? "button" : undefined}
     >
       {text}
     </div>
