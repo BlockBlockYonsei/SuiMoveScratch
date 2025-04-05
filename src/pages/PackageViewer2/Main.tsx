@@ -34,7 +34,7 @@ function ModuleViewer({ name, code }: { name: string; code: string }) {
   const structs = code.match(/struct\s+\w+\s+has[^{]+\{[^}]+\}/g) || [];
   const functions =
     code.match(
-      /(?:public|entry|friend)?\s*fun\s+\w+\([^)]*\)\s*[:]?[^}]*\{[^}]*\}/g
+      /(?:public|entry)?(\(friend\))?\s*fun\s+\w+\([^)]*\)\s*[:]?[^}]*\{[^}]*\}/g
     ) || [];
 
   const imports = (
