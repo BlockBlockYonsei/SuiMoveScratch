@@ -39,37 +39,36 @@ function ModuleViewer({ name, code }: { name: string; code: string }) {
 
   const imports = (
     code.match(/0x[a-fA-F0-9]+::[a-zA-Z_][\w]*::[a-zA-Z_][\w]*/g) || []
-  ).reduce((acc, entry) => {
-    const match = entry.match(
-      /(0x[0-9a-fA-F]+::[a-zA-Z_][\w]*)::([a-zA-Z_][\w]*)/
-    );
-    if (!match) return acc;
+  )
+    .filter(
+      (ele, index, arr) => index === 0 || !arr.slice(0, index).includes(ele)
+    )
+    .sort((a, b) => a.localeCompare(b))
+    .reduce((acc, entry) => {
+      const match = entry.match(
+        /(0x[0-9a-fA-F]+::[a-zA-Z_][\w]*)::([a-zA-Z_][\w]*)/
+      );
+      if (!match) return acc;
 
-    const [_, key, value] = match;
+      const [_, key, value] = match;
+      if (!acc[key]) acc[key] = [];
 
-    if (!acc[key]) acc[key] = [];
-
-    // 중복 방지 (Set 없이 배열에서 확인)
-    if (!acc[key].includes(value)) {
       acc[key].push(value);
-    }
-
-    return acc;
-  }, {} as Record<string, string[]>);
-
-  const sortedImports = Object.entries(imports).sort(([a], [b]) => {
-    return a.localeCompare(b);
-  });
+      return acc;
+    }, {} as Record<string, string[]>);
 
   return (
     <div className="border rounded p-3 mb-6 shadow">
       <h2 className="text-xl font-semibold mb-2">📦 module: {name}</h2>
       <div className="pl-4 mb-2">
         <h3 className="text-lg font-bold">📂 Import</h3>
-        {sortedImports.map(([key, value]) => {
+        {Object.entries(imports).map(([key, values]) => {
+          const match = key.match(/(0x[0-9a-fA-F]+::[a-zA-Z_][\w]*)/);
+          if (!match) return null;
+          const [_, pack, module] = match;
           return (
             <pre key={key} className="text-sm bg-gray-100 p-2 rounded my-1">
-              {key}::&#123;{value.join(", ")}&#125;
+              {pack}::{module}::&#123;{values.join(", ")} &#125;
             </pre>
           );
         })}
