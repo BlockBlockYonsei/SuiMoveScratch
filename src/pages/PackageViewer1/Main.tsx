@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useSuiClientQuery } from "@mysten/dapp-kit";
-// import { SuiMoveNormalizedType } from "@mysten/sui/client";
-import { parseSuiMoveNormalizedType } from "./utils";
 import { FunctionCard, StructCard } from "./components";
 import {
   SuiMoveNormalizedModule,
