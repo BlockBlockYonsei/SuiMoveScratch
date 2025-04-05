@@ -63,12 +63,16 @@ function ModuleViewer({ name, code }: { name: string; code: string }) {
       <div className="pl-4 mb-2">
         <h3 className="text-lg font-bold">📂 Import</h3>
         {Object.entries(imports).map(([key, values]) => {
-          const match = key.match(/(0x[0-9a-fA-F]+::[a-zA-Z_][\w]*)/);
+          const match = key.match(/(0x[0-9a-fA-F]+)::([a-zA-Z_][\w]*)/);
           if (!match) return null;
           const [_, pack, module] = match;
           return (
             <pre key={key} className="text-sm bg-gray-100 p-2 rounded my-1">
-              {pack}::{module}::&#123;{values.join(", ")} &#125;
+              <span className="text-pink-500">{pack}</span>::
+              <span className="text-blue-500">{module}</span>::
+              <span className="text-emerald-500">
+                &#123;{values.join(", ")} &#125;
+              </span>
             </pre>
           );
         })}
@@ -76,11 +80,43 @@ function ModuleViewer({ name, code }: { name: string; code: string }) {
       <div className="pl-4 mb-2">
         <h3 className="text-lg font-bold">📂 Structs</h3>
         {structs.length > 0 ? (
-          structs.map((s, i) => (
-            <pre key={i} className="text-sm bg-gray-100 p-2 rounded my-1">
-              {s}
-            </pre>
-          ))
+          structs.map((struct, i) => {
+            const match = struct.match(
+              /(struct)\s+(\w+)\s+(has)([^{]+)(\{)([^}]+)(\})/
+            );
+            if (!match) return null;
+            const [_, strct, name, has, abilities, open, fields, close] = match;
+
+            const fieldMatch = fields.match(/([a-zA-Z_][\w]*)\s*:\s*([^,]+)/g);
+
+            return (
+              <pre key={i} className="text-sm bg-gray-100 p-2 rounded my-1">
+                <span className="text-emerald-500">{strct}</span>{" "}
+                <span className="font-semibold">{name}</span>{" "}
+                <span className="text-pink-500">{has}</span>
+                <span className="text-emerald-500">{abilities}</span>
+                <span className="font-semibold">{open}</span>
+                {/* <span>{fields}</span> */}
+                {fieldMatch &&
+                  fieldMatch.map((f) => {
+                    const matchField = f.match(
+                      /([a-zA-Z_][\w]*)\s*:\s*([^,]+)/
+                    );
+                    if (!matchField) return null;
+                    const [_, name, type] = matchField;
+                    return (
+                      <div key={f}>
+                        <span>{"    "}</span>
+                        <span className="font-medium">{name}</span>:{" "}
+                        <span className="text-blue-500">{type}</span>
+                        {/* {f} */}
+                      </div>
+                    );
+                  })}
+                <span className="font-semibold">{close}</span>
+              </pre>
+            );
+          })
         ) : (
           <p className="text-gray-500">No structs found</p>
         )}
