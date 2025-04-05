@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useSuiClientQuery } from "@mysten/dapp-kit";
 import { FunctionCard, StructCard } from "./components";
 import {
@@ -18,7 +17,7 @@ export default function Main() {
     },
     {
       enabled: true,
-    }
+    },
   );
 
   const [isStructsOpen, setIsStructsOpen] = useState<{
@@ -79,14 +78,14 @@ export default function Main() {
                     {Object.entries(moduleData.structs).map(
                       ([structName, structData]: [
                         string,
-                        SuiMoveNormalizedStruct
+                        SuiMoveNormalizedStruct,
                       ]) => (
                         <StructCard
                           key={structName}
                           structName={structName}
                           structData={structData}
                         />
-                      )
+                      ),
                     )}
                   </div>
                 )}
@@ -116,14 +115,14 @@ export default function Main() {
                         functionName={funcName}
                         functionData={funcData}
                       />
-                    )
+                    ),
                   )}
                 <h2 className="my-5  text-2xl">enums</h2>
                 <div>{JSON.stringify(moduleData.enums)}</div>
               </div>
             </div>
           );
-        }
+        },
       )}
     </div>
   );
