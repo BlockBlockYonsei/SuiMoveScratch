@@ -34,7 +34,7 @@ function ModuleViewer({ name, code }: { name: string; code: string }) {
   const structs = code.match(/struct\s+\w+\s+has[^{]+\{[^}]+\}/g) || [];
   const functions =
     code.match(
-      /(?:public|entry)?(\(friend\))?\s*fun\s+\w+\([^)]*\)\s*[:]?[^}]*\{[^}]*\}/g
+      /(\s)*(public|entry)?(\(friend\))?\s*fun\s+\w+[^()]*\([^)]*\)\s*[:]?[^}]*\{[^}]*\}/g
     ) || [];
 
   const imports = (
@@ -124,11 +124,34 @@ function ModuleViewer({ name, code }: { name: string; code: string }) {
       <div className="pl-4">
         <h3 className="text-lg font-bold">⚙️ Functions</h3>
         {functions.length > 0 ? (
-          functions.map((f, i) => (
-            <pre key={i} className="text-sm bg-gray-100 p-2 rounded my-1">
-              {f}
-            </pre>
-          ))
+          functions.map((f, i) => {
+            const match = f.match(
+              /(public|entry)?(\(friend\))?\s*(fun)\s+(\w+)([^(]*)(\([^)]*\))\s*[:]?([^{]*)\{[^}]*\}/
+            );
+
+            if (!match) return null;
+
+            const [_, pub_ent, frnd, fun, name, ta, params, returns] = match;
+
+            return (
+              <pre
+                key={f + i.toString()}
+                className="text-sm bg-gray-100 p-2 rounded my-1"
+              >
+                {/* {match.map((m, i) => {
+                  if (i === 0 || !m) return null;
+                  return <span className="font-semibold"> {m}</span>;
+                })} */}
+                <span className="font-semibold">{pub_ent} </span>
+                <span>{frnd} </span>
+                <span className="text-pink-500 font-semibold">{fun} </span>
+                <span className="font-semibold"> {name} </span>
+                <span className="text-emerald-500 font-semibold">{ta} </span>
+                <span className="font-semibold">{params} </span>
+                <span className="text-blue-500 font-semibold">{returns} </span>
+              </pre>
+            );
+          })
         ) : (
           <p className="text-gray-500">No functions found</p>
         )}
