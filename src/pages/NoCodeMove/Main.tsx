@@ -5,6 +5,11 @@ export default function Main() {
   const [imports, setImports] = useState<Record<string, string[]>>({});
   const [isOpen, setIsOpen] = useState(false);
 
+  const packages = [
+    "0x0000000000000000000000000000000000000000000000000000000000000001",
+    "0x0000000000000000000000000000000000000000000000000000000000000002",
+  ];
+
   const PACKAGE =
     // "0x31323c09dee186fae0b38e0dace096140f5765713e64d10d95f2537b4b699ab4";
     "0x0000000000000000000000000000000000000000000000000000000000000002";
@@ -42,6 +47,7 @@ export default function Main() {
     }
   };
 
+  // 새로 고침 시 확인 알림
   useEffect(() => {
     const handleBeforeUnload = (e: any) => {
       e.preventDefault();
@@ -60,76 +66,69 @@ export default function Main() {
   if (error) return <div>Error: {error?.message || "error"}</div>;
 
   return (
-    <div className="min-h-screen p-6 bg-gray-100">
-      <Card className="max-w-xl mx-auto p-4 rounded-2xl shadow-xl space-y-4">
-        <h1 className="text-2xl font-bold">🛠️ No Code 텍스트 에디터</h1>
-        <div>
-          <div>여기에 텍스트가 추가 됩니다</div>
-          {Object.entries(imports).map(([key, values]) => {
-            return (
-              <div key={key}>
-                <div>module: {key}</div>
-                {values.map((v) => (
-                  <span> {v}</span>
-                ))}
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="relative">
-          <Button onClick={() => setIsOpen((prev) => !prev)}>
-            ➕ Import 추가
-          </Button>
-          {isOpen && (
-            <ul className="absolute mt-2 left-0 w-48 bg-white border rounded-xl shadow-lg z-10">
-              {/* {Object.entries(modules).map(([key, values]) => ( */}
-              {Object.entries(data).map(([moduleName, moduleData]) => (
-                <li key={moduleName} className="relative group">
-                  <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
-                    {moduleName}
-                  </div>
-
-                  <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
-                    {Object.keys(moduleData.structs).map((k) => (
-                      <li
-                        key={k}
-                        onClick={() => {
-                          handleConfirm(moduleName, k);
-                          setIsOpen(false);
-                        }}
-                        className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
-                      >
-                        {k}
-                      </li>
-                    ))}
-                    {Object.keys(moduleData.exposedFunctions).map((k) => (
-                      <li
-                        key={k}
-                        onClick={() => {
-                          handleConfirm(moduleName, k);
-                          setIsOpen(false);
-                        }}
-                        className="px-4 py-2 text-pink-500 hover:bg-blue-50 cursor-pointer transition"
-                      >
-                        {k}()
-                      </li>
-                    ))}
-                  </ul>
-                </li>
+    <div className="min-h-screen p-6 max-w-xl mx-auto bg-gray-100">
+      <h1 className="text-2xl font-bold">🛠️ No Code 텍스트 에디터</h1>
+      <div>
+        <div>여기에 텍스트가 추가 됩니다</div>
+        {Object.entries(imports).map(([key, values]) => {
+          return (
+            <div key={key}>
+              <div>module: {key}</div>
+              {values.map((v) => (
+                <span> {v}</span>
               ))}
-            </ul>
+            </div>
+          );
+        })}
+      </div>
+      <div className="">
+        <Button onClick={() => setIsOpen((prev) => !prev)}>
+          ➕ Import 추가
+        </Button>
+        <div className="relative">
+          {isOpen && (
+            <div className="apsolute left-0 p-4 mt-2 bg-white rounded-xl shadow overflow-auto max-h-64 space-y-4">
+              <ul className="w-48 bg-white border rounded-xl shadow-lg z-10">
+                {Object.entries(data).map(([moduleName, moduleData]) => (
+                  <li key={moduleName} className="relative group">
+                    <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
+                      {moduleName}
+                    </div>
+
+                    <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
+                      {/* <ul className="left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20"> */}
+                      {Object.keys(moduleData.structs).map((k) => (
+                        <li
+                          key={k}
+                          onClick={() => {
+                            handleConfirm(moduleName, k);
+                            setIsOpen(false);
+                          }}
+                          className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
+                        >
+                          {k}
+                        </li>
+                      ))}
+                      {Object.keys(moduleData.exposedFunctions).map((k) => (
+                        <li
+                          key={k}
+                          onClick={() => {
+                            handleConfirm(moduleName, k);
+                            setIsOpen(false);
+                          }}
+                          className="px-4 py-2 text-pink-500 hover:bg-blue-50 cursor-pointer transition"
+                        >
+                          {k}()
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
-
-        <div className={`p-4 min-h-[200px] rounded-xl transition-all`}>
-          {/* {imports.length === 0 ? (
-            <p className="text-gray-400">여기에 텍스트가 추가됩니다.</p>
-          ) : (
-            imports.map((text, index) => <p key={index}>{text}</p>)
-          )} */}
-        </div>
-      </Card>
+      </div>
     </div>
   );
 }
@@ -144,15 +143,4 @@ function Button({ children, onClick }: { children: any; onClick: any }) {
       {children}
     </button>
   );
-}
-
-// ✅ Card 컴포넌트
-function Card({
-  children,
-  className = "",
-}: {
-  children: any;
-  className: string;
-}) {
-  return <div className={`bg-white ${className}`}>{children}</div>;
 }
