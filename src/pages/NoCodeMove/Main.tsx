@@ -1,10 +1,26 @@
 import { useSuiClientQuery } from "@mysten/dapp-kit";
-import { SuiMoveNormalizedModules } from "@mysten/sui/client";
-import { useEffect, useState } from "react";
+import {
+  SuiMoveNormalizedModules,
+  SuiMoveNormalizedStruct,
+} from "@mysten/sui/client";
+import { useEffect, useRef, useState } from "react";
 
 export default function Main() {
   const [imports, setImports] = useState<Record<string, string[]>>({});
-  const [isOpen, setIsOpen] = useState(false);
+  const [structs, setStructs] = useState<
+    Record<string, SuiMoveNormalizedStruct>
+  >({});
+
+  const [array, setArray] = useState<string[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isEditing]);
 
   const packages = [
     "0x0000000000000000000000000000000000000000000000000000000000000001",
@@ -68,30 +84,33 @@ export default function Main() {
             <div>&#125;</div>
           </div>
         ))}
-        {isEditing && (
-          <input
-            ref={inputRef}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onBlur={() => {
-              // cancelEditing();
-              setInputValue("");
-              setIsEditing(false);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                // finishEditing();
-                const trimmed = inputValue.trim();
-                if (trimmed) {
-                  setArray([...array, trimmed]);
-                }
+        <div>
+          {isEditing && (
+            <input
+              ref={inputRef}
+              value={inputValue}
+              placeholder="Struct Name을 입력하세요."
+              onChange={(e) => setInputValue(e.target.value)}
+              onBlur={() => {
+                // cancelEditing();
                 setInputValue("");
                 setIsEditing(false);
-              }
-            }}
-            className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none"
-          />
-        )}
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  // finishEditing();
+                  const trimmed = inputValue.trim();
+                  if (trimmed) {
+                    setArray([...array, trimmed]);
+                  }
+                  setInputValue("");
+                  setIsEditing(false);
+                }
+              }}
+              className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none"
+            />
+          )}
+        </div>
       </div>
       <div>
         {!isEditing && (
