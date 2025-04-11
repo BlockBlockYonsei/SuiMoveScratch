@@ -96,7 +96,6 @@ export default function Main() {
                   </div>
 
                   <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
-                    {/* <ul className="left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20"> */}
                     {Object.keys(moduleData.structs).map((k) => (
                       <li
                         key={k}
@@ -109,7 +108,7 @@ export default function Main() {
                         {k}
                       </li>
                     ))}
-                    {Object.keys(moduleData.exposedFunctions).map((k) => (
+                    {/* {Object.keys(moduleData.exposedFunctions).map((k) => (
                       <li
                         key={k}
                         onClick={() => {
@@ -120,7 +119,7 @@ export default function Main() {
                       >
                         {k}()
                       </li>
-                    ))}
+                    ))} */}
                   </ul>
                 </li>
               ))}
