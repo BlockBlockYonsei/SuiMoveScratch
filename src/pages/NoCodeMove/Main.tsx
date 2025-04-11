@@ -68,66 +68,65 @@ export default function Main() {
   return (
     <div className="min-h-screen p-6 max-w-xl mx-auto bg-gray-100">
       <h1 className="text-2xl font-bold">🛠️ No Code 텍스트 에디터</h1>
-      <div>
-        <div>여기에 텍스트가 추가 됩니다</div>
+      <br></br>
+      <div className="bg-white p-4 rounded-xl border-2 border-black">
+        <div className="inline-block bg-gray-200 text-2xl">Imports</div>
         {Object.entries(imports).map(([key, values]) => {
           return (
             <div key={key}>
-              <div>module: {key}</div>
-              {values.map((v) => (
-                <span> {v}</span>
-              ))}
+              <span className="text-blue-500">use</span> sui::{key}:: &#123;{" "}
+              <span className="text-emerald-500 font-semibold">
+                {values.join(", ")}
+              </span>{" "}
+              &#125;;
             </div>
           );
         })}
       </div>
-      <div className="">
-        <Button onClick={() => setIsOpen((prev) => !prev)}>
-          ➕ Import 추가
-        </Button>
-        <div className="relative">
-          {isOpen && (
-            <div className="apsolute left-0 p-4 mt-2 bg-white rounded-xl shadow overflow-auto max-h-64 space-y-4">
-              <ul className="w-48 bg-white border rounded-xl shadow-lg z-10">
-                {Object.entries(data).map(([moduleName, moduleData]) => (
-                  <li key={moduleName} className="relative group">
-                    <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
-                      {moduleName}
-                    </div>
+      <br></br>
+      <Button onClick={() => setIsOpen((prev) => !prev)}>➕ Import 추가</Button>
+      <div className="relative">
+        {isOpen && (
+          <div className="apsolute left-0 p-4 mt-2 bg-white rounded-xl shadow overflow-auto max-h-64">
+            <ul className="w-48 bg-white border rounded-xl shadow-lg z-10">
+              {Object.entries(data).map(([moduleName, moduleData]) => (
+                <li key={moduleName} className="relative group">
+                  <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
+                    {moduleName}
+                  </div>
 
-                    <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
-                      {/* <ul className="left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20"> */}
-                      {Object.keys(moduleData.structs).map((k) => (
-                        <li
-                          key={k}
-                          onClick={() => {
-                            handleConfirm(moduleName, k);
-                            setIsOpen(false);
-                          }}
-                          className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
-                        >
-                          {k}
-                        </li>
-                      ))}
-                      {Object.keys(moduleData.exposedFunctions).map((k) => (
-                        <li
-                          key={k}
-                          onClick={() => {
-                            handleConfirm(moduleName, k);
-                            setIsOpen(false);
-                          }}
-                          className="px-4 py-2 text-pink-500 hover:bg-blue-50 cursor-pointer transition"
-                        >
-                          {k}()
-                        </li>
-                      ))}
-                    </ul>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
+                  <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
+                    {/* <ul className="left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20"> */}
+                    {Object.keys(moduleData.structs).map((k) => (
+                      <li
+                        key={k}
+                        onClick={() => {
+                          handleConfirm(moduleName, k);
+                          setIsOpen(false);
+                        }}
+                        className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
+                      >
+                        {k}
+                      </li>
+                    ))}
+                    {Object.keys(moduleData.exposedFunctions).map((k) => (
+                      <li
+                        key={k}
+                        onClick={() => {
+                          handleConfirm(moduleName, k);
+                          setIsOpen(false);
+                        }}
+                        className="px-4 py-2 text-pink-500 hover:bg-blue-50 cursor-pointer transition"
+                      >
+                        {k}()
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );
