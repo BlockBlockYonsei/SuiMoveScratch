@@ -24,30 +24,6 @@ export default function Main() {
     }
   );
 
-  const addImportBlock = (module: string, i: string) => {
-    console.log(imports[module]);
-    if (imports[module]) {
-      const newImports = [...imports[module], i];
-      setImports((prev) => ({
-        ...prev,
-        [module]: newImports,
-      }));
-    } else {
-      setImports((prev) => ({
-        ...prev,
-        [module]: [i],
-      }));
-    }
-  };
-
-  const handleConfirm = (module: string, i: string) => {
-    if (module) {
-      console.log(module);
-      addImportBlock(module, i);
-      setIsOpen(false);
-    }
-  };
-
   // 새로 고침 시 확인 알림
   useEffect(() => {
     const handleBeforeUnload = (e: any) => {
@@ -71,10 +47,125 @@ export default function Main() {
       <h1 className="text-2xl font-bold">🛠️ No Code 텍스트 에디터</h1>
       <br></br>
       <Imports data={data}></Imports>
+      struct 는 이 로직이 아니야!! data 에서 추가하는 게 아니라 내가 직접 걍
+      추가하는 거라고!
+      <div className="bg-white p-4 rounded-xl border-2 border-black">
+        <div className="inline-block bg-gray-200 text-2xl">Struct</div>
+        {Object.entries(structs).map(([key, value]) => {
+          return (
+            <div>
+              <div>{key}</div>
+              <div>{JSON.stringify(value)}</div>
+            </div>
+          );
+        })}
+
+        {array.map((item, idx) => (
+          <div>
+            public struct{" "}
+            <span className="text-emerald-500 font-semibold">{item}</span>{" "}
+            &#123;
+            <div>&#125;</div>
+          </div>
+        ))}
+        {isEditing && (
+          <input
+            ref={inputRef}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onBlur={() => {
+              // cancelEditing();
+              setInputValue("");
+              setIsEditing(false);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                // finishEditing();
+                const trimmed = inputValue.trim();
+                if (trimmed) {
+                  setArray([...array, trimmed]);
+                }
+                setInputValue("");
+                setIsEditing(false);
+              }
+            }}
+            className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none"
+          />
+        )}
+      </div>
+      <div>
+        {!isEditing && (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 transition"
+          >
+            ➕ Struct 추가
+          </button>
+        )}
+      </div>
+      <Button
+        onClick={() => {
+          setStructs({
+            MembershipPolicy: {
+              abilities: {
+                abilities: [],
+              },
+              fields: [
+                {
+                  name: "a",
+                  type: {
+                    Struct: {
+                      address: "",
+                      module: "",
+                      name: "",
+                      typeArguments: [],
+                    },
+                  },
+                },
+              ],
+              typeParameters: [
+                {
+                  constraints: {
+                    abilities: [],
+                  },
+                  isPhantom: false,
+                },
+              ],
+            },
+          });
+        }}
+      >
+        ➕ Struct(가짜 데이터) 추가
+      </Button>
     </div>
   );
 
   function Imports({ data }: { data: SuiMoveNormalizedModules }) {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const addImportBlock = (module: string, i: string) => {
+      console.log(imports[module]);
+      if (imports[module]) {
+        const newImports = [...imports[module], i];
+        setImports((prev) => ({
+          ...prev,
+          [module]: newImports,
+        }));
+      } else {
+        setImports((prev) => ({
+          ...prev,
+          [module]: [i],
+        }));
+      }
+    };
+
+    const handleConfirm = (module: string, i: string) => {
+      if (module) {
+        console.log(module);
+        addImportBlock(module, i);
+        setIsOpen(false);
+      }
+    };
     return (
       <div>
         <div className="bg-white p-4 rounded-xl border-2 border-black">
@@ -147,7 +238,7 @@ function Button({ children, onClick }: { children: any; onClick: any }) {
   return (
     <button
       onClick={onClick}
-      className="px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white transition"
+      className="px-4 py-2 my-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white transition"
     >
       {children}
     </button>
