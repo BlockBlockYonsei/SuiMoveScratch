@@ -1,55 +1,34 @@
-import { useSuiClientQuery } from "@mysten/dapp-kit";
+import {
+  SuiMoveNormalizedModules,
+  SuiMoveNormalizedStruct,
+} from "@mysten/sui/client";
 import { useState } from "react";
 
-export default function Imports() {
-  const [imports, setImports] = useState<Record<string, string[]>>({});
+interface Props {
+  data: SuiMoveNormalizedModules;
+  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
+  setImports: React.Dispatch<
+    React.SetStateAction<
+      Record<string, Record<string, SuiMoveNormalizedStruct>>
+    >
+  >;
+}
+
+export default function Imports({ data, imports, setImports }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const packages = [
-    "0x0000000000000000000000000000000000000000000000000000000000000001",
-    "0x0000000000000000000000000000000000000000000000000000000000000002",
-  ];
-
-  const PACKAGE =
-    // "0x31323c09dee186fae0b38e0dace096140f5765713e64d10d95f2537b4b699ab4";
-    "0x0000000000000000000000000000000000000000000000000000000000000002";
-  const { data, isPending, error } = useSuiClientQuery(
-    "getNormalizedMoveModulesByPackage",
-    {
-      package: PACKAGE,
-    },
-    {
-      enabled: true,
-    }
-  );
-
-  const addImportBlock = (module: string, i: string) => {
-    console.log(imports[module]);
-    if (imports[module]) {
-      const newImports = [...imports[module], i];
-      setImports((prev) => ({
-        ...prev,
-        [module]: newImports,
-      }));
-    } else {
-      setImports((prev) => ({
-        ...prev,
-        [module]: [i],
-      }));
-    }
-  };
-  const handleConfirm = (module: string, i: string) => {
+  const addImport = (module: string, struct: string) => {
     if (module) {
-      console.log(module);
-      addImportBlock(module, i);
+      setImports((prev) => ({
+        ...prev,
+        [module]: {
+          ...(prev[module] || {}),
+          [struct]: data[module].structs[struct],
+        },
+      }));
       setIsOpen(false);
     }
   };
-
-  if (isPending) return <div>Loading...</div>;
-
-  if (error) return <div>Error: {error?.message || "error"}</div>;
-
   return (
     <div>
       <div className="bg-white p-4 rounded-xl border-2 border-black">
@@ -59,7 +38,7 @@ export default function Imports() {
             <div key={key}>
               <span className="text-blue-500">use</span> sui::{key}:: &#123;{" "}
               <span className="text-emerald-500 font-semibold">
-                {values.join(", ")}
+                {Object.keys(values).join(", ")}
               </span>{" "}
               &#125;;
             </div>
@@ -67,7 +46,12 @@ export default function Imports() {
         })}
       </div>
       <br></br>
-      <Button onClick={() => setIsOpen((prev) => !prev)}>➕ Import 추가</Button>
+      <button
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="px-4 py-2 my-2 rounded-xl bg-blue-500 cursor-pointer hover:bg-blue-600 text-white transition"
+      >
+        ➕ Import 추가
+      </button>
       <div className="relative">
         {isOpen && (
           <div className="apsolute left-0 p-4 mt-2 bg-white rounded-xl shadow overflow-auto max-h-64">
@@ -83,26 +67,13 @@ export default function Imports() {
                       <li
                         key={k}
                         onClick={() => {
-                          handleConfirm(moduleName, k);
-                          setIsOpen(false);
+                          addImport(moduleName, k);
                         }}
                         className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
                       >
                         {k}
                       </li>
                     ))}
-                    {/* {Object.keys(moduleData.exposedFunctions).map((k) => (
-                      <li
-                        key={k}
-                        onClick={() => {
-                          handleConfirm(moduleName, k);
-                          setIsOpen(false);
-                        }}
-                        className="px-4 py-2 text-pink-500 hover:bg-blue-50 cursor-pointer transition"
-                      >
-                        {k}()
-                      </li>
-                    ))} */}
                   </ul>
                 </li>
               ))}
@@ -111,17 +82,5 @@ export default function Imports() {
         )}
       </div>
     </div>
-  );
-}
-
-// ✅ Button 컴포넌트
-function Button({ children, onClick }: { children: any; onClick: any }) {
-  return (
-    <button
-      onClick={onClick}
-      className="px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white transition"
-    >
-      {children}
-    </button>
   );
 }
