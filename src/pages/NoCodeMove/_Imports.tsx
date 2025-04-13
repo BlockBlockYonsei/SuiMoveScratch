@@ -45,16 +45,15 @@ export default function Imports({ data, imports, setImports }: Props) {
           );
         })}
       </div>
-      <br></br>
-      <button
-        onClick={() => setIsOpen((prev) => !prev)}
-        className="px-4 py-2 my-2 rounded-xl bg-blue-500 cursor-pointer hover:bg-blue-600 text-white transition"
-      >
-        ➕ Import 추가
-      </button>
       <div className="relative">
+        <button
+          onClick={() => setIsOpen((prev) => !prev)}
+          className="px-4 py-2 my-2 rounded-xl bg-blue-500 cursor-pointer hover:bg-blue-600 text-white transition"
+        >
+          ➕ Import 추가
+        </button>
         {isOpen && (
-          <div className="apsolute left-0 p-4 mt-2 bg-white rounded-xl shadow overflow-auto max-h-64">
+          <div className="absolute left-0 p-4 mt-2 w-96 z-50 bg-white rounded-xl shadow overflow-auto max-h-64">
             <ul className="w-48 bg-white border rounded-xl shadow-lg z-10">
               {Object.entries(data).map(([moduleName, moduleData]) => {
                 if (Object.keys(moduleData.structs).length === 0) return;

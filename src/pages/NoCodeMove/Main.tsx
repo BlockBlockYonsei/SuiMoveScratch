@@ -53,6 +53,7 @@ export default function Main() {
       <br></br>
       <Imports data={data} imports={imports} setImports={setImports}></Imports>
 
+      <br></br>
       <Structs
         structs={structs}
         setStructs={setStructs}

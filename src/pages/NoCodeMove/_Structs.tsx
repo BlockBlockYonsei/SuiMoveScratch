@@ -197,8 +197,9 @@ function StructCard({
           >
             {type}
           </button>
+          {/* <div className="relative"> */}
           {isOpen[name] && (
-            <div className="apsolute left-0 p-4 mt-2 bg-white rounded-xl shadow overflow-auto max-h-64">
+            <div className="absolute left-0 p-4 mt-2 w-96 z-50 bg-white rounded-xl shadow overflow-auto min-h-48 max-h-64">
               <ul className="w-48 bg-white border rounded-xl shadow-lg z-10">
                 <li className="relative group">
                   <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
@@ -258,6 +259,7 @@ function StructCard({
             </div>
           )}
         </div>
+        // </div>
       ))}
       {isEditing && (
         <div>
