@@ -1,7 +1,4 @@
-import {
-  SuiMoveNormalizedField,
-  SuiMoveNormalizedStruct,
-} from "@mysten/sui/client";
+import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 import { useEffect, useRef, useState } from "react";
 
 interface Props {
@@ -115,11 +112,22 @@ function StructCard({
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState("");
   // const [fields, setFields] = useState<string[]>([]);
-  const [fields, setFields] = useState<SuiMoveNormalizedField[]>([]);
+  const [fields, setFields] = useState<Record<string, string>>({});
   const inputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   const ABILITIES = ["Copy", "Drop", "Store", "Key"] as const;
+  const PRIMITIVE_TYPES = [
+    "Bool",
+    "U8",
+    "U16",
+    "U32",
+    "U64",
+    "U128",
+    "U256",
+    "Address",
+    "Signer",
+  ];
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -175,46 +183,73 @@ function StructCard({
           </span>
         )}
       </div>
-      {fields.map((field) => (
+      {Object.entries(fields).map(([name, type]) => (
         <div className="relative">
-          <span>{field.name}</span> :{" "}
+          <span>{name}</span> :{" "}
           <button
             onClick={() => {
               setIsOpen((prev) => !prev);
             }}
             className="border-2 border-black cursor-pointer rounded-md"
           >
-            {field.type.toString()}
+            {type}
           </button>
+          {isOpen && (
+            <div className="apsolute left-0 p-4 mt-2 bg-white rounded-xl shadow overflow-auto max-h-64">
+              <ul className="w-48 bg-white border rounded-xl shadow-lg z-10">
+                <li className="relative group">
+                  <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
+                    Primitive Type
+                  </div>
+                  <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
+                    {PRIMITIVE_TYPES.map((type) => (
+                      <li
+                        key={type}
+                        onClick={() => {
+                          setFields((prev) => ({
+                            ...prev,
+                            [name]: type,
+                          }));
+                          setIsOpen(false);
+                        }}
+                        className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
+                      >
+                        {type}
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+
+                {Object.entries(imports).map(([moduleName, structData]) => (
+                  <li key={moduleName} className="relative group">
+                    <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
+                      {moduleName}
+                    </div>
+
+                    <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
+                      {Object.keys(structData).map((structName) => (
+                        <li
+                          key={structName}
+                          onClick={() => {
+                            setFields((prev) => ({
+                              ...prev,
+                              [name]: structName,
+                            }));
+                            setIsOpen(false);
+                          }}
+                          className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
+                        >
+                          {structName}
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       ))}
-      {isOpen && (
-        <div className="apsolute left-0 p-4 mt-2 bg-white rounded-xl shadow overflow-auto max-h-64">
-          <ul className="w-48 bg-white border rounded-xl shadow-lg z-10">
-            {Object.entries(imports).map(([moduleName, structData]) => (
-              <li key={moduleName} className="relative group">
-                <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
-                  {moduleName}
-                </div>
-
-                <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
-                  {Object.keys(structData).map((structName) => (
-                    <li
-                      key={structName}
-                      onClick={() => {
-                        // addImport(moduleName, k);
-                      }}
-                      className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
-                    >
-                      {structName}
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
       {isEditing && (
         <div>
           <input
@@ -232,13 +267,10 @@ function StructCard({
                 const trimmed = inputValue.trim();
                 if (trimmed) {
                   // setFields([...fields, trimmed]);
-                  setFields((prev) => [
+                  setFields((prev) => ({
                     ...prev,
-                    {
-                      name: trimmed,
-                      type: "U64",
-                    },
-                  ]);
+                    [trimmed]: "U64",
+                  }));
                 }
                 setInputValue("");
                 setIsEditing(false);
