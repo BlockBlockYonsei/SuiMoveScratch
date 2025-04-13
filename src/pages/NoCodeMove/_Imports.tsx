@@ -56,27 +56,30 @@ export default function Imports({ data, imports, setImports }: Props) {
         {isOpen && (
           <div className="apsolute left-0 p-4 mt-2 bg-white rounded-xl shadow overflow-auto max-h-64">
             <ul className="w-48 bg-white border rounded-xl shadow-lg z-10">
-              {Object.entries(data).map(([moduleName, moduleData]) => (
-                <li key={moduleName} className="relative group">
-                  <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
-                    {moduleName}
-                  </div>
+              {Object.entries(data).map(([moduleName, moduleData]) => {
+                if (Object.keys(moduleData.structs).length === 0) return;
+                return (
+                  <li key={moduleName} className="relative group">
+                    <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
+                      {moduleName}
+                    </div>
 
-                  <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
-                    {Object.keys(moduleData.structs).map((k) => (
-                      <li
-                        key={k}
-                        onClick={() => {
-                          addImport(moduleName, k);
-                        }}
-                        className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
-                      >
-                        {k}
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
+                    <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
+                      {Object.keys(moduleData.structs).map((k) => (
+                        <li
+                          key={k}
+                          onClick={() => {
+                            addImport(moduleName, k);
+                          }}
+                          className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
+                        >
+                          {k}
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         )}

@@ -42,7 +42,7 @@ export default function Structs({ structs, setStructs, imports }: Props) {
         {/* Structs 하나씩 보여주는 곳 */}
         {Object.entries(structs).map(([key, value]) => {
           return (
-            <div>
+            <div key={key}>
               <StructCard
                 structName={key}
                 structData={value}
@@ -111,10 +111,9 @@ function StructCard({
 }: StructCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  // const [fields, setFields] = useState<string[]>([]);
   const [fields, setFields] = useState<Record<string, string>>({});
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<{ [key: string]: boolean }>({});
 
   const ABILITIES = ["Copy", "Drop", "Store", "Key"] as const;
   const PRIMITIVE_TYPES = [
@@ -144,6 +143,7 @@ function StructCard({
           <span>
             {ABILITIES.map((a) => (
               <button
+                key={a}
                 onClick={() => {
                   let newStructData = structData;
                   if (structData.abilities.abilities.includes(a)) {
@@ -184,17 +184,20 @@ function StructCard({
         )}
       </div>
       {Object.entries(fields).map(([name, type]) => (
-        <div className="relative">
+        <div className="relative" key={name}>
           <span>{name}</span> :{" "}
           <button
             onClick={() => {
-              setIsOpen((prev) => !prev);
+              setIsOpen((prev) => ({
+                ...prev,
+                [name]: !prev[name],
+              }));
             }}
             className="border-2 border-black cursor-pointer rounded-md"
           >
             {type}
           </button>
-          {isOpen && (
+          {isOpen[name] && (
             <div className="apsolute left-0 p-4 mt-2 bg-white rounded-xl shadow overflow-auto max-h-64">
               <ul className="w-48 bg-white border rounded-xl shadow-lg z-10">
                 <li className="relative group">
@@ -210,7 +213,10 @@ function StructCard({
                             ...prev,
                             [name]: type,
                           }));
-                          setIsOpen(false);
+                          setIsOpen((prev) => ({
+                            ...prev,
+                            [name]: false,
+                          }));
                         }}
                         className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
                       >
@@ -235,7 +241,10 @@ function StructCard({
                               ...prev,
                               [name]: structName,
                             }));
-                            setIsOpen(false);
+                            setIsOpen((prev) => ({
+                              ...prev,
+                              [name]: false,
+                            }));
                           }}
                           className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
                         >
@@ -274,6 +283,10 @@ function StructCard({
                 }
                 setInputValue("");
                 setIsEditing(false);
+                setIsOpen((prev) => ({
+                  ...prev,
+                  [trimmed]: false,
+                }));
               }
             }}
             className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none"
