@@ -35,6 +35,25 @@ export default function Structs({ structs, setStructs, imports }: Props) {
     }
   }, [isEditing]);
 
+  const addStruct = (e: any) => {
+    if (e.key === "Enter") {
+      const trimmed = inputValue.trim();
+      const newStruct = newEmptyStruct({
+        packageAddr: CURRENT_PACKAGE,
+        module: CURRENT_MODULE,
+        structName: trimmed,
+      });
+      if (trimmed) {
+        setStructs((prev) => ({
+          ...prev,
+          [trimmed]: newStruct,
+        }));
+      }
+      setInputValue("");
+      setIsEditing(false);
+    }
+  };
+
   return (
     <div>
       <div className="bg-white p-4 rounded-xl border-2 border-black">
@@ -60,28 +79,13 @@ export default function Structs({ structs, setStructs, imports }: Props) {
               ref={inputRef}
               value={inputValue}
               placeholder="Struct Name을 입력하세요."
-              onChange={(e) => setInputValue(e.target.value)}
               onBlur={() => {
                 setInputValue("");
                 setIsEditing(false);
               }}
+              onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  const trimmed = inputValue.trim();
-                  const newStruct = newEmptyStruct({
-                    packageAddr: CURRENT_PACKAGE,
-                    module: CURRENT_MODULE,
-                    structName: trimmed,
-                  });
-                  if (trimmed) {
-                    setStructs((prev) => ({
-                      ...prev,
-                      [trimmed]: newStruct,
-                    }));
-                  }
-                  setInputValue("");
-                  setIsEditing(false);
-                }
+                addStruct(e);
               }}
               className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none"
             />
@@ -113,20 +117,8 @@ function StructCard({
   const [inputValue, setInputValue] = useState("");
   const [fields, setFields] = useState<Record<string, string>>({});
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isOpen, setIsOpen] = useState<{ [key: string]: boolean }>({});
 
   const ABILITIES = ["Copy", "Drop", "Store", "Key"] as const;
-  const PRIMITIVE_TYPES = [
-    "Bool",
-    "U8",
-    "U16",
-    "U32",
-    "U64",
-    "U128",
-    "U256",
-    "Address",
-    "Signer",
-  ];
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -184,82 +176,12 @@ function StructCard({
         )}
       </div>
       {Object.entries(fields).map(([name, type]) => (
-        <div className="relative" key={name}>
-          <span>{name}</span> :{" "}
-          <button
-            onClick={() => {
-              setIsOpen((prev) => ({
-                ...prev,
-                [name]: !prev[name],
-              }));
-            }}
-            className="border-2 border-black cursor-pointer rounded-md"
-          >
-            {type}
-          </button>
-          {/* <div className="relative"> */}
-          {isOpen[name] && (
-            <div className="absolute left-0 p-4 mt-2 w-96 z-50 bg-white rounded-xl shadow overflow-auto min-h-48 max-h-64">
-              <ul className="w-48 bg-white border rounded-xl shadow-lg z-10">
-                <li className="relative group">
-                  <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
-                    Primitive Type
-                  </div>
-                  <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
-                    {PRIMITIVE_TYPES.map((type) => (
-                      <li
-                        key={type}
-                        onClick={() => {
-                          setFields((prev) => ({
-                            ...prev,
-                            [name]: type,
-                          }));
-                          setIsOpen((prev) => ({
-                            ...prev,
-                            [name]: false,
-                          }));
-                        }}
-                        className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
-                      >
-                        {type}
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-
-                {Object.entries(imports).map(([moduleName, structData]) => (
-                  <li key={moduleName} className="relative group">
-                    <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
-                      {moduleName}
-                    </div>
-
-                    <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
-                      {Object.keys(structData).map((structName) => (
-                        <li
-                          key={structName}
-                          onClick={() => {
-                            setFields((prev) => ({
-                              ...prev,
-                              [name]: structName,
-                            }));
-                            setIsOpen((prev) => ({
-                              ...prev,
-                              [name]: false,
-                            }));
-                          }}
-                          className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
-                        >
-                          {structName}
-                        </li>
-                      ))}
-                    </ul>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-        // </div>
+        <FieldCard
+          name={name}
+          type={type}
+          imports={imports}
+          setFields={setFields}
+        ></FieldCard>
       ))}
       {isEditing && (
         <div>
@@ -274,10 +196,8 @@ function StructCard({
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                // finishEditing();
                 const trimmed = inputValue.trim();
                 if (trimmed) {
-                  // setFields([...fields, trimmed]);
                   setFields((prev) => ({
                     ...prev,
                     [trimmed]: "U64",
@@ -285,10 +205,6 @@ function StructCard({
                 }
                 setInputValue("");
                 setIsEditing(false);
-                setIsOpen((prev) => ({
-                  ...prev,
-                  [trimmed]: false,
-                }));
               }
             }}
             className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none"
@@ -296,6 +212,103 @@ function StructCard({
         </div>
       )}
       <div>&#125;</div>
+    </div>
+  );
+}
+
+function FieldCard({
+  name,
+  type,
+  imports,
+  setFields,
+}: {
+  name: string;
+  type: string;
+  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
+  setFields: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+}) {
+  // const [isOpen, setIsOpen] = useState<{ [key: string]: boolean }>({});
+  const [isOpen, setIsOpen] = useState(false);
+
+  const PRIMITIVE_TYPES = [
+    "Bool",
+    "U8",
+    "U16",
+    "U32",
+    "U64",
+    "U128",
+    "U256",
+    "Address",
+    "Signer",
+  ];
+
+  return (
+    <div>
+      <div className="relative" key={name}>
+        <span>{name}</span> :{" "}
+        <button
+          onClick={() => {
+            setIsOpen((prev) => !prev);
+          }}
+          className="border-2 border-black cursor-pointer rounded-md"
+        >
+          {type}
+        </button>
+        {isOpen && (
+          <div className="absolute left-0 p-4 mt-2 w-96 z-50 bg-white rounded-xl shadow overflow-auto min-h-48 max-h-64">
+            <ul className="w-48 bg-white border rounded-xl shadow-lg z-10">
+              <li className="relative group">
+                <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
+                  Primitive Type
+                </div>
+                <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
+                  {PRIMITIVE_TYPES.map((type) => (
+                    <li
+                      key={type}
+                      onClick={() => {
+                        setFields((prev) => ({
+                          ...prev,
+                          [name]: type,
+                        }));
+                        setIsOpen((prev) => !prev);
+                      }}
+                      className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
+                    >
+                      {type}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+
+              {Object.entries(imports).map(([moduleName, structData]) => (
+                <li key={moduleName} className="relative group">
+                  <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
+                    {moduleName}
+                  </div>
+
+                  <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
+                    {Object.keys(structData).map((structName) => (
+                      <li
+                        key={structName}
+                        onClick={() => {
+                          setFields((prev) => ({
+                            ...prev,
+                            [name]: structName,
+                          }));
+                          setIsOpen((prev) => !prev);
+                        }}
+                        className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
+                      >
+                        {structName}
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
