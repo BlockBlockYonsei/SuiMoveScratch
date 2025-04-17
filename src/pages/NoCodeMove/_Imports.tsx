@@ -48,7 +48,6 @@ export default function Imports({ data, imports, setImports }: Props) {
       <div className="relative">
         <button
           onClick={() => setIsOpen((prev) => !prev)}
-          onBlur={() => setIsOpen(false)}
           onKeyDown={(e) => {
             if (e.key === "Escape") setIsOpen(false);
           }}
@@ -68,15 +67,15 @@ export default function Imports({ data, imports, setImports }: Props) {
                     </div>
 
                     <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
-                      {Object.keys(moduleData.structs).map((k) => (
+                      {Object.keys(moduleData.structs).map((structName) => (
                         <li
-                          key={k}
+                          key={structName}
                           onClick={() => {
-                            addImport(moduleName, k);
+                            addImport(moduleName, structName);
                           }}
                           className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
                         >
-                          {k}
+                          {structName}
                         </li>
                       ))}
                     </ul>

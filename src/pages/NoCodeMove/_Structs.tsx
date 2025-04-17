@@ -73,8 +73,8 @@ export default function Structs({ structs, setStructs, imports }: Props) {
         })}
 
         {/* Struct 추가 버튼 클릭 시 입력 필드 */}
-        <div>
-          {isEditing && (
+        {isEditing && (
+          <div>
             <input
               ref={inputRef}
               value={inputValue}
@@ -89,8 +89,8 @@ export default function Structs({ structs, setStructs, imports }: Props) {
               }}
               className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none"
             />
-          )}
-        </div>
+          </div>
+        )}
       </div>
       {/* Struct 추가 버튼 */}
       <div>
