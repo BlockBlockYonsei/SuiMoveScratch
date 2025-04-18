@@ -4,7 +4,7 @@ import {
   SuiMoveNormalizedStruct,
 } from "@mysten/sui/client";
 import { useEffect, useRef, useState } from "react";
-import { parseSuiMoveNormalizedType } from "../PackageViewer1/utils";
+// import { parseSuiMoveNormalizedType } from "../PackageViewer1/utils";
 
 export interface SuiMoveFunction {
   function: SuiMoveNormalizedFunction;

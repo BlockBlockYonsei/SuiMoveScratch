@@ -5,6 +5,7 @@ import {
 import { useState } from "react";
 
 interface Props {
+  pkg: string;
   data: SuiMoveNormalizedModules;
   imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
   setImports: React.Dispatch<
@@ -14,14 +15,19 @@ interface Props {
   >;
 }
 
-export default function Imports({ data, imports, setImports }: Props) {
+export default function Imports({ pkg, data, imports, setImports }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const addImport = (module: string, struct: string) => {
+  const packages = [
+    "0x0000000000000000000000000000000000000000000000000000000000000001",
+    "0x0000000000000000000000000000000000000000000000000000000000000002",
+  ];
+
+  const addImport = (pkg: string, module: string, struct: string) => {
     if (module) {
       setImports((prev) => ({
         ...prev,
-        [module]: {
+        [pkg + "::" + module]: {
           ...(prev[module] || {}),
           [struct]: data[module].structs[struct],
         },
@@ -59,7 +65,7 @@ export default function Imports({ data, imports, setImports }: Props) {
                           <li
                             key={structName}
                             onClick={() => {
-                              addImport(moduleName, structName);
+                              addImport(pkg, moduleName, structName);
                             }}
                             className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
                           >
@@ -78,7 +84,8 @@ export default function Imports({ data, imports, setImports }: Props) {
       {Object.entries(imports).map(([key, values]) => {
         return (
           <div key={key}>
-            <span className="text-blue-500">use</span> sui::{key}:: &#123;{" "}
+            <span className="text-blue-500">use</span>{" "}
+            {packages.includes(key.split("::")[0]) ? "suiorstd" : key}:: &#123;{" "}
             <span className="text-emerald-500 font-semibold">
               {Object.keys(values).join(", ")}
             </span>{" "}

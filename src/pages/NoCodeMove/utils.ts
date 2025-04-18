@@ -1,31 +1,11 @@
 import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 
-export function newEmptyStruct({
-  packageAddr,
-  module,
-  structName,
-}: {
-  packageAddr: string;
-  module: string;
-  structName: string;
-}): SuiMoveNormalizedStruct {
+export function newEmptyStruct(): SuiMoveNormalizedStruct {
   return {
     abilities: {
       abilities: [],
     },
-    fields: [
-      {
-        name: structName,
-        type: {
-          Struct: {
-            address: packageAddr,
-            module: module,
-            name: structName,
-            typeArguments: [],
-          },
-        },
-      },
-    ],
+    fields: [],
     typeParameters: [
       {
         constraints: {

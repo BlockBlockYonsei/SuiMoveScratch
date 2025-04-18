@@ -79,13 +79,17 @@ export default function StructCard({
           </span>
         )}
       </div>
-      {Object.entries(fields).map(([name, type]) => (
-        <div key={name}>
+      {/* {Object.entries(fields).map(([name, type]) => ( */}
+      {structData.fields.map((field, i) => (
+        <div key={field.name}>
           <StructFieldCard
-            name={name}
-            type={type}
+            // name={field.name}
+            // type={field.type}
+            field={field}
+            structName={structName}
+            structData={structData}
             imports={imports}
-            setFields={setFields}
+            setStructs={setStructs}
           ></StructFieldCard>
         </div>
       ))}
@@ -101,14 +105,22 @@ export default function StructCard({
               setIsEditing(false);
             }}
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
+              if (e.key !== "Enter") return;
+
+              try {
                 const trimmed = inputValue.trim();
-                if (trimmed) {
-                  setFields((prev) => ({
-                    ...prev,
-                    [trimmed]: "U64",
-                  }));
-                }
+                if (!trimmed) return;
+
+                if (structData.fields.some((field) => field.name === trimmed))
+                  return;
+
+                let newStructData = structData;
+                newStructData.fields.push({ name: trimmed, type: "U64" });
+                setStructs((prev) => ({
+                  ...prev,
+                  [structName]: newStructData,
+                }));
+              } finally {
                 setInputValue("");
                 setIsEditing(false);
               }

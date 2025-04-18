@@ -31,11 +31,8 @@ export default function Structs({ structs, setStructs, imports }: Props) {
   const addStruct = (e: any) => {
     if (e.key === "Enter") {
       const trimmed = inputValue.trim();
-      const newStruct = newEmptyStruct({
-        packageAddr: CURRENT_PACKAGE,
-        module: CURRENT_MODULE,
-        structName: trimmed,
-      });
+
+      const newStruct = newEmptyStruct();
       if (trimmed) {
         setStructs((prev) => ({
           ...prev,

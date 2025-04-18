@@ -18,11 +18,6 @@ export default function Main() {
 
   // =================================================
 
-  const packages = [
-    "0x0000000000000000000000000000000000000000000000000000000000000001",
-    "0x0000000000000000000000000000000000000000000000000000000000000002",
-  ];
-
   const PACKAGE =
     "0x0000000000000000000000000000000000000000000000000000000000000002";
   const { data, isPending, error } = useSuiClientQuery(
@@ -54,25 +49,64 @@ export default function Main() {
   if (error) return <div>Error: {error?.message || "error"}</div>;
 
   return (
-    <div className="min-h-screen p-6 max-w-xl mx-auto bg-gray-100">
-      <h1 className="text-2xl font-bold">🛠️ No Code 텍스트 에디터</h1>
-      <br></br>
-      <Imports data={data} imports={imports} setImports={setImports}></Imports>
+    <div className="grid grid-cols-2">
+      {/* <div className="min-h-screen p-6 max-w-xl mx-auto bg-gray-100"> */}
+      <div className="min-h-screen p-6 max-w-xl bg-gray-100">
+        <h1 className="text-2xl font-bold">🛠️ No Code 텍스트 에디터</h1>
+        <br></br>
+        <Imports
+          pkg={PACKAGE}
+          data={data}
+          imports={imports}
+          setImports={setImports}
+        ></Imports>
 
-      <br></br>
-      <Structs
-        structs={structs}
-        setStructs={setStructs}
-        imports={imports}
-      ></Structs>
+        <br></br>
+        <Structs
+          structs={structs}
+          setStructs={setStructs}
+          imports={imports}
+        ></Structs>
 
-      <br></br>
-      <Functions
-        functions={functions}
-        setFunctions={setFunctions}
-        imports={imports}
-        structs={structs}
-      ></Functions>
+        <br></br>
+        <Functions
+          functions={functions}
+          setFunctions={setFunctions}
+          imports={imports}
+          structs={structs}
+        ></Functions>
+      </div>
+      <div className="min-h-screen p-6 max-w-xl bg-gray-200">
+        <div className="text-3xl">Imports</div>
+        <div className="min-h-24 border-2 border-black rounded-md">
+          {Object.entries(imports).map(([key, value]) => (
+            <div>
+              <div className="text-2xl">{key.split("::")[1]}</div>
+              <div>{JSON.stringify(value)}</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-3xl">Structs</div>
+        <div className="min-h-24 border-2 border-black rounded-md">
+          {Object.entries(structs).map(([key, value]) => (
+            <div>
+              <div className="text-2xl">{key}</div>
+              <div>{JSON.stringify(value)}</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-3xl">Functions</div>
+        <div className="min-h-24 border-2 border-black rounded-md">
+          {Object.entries(functions).map(([key, value]) => (
+            <div>
+              <div className="text-2xl">{key}</div>
+              <div>{JSON.stringify(value)}</div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
