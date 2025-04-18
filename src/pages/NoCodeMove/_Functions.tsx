@@ -2,6 +2,7 @@ import {
   SuiMoveAbilitySet,
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
+  SuiMoveNormalizedType,
 } from "@mysten/sui/client";
 import { useEffect, useRef, useState } from "react";
 // import { parseSuiMoveNormalizedType } from "../PackageViewer1/utils";
@@ -164,16 +165,20 @@ function FunctionCard({
       />
       {/* Function Parameter */}
       <FunctionParameters
-        functionData={functionData.function}
+        functionName={functionName}
+        functionData={functionData}
         imports={imports}
         structs={structs}
+        setFunctions={setFunctions}
       />
 
       {/* Return : 이것도 Function Card 에 넣어야 함 */}
       <FunctionReturns
-        functionData={functionData.function}
+        functionName={functionName}
+        functionData={functionData}
         imports={imports}
         structs={structs}
+        setFunctions={setFunctions}
       />
       {/* <div>&#125;</div> */}
     </div>
@@ -287,17 +292,23 @@ function FunctionTypeParameters({
 }
 
 function FunctionParameters({
+  functionName,
   functionData,
   imports,
   structs,
+  setFunctions,
 }: {
-  functionData: SuiMoveNormalizedFunction;
+  functionName: string;
+  functionData: SuiMoveFunction;
   imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
   structs: Record<string, SuiMoveNormalizedStruct>;
+  setFunctions: React.Dispatch<
+    React.SetStateAction<Record<string, SuiMoveFunction>>
+  >;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [params, setParams] = useState<Record<string, string>>({});
+  // const [params, setParams] = useState<Record<string, string>>({});
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -321,15 +332,17 @@ function FunctionParameters({
           </span>
         )}
       </div>
-      {Object.entries(params).map(([name, type]) => (
-        <div key={name}>
+      {functionData.function.parameters.map((param, index) => (
+        <div key={param.toString()}>
           <FunctionParameterCard
-            name={name}
-            type={type}
-            typeParameters={functionData.typeParameters}
+            index={index}
+            param={param}
+            typeParameters={functionData.function.typeParameters}
             imports={imports}
             structs={structs}
-            setParams={setParams}
+            functionName={functionName}
+            functionData={functionData}
+            setFunctions={setFunctions}
           />
         </div>
       ))}
@@ -348,9 +361,12 @@ function FunctionParameters({
               if (e.key === "Enter") {
                 const trimmed = inputValue.trim();
                 if (trimmed) {
-                  setParams((prev) => ({
+                  let newFunctionData = functionData;
+                  newFunctionData.function.parameters.push("U64");
+
+                  setFunctions((prev) => ({
                     ...prev,
-                    [trimmed]: "U64",
+                    [functionName]: newFunctionData,
                   }));
                 }
                 setInputValue("");
@@ -366,24 +382,34 @@ function FunctionParameters({
 }
 
 function FunctionParameterCard({
-  name,
-  type,
+  index,
+  param,
   typeParameters,
   imports,
   structs,
-  setParams,
-}: {
-  name: string;
-  type: string;
+  functionName,
+  functionData,
+  setFunctions,
+}: // setParams,
+{
+  index: number;
+  param: SuiMoveNormalizedType;
   typeParameters: SuiMoveAbilitySet[];
   imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
   structs: Record<string, SuiMoveNormalizedStruct>;
-  setParams: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  functionName: string;
+  functionData: SuiMoveFunction;
+  setFunctions: React.Dispatch<
+    React.SetStateAction<Record<string, SuiMoveFunction>>
+  >;
+  // setParams: React.Dispatch<
+  //   React.SetStateAction<Record<string, SuiMoveNormalizedType>>
+  // >;
 }) {
   // const [isOpen, setIsOpen] = useState<{ [key: string]: boolean }>({});
   const [isOpen, setIsOpen] = useState(false);
 
-  const PRIMITIVE_TYPES = [
+  const PRIMITIVE_TYPES: SuiMoveNormalizedType[] = [
     "Bool",
     "U8",
     "U16",
@@ -397,15 +423,21 @@ function FunctionParameterCard({
 
   return (
     <div>
-      <div className="relative" key={name}>
-        <span>{name}</span> :{" "}
+      <div className="relative" key={param.toString()}>
+        <span>Param{index}</span> :{" "}
         <button
           onClick={() => {
             setIsOpen((prev) => !prev);
           }}
           className="border-2 border-black cursor-pointer rounded-md"
         >
-          {type}
+          {/* {type} */}
+          {typeof param === "string"
+            ? param
+            : "Struct" in param
+            ? param.Struct.name
+            : "Unknown Type"}
+          {/* {name} */}
         </button>
         {isOpen && (
           <div className="absolute left-0 p-4 mt-2 w-96 z-50 bg-white rounded-xl shadow overflow-auto min-h-48 max-h-64">
@@ -417,17 +449,21 @@ function FunctionParameterCard({
                 <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
                   {PRIMITIVE_TYPES.map((type) => (
                     <li
-                      key={type}
+                      key={type.toString()}
                       onClick={() => {
-                        setParams((prev) => ({
+                        let newFunctionData = functionData;
+                        newFunctionData.function.parameters[index] = type;
+
+                        setFunctions((prev) => ({
                           ...prev,
-                          [name]: type,
+                          [functionName]: newFunctionData,
                         }));
+
                         setIsOpen((prev) => !prev);
                       }}
                       className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
                     >
-                      {type}
+                      {type.toString()}
                     </li>
                   ))}
                 </ul>
@@ -437,14 +473,25 @@ function FunctionParameterCard({
                   Type Parameters
                 </div>
                 <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
-                  {typeParameters.map((t, i) => (
+                  {typeParameters.map((type, i) => (
                     <li
                       key={i}
                       onClick={() => {
-                        setParams((prev) => ({
+                        let newFunctionData = functionData;
+                        newFunctionData.function.parameters[index] = {
+                          Struct: {
+                            address: "current",
+                            module: "current",
+                            name: "T" + i.toString(),
+                            typeArguments: [],
+                          },
+                        };
+
+                        setFunctions((prev) => ({
                           ...prev,
-                          [name]: `T${i}`,
+                          [functionName]: newFunctionData,
                         }));
+
                         setIsOpen((prev) => !prev);
                       }}
                       className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
@@ -464,9 +511,19 @@ function FunctionParameterCard({
                     <li
                       key={structName}
                       onClick={() => {
-                        setParams((prev) => ({
+                        let newFunctionData = functionData;
+                        newFunctionData.function.parameters[index] = {
+                          Struct: {
+                            address: "current",
+                            module: "current",
+                            name: structName,
+                            typeArguments: [],
+                          },
+                        };
+
+                        setFunctions((prev) => ({
                           ...prev,
-                          [name]: structName,
+                          [functionName]: newFunctionData,
                         }));
                         setIsOpen((prev) => !prev);
                       }}
@@ -481,7 +538,7 @@ function FunctionParameterCard({
               {Object.entries(imports).map(([moduleName, structData]) => (
                 <li key={moduleName} className="relative group">
                   <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
-                    {moduleName}
+                    {moduleName.split("::")[1]}
                   </div>
 
                   <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
@@ -489,9 +546,19 @@ function FunctionParameterCard({
                       <li
                         key={structName}
                         onClick={() => {
-                          setParams((prev) => ({
+                          let newFunctionData = functionData;
+                          newFunctionData.function.parameters[index] = {
+                            Struct: {
+                              address: moduleName.split("::")[0],
+                              module: moduleName.split("::")[1],
+                              name: structName,
+                              typeArguments: [],
+                            },
+                          };
+
+                          setFunctions((prev) => ({
                             ...prev,
-                            [name]: structName,
+                            [functionName]: newFunctionData,
                           }));
                           setIsOpen((prev) => !prev);
                         }}
@@ -512,13 +579,19 @@ function FunctionParameterCard({
 }
 
 function FunctionReturns({
+  functionName,
   functionData,
   imports,
   structs,
+  setFunctions,
 }: {
-  functionData: SuiMoveNormalizedFunction;
+  functionName: string;
+  functionData: SuiMoveFunction;
   imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
   structs: Record<string, SuiMoveNormalizedStruct>;
+  setFunctions: React.Dispatch<
+    React.SetStateAction<Record<string, SuiMoveFunction>>
+  >;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -546,15 +619,18 @@ function FunctionReturns({
           </span>
         )}
       </div>
-      {Object.entries(params).map(([name, type]) => (
-        <div key={name}>
+      {functionData.function.return.map((param, index) => (
+        <div key={param.toString()}>
           <FunctionParameterCard
-            name={name}
-            type={type}
-            typeParameters={functionData.typeParameters}
+            index={index}
+            param={param}
+            typeParameters={functionData.function.typeParameters}
             imports={imports}
             structs={structs}
-            setParams={setParams}
+            functionName={functionName}
+            functionData={functionData}
+            setFunctions={setFunctions}
+            // setParams={setParams}
           />
         </div>
       ))}
@@ -563,7 +639,7 @@ function FunctionReturns({
           <input
             ref={inputRef}
             value={inputValue}
-            placeholder="Parameter Name을 입력하세요."
+            placeholder="Return Name을 입력하세요."
             onChange={(e) => setInputValue(e.target.value)}
             onBlur={() => {
               setInputValue("");
@@ -598,33 +674,9 @@ function newEmptySuiMoveFunction() {
 
   const newFunction: SuiMoveNormalizedFunction = {
     isEntry: false,
-    parameters: [
-      "U64",
-      "Address",
-      {
-        Struct: {
-          address: CURRENT_PACKAGE,
-          module: CURRENT_MODULE,
-          name: "SomeStruct",
-          typeArguments: [],
-        },
-      },
-      {
-        Reference: {
-          Struct: {
-            address: CURRENT_PACKAGE,
-            module: CURRENT_MODULE,
-            name: "SomeStruct",
-            typeArguments: [],
-          },
-        },
-      },
-    ],
-    return: ["Address"],
-    typeParameters: [
-      { abilities: ["Key", "Copy", "Drop"] },
-      { abilities: ["Store"] },
-    ],
+    parameters: [],
+    return: [],
+    typeParameters: [],
     visibility: "Private",
   };
   const newSuiMoveFunction: SuiMoveFunction = {

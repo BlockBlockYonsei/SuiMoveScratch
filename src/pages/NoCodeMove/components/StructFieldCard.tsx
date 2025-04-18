@@ -77,22 +77,10 @@ export default function StructFieldCard({
 
                         targetField.type = type;
 
-                        // const targetFieldIndex = newStructData.fields.findIndex(
-                        //   (f) => f.name === field.name
-                        // );
-                        // if (!targetFieldIndex) return;
-
-                        // newStructData.fields[targetFieldIndex].type = type;
-
                         setStructs((prev) => ({
                           ...prev,
                           [structName]: newStructData,
                         }));
-                        // let newStructData = st;
-                        // setStructs((prev) => ({
-                        //   ...prev,
-                        //   [name]: type,
-                        // }));
                       }}
                       className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
                     >
@@ -134,20 +122,6 @@ export default function StructFieldCard({
                                 typeArguments: [],
                               },
                             };
-
-                            // const targetFieldIndex =
-                            //   newStructData.fields.findIndex((f) => {
-                            //     console.log("f", f);
-                            //     console.log("field", field);
-                            //     f.name === field.name;
-                            //   });
-                            // console.log("tf", targetFieldIndex);
-                            // if (targetFieldIndex === -1) return;
-
-                            // newStructData.fields[targetFieldIndex].type =
-                            //   field.type;
-
-                            // console.log("tf", targetFieldIndex);
 
                             setStructs((prev) => ({
                               ...prev,
