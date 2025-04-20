@@ -3,6 +3,7 @@ import {
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
+  SuiMoveVisibility,
 } from "@mysten/sui/client";
 import { useEffect, useRef, useState } from "react";
 // import { parseSuiMoveNormalizedType } from "../PackageViewer1/utils";
@@ -128,6 +129,8 @@ function FunctionCard({
   imports,
   structs,
 }: FunctiopnCardProps) {
+  const [typeParameterNames, setTypeParameterNames] = useState<string[]>([]);
+  const [parameterNames, setParameterNames] = useState<string[]>([]);
   return (
     <div>
       {/* Function Info */}
@@ -137,6 +140,15 @@ function FunctionCard({
             id="entry"
             name="entry"
             className="border-2 border-black p-1 rounded-md"
+            onChange={(e) => {
+              const isEntry = e.target.value === "entry";
+              let newFunctionData = functionData;
+              newFunctionData.function.isEntry = isEntry;
+              setFunctions((prev) => ({
+                ...prev,
+                [functionName]: newFunctionData,
+              }));
+            }}
           >
             <option value="entry">Entry</option>
             <option value="non-entry">-</option>
@@ -145,10 +157,19 @@ function FunctionCard({
             id="visibility"
             name="visibility"
             className="text-pink-500 border-2 border-black p-1 rounded-md"
+            onChange={(e) => {
+              let newFunctionData = functionData;
+              newFunctionData.function.visibility = e.target
+                .value as SuiMoveVisibility;
+              setFunctions((prev) => ({
+                ...prev,
+                [functionName]: newFunctionData,
+              }));
+            }}
           >
-            <option value="private">Private</option>
-            <option value="friend">Friend</option>
-            <option value="public">Public</option>
+            <option value="Private">Private</option>
+            <option value="Friend">Friend</option>
+            <option value="Public">Public</option>
           </select>
           <span className="text-blue-700 border-2 border-black p-1 rounded-md">
             fun
@@ -162,6 +183,8 @@ function FunctionCard({
         functionName={functionName}
         functionData={functionData}
         setFunctions={setFunctions}
+        typeParameterNames={typeParameterNames}
+        setTypeParameterNames={setTypeParameterNames}
       />
       {/* Function Parameter */}
       <FunctionParameters
@@ -170,6 +193,8 @@ function FunctionCard({
         imports={imports}
         structs={structs}
         setFunctions={setFunctions}
+        parameterNames={parameterNames}
+        setParameterNames={setParameterNames}
       />
 
       {/* Return : 이것도 Function Card 에 넣어야 함 */}
@@ -189,12 +214,16 @@ function FunctionTypeParameters({
   functionName,
   functionData,
   setFunctions,
+  typeParameterNames,
+  setTypeParameterNames,
 }: {
   functionName: string;
   functionData: SuiMoveFunction;
   setFunctions: React.Dispatch<
     React.SetStateAction<Record<string, SuiMoveFunction>>
   >;
+  typeParameterNames: string[];
+  setTypeParameterNames: React.Dispatch<React.SetStateAction<string[]>>;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -223,7 +252,7 @@ function FunctionTypeParameters({
       )}
       {functionData.function.typeParameters.map((t, i) => (
         <div key={i} className="font-semibold">
-          <span>{`T${i}: `}</span>
+          <span>{`T${i}(${typeParameterNames[i]}): `}</span>
           {
             <span>
               {ABILITIES.map((a) => (
@@ -278,6 +307,7 @@ function FunctionTypeParameters({
                     ...prev,
                     [functionName]: newFunctionData,
                   }));
+                  setTypeParameterNames((prev) => [...prev, trimmed]);
                 }
                 setInputValue("");
                 setIsEditing(false);
@@ -297,6 +327,8 @@ function FunctionParameters({
   imports,
   structs,
   setFunctions,
+  parameterNames,
+  setParameterNames,
 }: {
   functionName: string;
   functionData: SuiMoveFunction;
@@ -305,6 +337,8 @@ function FunctionParameters({
   setFunctions: React.Dispatch<
     React.SetStateAction<Record<string, SuiMoveFunction>>
   >;
+  parameterNames: string[];
+  setParameterNames: React.Dispatch<React.SetStateAction<string[]>>;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -343,6 +377,7 @@ function FunctionParameters({
             functionName={functionName}
             functionData={functionData}
             setFunctions={setFunctions}
+            parameterNames={parameterNames}
           />
         </div>
       ))}
@@ -368,6 +403,7 @@ function FunctionParameters({
                     ...prev,
                     [functionName]: newFunctionData,
                   }));
+                  setParameterNames((prev) => [...prev, trimmed]);
                 }
                 setInputValue("");
                 setIsEditing(false);
@@ -389,6 +425,7 @@ function FunctionParameterCard({
   structs,
   functionName,
   functionData,
+  parameterNames,
   setFunctions,
 }: // setParams,
 {
@@ -399,6 +436,7 @@ function FunctionParameterCard({
   structs: Record<string, SuiMoveNormalizedStruct>;
   functionName: string;
   functionData: SuiMoveFunction;
+  parameterNames: string[];
   setFunctions: React.Dispatch<
     React.SetStateAction<Record<string, SuiMoveFunction>>
   >;
@@ -424,7 +462,10 @@ function FunctionParameterCard({
   return (
     <div>
       <div className="relative" key={param.toString()}>
-        <span>Param{index}</span> :{" "}
+        <span>
+          Param{index}({parameterNames[index]})
+        </span>{" "}
+        :{" "}
         <button
           onClick={() => {
             setIsOpen((prev) => !prev);
@@ -630,6 +671,7 @@ function FunctionReturns({
             functionName={functionName}
             functionData={functionData}
             setFunctions={setFunctions}
+            parameterNames={[]}
             // setParams={setParams}
           />
         </div>
