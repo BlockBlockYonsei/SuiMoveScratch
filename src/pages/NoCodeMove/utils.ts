@@ -6,13 +6,6 @@ export function newEmptyStruct(): SuiMoveNormalizedStruct {
       abilities: [],
     },
     fields: [],
-    typeParameters: [
-      {
-        constraints: {
-          abilities: [],
-        },
-        isPhantom: false,
-      },
-    ],
+    typeParameters: [],
   };
 }
