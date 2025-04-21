@@ -62,7 +62,9 @@ export default function StructCard({
       {/* Struct 이름 및 Abilities */}
       <div>
         <span>{"public struct "}</span>
-        <span className="text-emerald-500 font-semibold">{structName} </span>
+        <span className="text-emerald-500 text-xl font-semibold">
+          {structName}{" "}
+        </span>
         {ABILITIES.map((ability) => (
           <button
             key={ability}
@@ -105,7 +107,7 @@ export default function StructCard({
       <input
         className={`${
           isEditing ? "" : "hidden"
-        } px-3 py-2 border border-gray-300 rounded-xl focus:outline-none`}
+        } block px-3 py-2 border border-gray-300 rounded-xl focus:outline-none`}
         ref={inputRef}
         value={inputValue}
         placeholder="Field Name을 입력하세요."
