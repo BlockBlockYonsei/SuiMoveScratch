@@ -46,10 +46,13 @@ export default function Imports({ imports, setImports }: Props) {
         <h1 className="inline-block bg-gray-200 text-3xl">Imports</h1>
         <div className="relative py-2">
           <button
-            onClick={() => setIsOpen((prev) => !prev)}
+            // onBlur={() => {
+            //   setIsOpen(false);
+            // }}
             onKeyDown={(e) => {
               if (e.key === "Escape") setIsOpen(false);
             }}
+            onClick={() => setIsOpen((prev) => !prev)}
             className="p-2 px-4 rounded-xl bg-blue-500 cursor-pointer hover:bg-blue-600 text-white transition"
           >
             ➕ Import 추가
