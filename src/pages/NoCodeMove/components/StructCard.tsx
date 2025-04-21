@@ -9,6 +9,7 @@ import StructFieldCard from "./StructFieldCard";
 interface Props {
   key?: React.Key | null | undefined;
   imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
+  structs: Record<string, SuiMoveNormalizedStruct>;
   structName: string;
   structData: SuiMoveNormalizedStruct;
   setStructs: React.Dispatch<
@@ -19,6 +20,7 @@ interface Props {
 export default function StructCard({
   key,
   imports,
+  structs,
   structName,
   structData,
   setStructs,
@@ -82,6 +84,15 @@ export default function StructCard({
         ))}{" "}
         &#123;
       </div>
+      <div>
+        <div className="font-bold">Type Parameters:</div>
+        <button
+          onClick={() => setIsEditing(true)}
+          className="border-2 border-blue-500 px-2 rounded-md cursor-pointer hover:bg-blue-600 transition"
+        >
+          ➕ 타입 파라미터 추가
+        </button>
+      </div>
 
       {/* 필드 추가 버튼 */}
       <button
@@ -96,6 +107,7 @@ export default function StructCard({
         <StructFieldCard
           key={field.name}
           imports={imports}
+          structs={structs}
           structName={structName}
           structData={structData}
           setStructs={setStructs}

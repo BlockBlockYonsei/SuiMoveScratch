@@ -132,7 +132,7 @@ function PackagesForImport({
       {Object.entries(data).map(([moduleName, moduleData]) => {
         if (Object.keys(moduleData.structs).length === 0) return;
         return (
-          <li key={moduleName} className="relative group">
+          <div key={moduleName} className="relative group">
             <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
               {moduleName}
             </div>
@@ -150,7 +150,7 @@ function PackagesForImport({
                 </li>
               ))}
             </ul>
-          </li>
+          </div>
         );
       })}
     </>

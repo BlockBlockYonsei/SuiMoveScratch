@@ -84,6 +84,7 @@ export default function Structs({ structs, setStructs, imports }: Props) {
               structData={value}
               setStructs={setStructs}
               imports={imports}
+              structs={structs}
             ></StructCard>
           );
         })}
