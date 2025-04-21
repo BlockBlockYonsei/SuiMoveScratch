@@ -46,9 +46,6 @@ export default function Imports({ imports, setImports }: Props) {
         <h1 className="inline-block bg-gray-200 text-3xl">Imports</h1>
         <div className="relative py-2">
           <button
-            // onBlur={() => {
-            //   setIsOpen(false);
-            // }}
             onKeyDown={(e) => {
               if (e.key === "Escape") setIsOpen(false);
             }}
@@ -85,12 +82,13 @@ export default function Imports({ imports, setImports }: Props) {
             const pkg = key.split("::")[0];
             if (pkg === packages[0]) return "std";
             else if (pkg === packages[1]) return "sui";
+            // 나중에 Move.toml 파일의 [addresses] 읽어서 반영
             else return pkg;
           };
           return (
             <div key={key}>
               <span className="text-blue-500">use </span>
-              {pkgName()}:: &#123;{" "}
+              {pkgName()}::{key.split("::")[1]} &#123;{" "}
               <span className="text-emerald-500 font-semibold">
                 {Object.keys(values).join(", ")}
               </span>{" "}
