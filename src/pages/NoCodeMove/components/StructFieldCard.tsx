@@ -4,23 +4,26 @@ import {
   SuiMoveNormalizedType,
 } from "@mysten/sui/client";
 import { useState } from "react";
-import { parseSuiMoveNormalizedType } from "../../PackageViewer1/utils";
 
-export default function StructFieldCard({
-  field,
-  imports,
-  structName,
-  structData,
-  setStructs,
-}: {
-  field: SuiMoveNormalizedField;
+interface Props {
+  key?: React.Key | null | undefined;
   imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
   structName: string;
   structData: SuiMoveNormalizedStruct;
+  field: SuiMoveNormalizedField;
   setStructs: React.Dispatch<
     React.SetStateAction<Record<string, SuiMoveNormalizedStruct>>
   >;
-}) {
+}
+
+export default function StructFieldCard({
+  key,
+  imports,
+  structName,
+  structData,
+  field,
+  setStructs,
+}: Props) {
   // const [isOpen, setIsOpen] = useState<{ [key: string]: boolean }>({});
   const [isOpen, setIsOpen] = useState(false);
 
@@ -39,7 +42,7 @@ export default function StructFieldCard({
   // const parsedType = parseSuiMoveNormalizedType(field.type);
 
   return (
-    <div>
+    <div key={key}>
       <div className="relative">
         <span>{field.name}</span> :{" "}
         <button

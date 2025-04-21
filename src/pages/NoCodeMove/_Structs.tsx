@@ -78,14 +78,13 @@ export default function Structs({ structs, setStructs, imports }: Props) {
         {/* Structs 하나씩 보여주는 곳 */}
         {Object.entries(structs).map(([key, value]) => {
           return (
-            <div key={key}>
-              <StructCard
-                structName={key}
-                structData={value}
-                setStructs={setStructs}
-                imports={imports}
-              ></StructCard>
-            </div>
+            <StructCard
+              key={key}
+              structName={key}
+              structData={value}
+              setStructs={setStructs}
+              imports={imports}
+            ></StructCard>
           );
         })}
       </div>
