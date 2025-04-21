@@ -57,13 +57,19 @@ export default function Main() {
       <div className="min-h-screen p-6 max-w-xl bg-gray-200">
         <div className="text-3xl">Imports</div>
         <div className="min-h-24 border-2 border-black rounded-md">
-          {Object.entries(imports).map(([key, value]) => (
+          {Object.entries(imports).map(([pkgModuleName, module]) => (
             <div>
               <div className="text-2xl">
-                {key.split("::")[0].slice(0, 4)}...
-                {key.split("::")[0].slice(-3)}::{key.split("::")[1]}
+                {pkgModuleName.split("::")[0].slice(0, 4)}...
+                {pkgModuleName.split("::")[0].slice(-3)}::
+                {pkgModuleName.split("::")[1]}
               </div>
-              <div>{JSON.stringify(value)}</div>
+              {Object.entries(module).map(([moduleName, moduleData]) => (
+                <div>
+                  <div>{moduleName}</div>
+                  <div>{JSON.stringify(moduleData)}</div>
+                </div>
+              ))}
             </div>
           ))}
         </div>

@@ -65,16 +65,15 @@ export default function Imports({ imports, setImports }: Props) {
                   {pkgAddress.slice(0, 5)}...{pkgAddress.slice(-4)}
                 </h2>
                 <ul className="w-48 bg-white border rounded-xl shadow-lg z-10">
-                  <PackagesForImport
-                    pkgAddress={pkgAddress}
-                    addImport={addImport}
-                  />
+                  <ImportModal pkgAddress={pkgAddress} addImport={addImport} />
                 </ul>
               </div>
             ))}
           </div>
         </div>
       </div>
+
+      {/* imported modules */}
       {Object.entries(imports)
         .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
         .map(([key, values]) => {
@@ -100,7 +99,7 @@ export default function Imports({ imports, setImports }: Props) {
   );
 }
 
-function PackagesForImport({
+function ImportModal({
   pkgAddress,
   addImport,
 }: {
@@ -125,10 +124,11 @@ function PackagesForImport({
   if (isPending) return <div>Loading...</div>;
 
   if (error) return <div>Error: {error?.message || "error"}</div>;
+
+  console.log(data);
   return (
     <>
       {Object.entries(data).map(([moduleName, moduleData]) => {
-        if (Object.keys(moduleData.structs).length === 0) return;
         return (
           <div key={moduleName} className="relative group">
             <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
@@ -136,17 +136,26 @@ function PackagesForImport({
             </div>
 
             <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
-              {Object.keys(moduleData.structs).map((structName) => (
-                <li
-                  key={structName}
-                  onClick={() => {
-                    addImport(data, pkgAddress, moduleName, structName);
-                  }}
-                  className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
-                >
-                  {structName}
-                </li>
-              ))}
+              <li
+                onClick={() => {
+                  addImport(data, pkgAddress, moduleName, "Self");
+                }}
+                className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
+              >
+                Self
+              </li>
+              {Object.keys(moduleData.structs).length > 0 &&
+                Object.keys(moduleData.structs).map((structName) => (
+                  <li
+                    key={structName}
+                    onClick={() => {
+                      addImport(data, pkgAddress, moduleName, structName);
+                    }}
+                    className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
+                  >
+                    {structName}
+                  </li>
+                ))}
             </ul>
           </div>
         );
