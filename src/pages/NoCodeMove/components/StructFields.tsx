@@ -7,7 +7,7 @@ import StructFieldCard from "./StructFieldCard";
 
 interface Props {
   imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
-  structs: Record<string, SuiMoveNormalizedStruct>;
+  structs: Record<string, SuiMoveNormalizedStruct>; // 여긴 필요 없고, StructFieldCards에서 필요
   structName: string;
   structData: SuiMoveNormalizedStruct;
   setStructs: React.Dispatch<

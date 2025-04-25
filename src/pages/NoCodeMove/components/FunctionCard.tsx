@@ -1,11 +1,13 @@
-import { SuiMoveNormalizedStruct, SuiMoveVisibility } from "@mysten/sui/client";
+import {
+  SuiMoveAbilitySet,
+  SuiMoveNormalizedStruct,
+  SuiMoveVisibility,
+} from "@mysten/sui/client";
 import { SuiMoveFunction } from "../_Functions";
-import { useEffect, useRef, useState } from "react";
-import FunctionTypeParameters from "./FunctionTypeParameters";
-import FunctionParameters, {
-  FunctionParameterCard,
-} from "./FunctionParameters";
+import { useState } from "react";
+import FunctionParameters from "./FunctionParameters";
 import FunctionReturns from "./FunctionReturns";
+import TypeParameterCards from "./TypeParameterCards";
 
 interface Props {
   functionName: string;
@@ -25,7 +27,29 @@ export default function FunctionCard({
   structs,
 }: Props) {
   const [typeParameterNames, setTypeParameterNames] = useState<string[]>([]);
+
   const [parameterNames, setParameterNames] = useState<string[]>([]);
+  const addTypeParameter = (typeParameterName: string) => {
+    setTypeParameterNames((prev) => [...prev, typeParameterName]);
+
+    const newTypeParmeter: SuiMoveAbilitySet = {
+      abilities: [],
+    };
+    const newFunctionData = {
+      ...functionData,
+      function: {
+        ...functionData.function,
+        typeParameters: [
+          ...functionData.function.typeParameters,
+          newTypeParmeter,
+        ],
+      },
+    };
+    setFunctions((prev) => ({
+      ...prev,
+      [functionName]: newFunctionData,
+    }));
+  };
   return (
     <div>
       {/* Function Info */}
@@ -74,12 +98,13 @@ export default function FunctionCard({
           </span>
         </div>
       </div>
-      <FunctionTypeParameters
-        functionName={functionName}
-        functionData={functionData}
-        setFunctions={setFunctions}
+      <TypeParameterCards
         typeParameterNames={typeParameterNames}
-        setTypeParameterNames={setTypeParameterNames}
+        name={functionName}
+        data={functionData}
+        setDatas={setFunctions}
+        typeParameters={functionData.function.typeParameters}
+        addTypeParameter={addTypeParameter}
       />
 
       {/* Function Parameter */}
@@ -107,92 +132,3 @@ export default function FunctionCard({
     </div>
   );
 }
-
-// function FunctionReturns({
-//   functionName,
-//   functionData,
-//   imports,
-//   structs,
-//   setFunctions,
-// }: {
-//   functionName: string;
-//   functionData: SuiMoveFunction;
-//   imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
-//   structs: Record<string, SuiMoveNormalizedStruct>;
-//   setFunctions: React.Dispatch<
-//     React.SetStateAction<Record<string, SuiMoveFunction>>
-//   >;
-// }) {
-//   const [isEditing, setIsEditing] = useState(false);
-//   const [inputValue, setInputValue] = useState("");
-//   const [params, setParams] = useState<Record<string, string>>({});
-//   const inputRef = useRef<HTMLInputElement>(null);
-
-//   useEffect(() => {
-//     if (isEditing && inputRef.current) {
-//       inputRef.current.focus();
-//     }
-//   }, [isEditing]);
-
-//   return (
-//     <div>
-//       <div>
-//         <span className="font-bold">Returns:</span>
-//         {!isEditing && (
-//           <span>
-//             <button
-//               onClick={() => setIsEditing(true)}
-//               className="border-2 border-blue-500 px-2 rounded-md cursor-pointer hover:bg-blue-600 transition"
-//             >
-//               ➕ 리턴 추가
-//             </button>
-//           </span>
-//         )}
-//       </div>
-//       {functionData.function.return.map((param, index) => (
-//         <div key={param.toString()}>
-//           <FunctionParameterCard
-//             index={index}
-//             param={param}
-//             typeParameters={functionData.function.typeParameters}
-//             imports={imports}
-//             structs={structs}
-//             functionName={functionName}
-//             functionData={functionData}
-//             setFunctions={setFunctions}
-//             parameterNames={[]}
-//             // setParams={setParams}
-//           />
-//         </div>
-//       ))}
-//       {isEditing && (
-//         <div>
-//           <input
-//             ref={inputRef}
-//             value={inputValue}
-//             placeholder="Return Name을 입력하세요."
-//             onChange={(e) => setInputValue(e.target.value)}
-//             onBlur={() => {
-//               setInputValue("");
-//               setIsEditing(false);
-//             }}
-//             onKeyDown={(e) => {
-//               if (e.key === "Enter") {
-//                 const trimmed = inputValue.trim();
-//                 if (trimmed) {
-//                   setParams((prev) => ({
-//                     ...prev,
-//                     [trimmed]: "U64",
-//                   }));
-//                 }
-//                 setInputValue("");
-//                 setIsEditing(false);
-//               }
-//             }}
-//             className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none"
-//           />
-//         </div>
-//       )}
-//     </div>
-//   );
-// }

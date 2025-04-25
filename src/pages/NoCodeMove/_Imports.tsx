@@ -125,7 +125,6 @@ function ImportModal({
 
   if (error) return <div>Error: {error?.message || "error"}</div>;
 
-  console.log(data);
   return (
     <>
       {Object.entries(data).map(([moduleName, moduleData]) => {
