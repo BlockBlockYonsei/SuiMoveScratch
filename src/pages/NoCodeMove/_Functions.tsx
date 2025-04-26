@@ -3,7 +3,7 @@ import {
   SuiMoveNormalizedStruct,
 } from "@mysten/sui/client";
 import { useEffect, useRef, useState } from "react";
-import FunctionCard from "./components/FunctionCard";
+import FunctionCard from "./functions/FunctionCard";
 // import { parseSuiMoveNormalizedType } from "../PackageViewer1/utils";
 
 export interface SuiMoveFunction {

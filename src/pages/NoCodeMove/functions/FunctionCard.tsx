@@ -7,7 +7,7 @@ import { SuiMoveFunction } from "../_Functions";
 import { useState } from "react";
 import FunctionParameters from "./FunctionParameters";
 import FunctionReturns from "./FunctionReturns";
-import TypeParameterCards from "./TypeParameterCards";
+import TypeParameterCards from "../components/TypeParameterCards";
 
 interface Props {
   functionName: string;

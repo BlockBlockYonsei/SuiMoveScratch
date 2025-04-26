@@ -1,6 +1,6 @@
 import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 import { useEffect, useRef, useState } from "react";
-import StructCard from "./components/StructCard";
+import StructCard from "./structs/StructCard";
 import { newEmptyStruct } from "./utils";
 
 interface Props {

@@ -6,8 +6,8 @@ import {
 } from "@mysten/sui/client";
 import { useState } from "react";
 import StructFields from "./StructFields";
-import TypeParameterCards from "./TypeParameterCards";
-import AbilityCard from "./AbilityCard";
+import TypeParameterCards from "../components/TypeParameterCards";
+import AbilityCard from "../components/AbilityCard";
 
 interface Props {
   key?: React.Key | null | undefined;
@@ -49,7 +49,7 @@ export default function StructCard({
     }));
   };
 
-  const addTypeParameterS = (typeParameterName: string) => {
+  const addTypeParameter = (typeParameterName: string) => {
     setTypeParameterNames((prev) => [...prev, typeParameterName]);
 
     const newTypeParmeter: SuiMoveStructTypeParameter = {
@@ -84,12 +84,12 @@ export default function StructCard({
       </div>
       <div className="font-bold">Type Parameters:</div>
       <TypeParameterCards
-        typeParameterNames={typeParameterNames}
         name={structName}
         data={structData}
         setDatas={setStructs}
+        typeParameterNames={typeParameterNames}
         typeParameters={structData.typeParameters}
-        addTypeParameter={addTypeParameterS}
+        addTypeParameter={addTypeParameter}
       />
 
       <div className="font-bold">Fields:</div>

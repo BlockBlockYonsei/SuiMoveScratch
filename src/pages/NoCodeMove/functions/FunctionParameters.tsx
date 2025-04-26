@@ -5,7 +5,7 @@ import {
 } from "@mysten/sui/client";
 import { SuiMoveFunction } from "../_Functions";
 import { useEffect, useRef, useState } from "react";
-import TypeModal from "./TypeModal";
+import TypeModal from "../components/TypeModal";
 
 export default function FunctionParameters({
   functionName,
