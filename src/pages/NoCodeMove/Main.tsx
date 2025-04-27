@@ -1,4 +1,7 @@
-import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
+import {
+  SuiMoveNormalizedFunction,
+  SuiMoveNormalizedStruct,
+} from "@mysten/sui/client";
 import { useEffect, useState } from "react";
 import Imports from "./_Imports";
 import Structs from "./_Structs";
@@ -6,6 +9,7 @@ import Functions, { SuiMoveFunction } from "./_Functions";
 
 export default function Main() {
   const [imports, setImports] = useState<
+    // Record<string, Record<string, SuiMoveNormalizedStruct | SuiMoveNormalizedFunction>>
     Record<string, Record<string, SuiMoveNormalizedStruct>>
   >({});
   const [structs, setStructs] = useState<
@@ -54,6 +58,8 @@ export default function Main() {
           setFunctions={setFunctions}
         ></Functions>
       </div>
+
+      {/* 디버깅 용 실제 데이터 보여주는 상자 */}
       <div className="min-h-screen p-6 max-w-xl bg-gray-200">
         <div className="text-3xl">Imports</div>
         <div className="min-h-24 border-2 border-black rounded-md">

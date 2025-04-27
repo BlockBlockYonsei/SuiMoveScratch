@@ -26,7 +26,20 @@ export default function Functions({
   structs,
 }: Props) {
   const addFunction = (name: string) => {
-    const newSuiMoveFunction = newEmptySuiMoveFunction();
+    const CURRENT_PACKAGE = "0x0";
+    const CURRENT_MODULE = "CurrentModule";
+
+    const newFunction: SuiMoveNormalizedFunction = {
+      isEntry: false,
+      parameters: [],
+      return: [],
+      typeParameters: [],
+      visibility: "Private",
+    };
+    const newSuiMoveFunction: SuiMoveFunction = {
+      function: newFunction,
+      insideCode: [],
+    };
 
     setFunctions((prev) => ({
       ...prev,
@@ -37,8 +50,9 @@ export default function Functions({
   return (
     <div>
       <div className="bg-white p-4 rounded-xl border-2 border-black">
+        {/* Function 제목 및 Function 추가 버튼 */}
         <div className="flex items-center gap-4 py-2">
-          <div className="inline-block bg-gray-200 text-3xl">Function</div>
+          <h2 className="inline-block bg-gray-200 text-3xl">Function</h2>
           <AddButton
             buttonClass="bg-blue-500 text-white px-4 py-2 my-2 rounded-xl cursor-pointer hover:bg-blue-600 transition"
             title="Function 추가"
@@ -47,7 +61,7 @@ export default function Functions({
           />
         </div>
 
-        {/* Functions 하나씩 보여주는 곳 */}
+        {/* FunctionCard 하나씩 보여주는 곳 */}
         {Object.entries(functions).map(([functionName, functionData]) => {
           return (
             <div
@@ -67,24 +81,4 @@ export default function Functions({
       </div>
     </div>
   );
-}
-
-function newEmptySuiMoveFunction() {
-  const CURRENT_PACKAGE = "0x0";
-
-  const CURRENT_MODULE = "CurrentModule";
-
-  const newFunction: SuiMoveNormalizedFunction = {
-    isEntry: false,
-    parameters: [],
-    return: [],
-    typeParameters: [],
-    visibility: "Private",
-  };
-  const newSuiMoveFunction: SuiMoveFunction = {
-    function: newFunction,
-    insideCode: [],
-  };
-
-  return newSuiMoveFunction;
 }
