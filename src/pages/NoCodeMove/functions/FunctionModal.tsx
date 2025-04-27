@@ -13,7 +13,7 @@ interface Props {
     >
   >;
   functions: Record<string, SuiMoveFunction>;
-  addCode: () => void;
+  addCode: (arg0: SuiMoveNormalizedFunction) => void;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -73,12 +73,12 @@ export default function FunctionModal({
           Current Module Functions
         </div>
         <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
-          {Object.keys(functions).map((functionName) => (
+          {Object.entries(functions).map(([functionName, functionData]) => (
             <li
               key={functionName}
               className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
               onClick={() => {
-                addCode();
+                addCode(functionData.function);
                 setIsOpen(false);
               }}
             >
@@ -104,20 +104,22 @@ export default function FunctionModal({
                     {moduleName}
                   </div>
                   <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
-                    {Object.keys(moduleData["Self"]).map((functionName) => {
-                      return (
-                        <li
-                          key={functionName}
-                          onClick={() => {
-                            addCode();
-                            setIsOpen(false);
-                          }}
-                          className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
-                        >
-                          {functionName}
-                        </li>
-                      );
-                    })}
+                    {Object.entries(moduleData["Self"]).map(
+                      ([functionName, functionData]) => {
+                        return (
+                          <li
+                            key={functionName}
+                            onClick={() => {
+                              addCode(functionData);
+                              setIsOpen(false);
+                            }}
+                            className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
+                          >
+                            {functionName}
+                          </li>
+                        );
+                      }
+                    )}
                   </ul>
                 </div>
               ))}

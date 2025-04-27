@@ -7,7 +7,7 @@ import AddButton from "./components/AddButton";
 
 export interface SuiMoveFunction {
   function: SuiMoveNormalizedFunction;
-  insideCode: string[];
+  insideCode: SuiMoveNormalizedFunction[];
 }
 
 interface Props {

@@ -53,7 +53,14 @@ export default function FunctionCodes({
           <FunctionModal
             imports={imports}
             functions={functions}
-            addCode={() => {}}
+            addCode={(arg0: SuiMoveNormalizedFunction) => {
+              let newFunctionData = functionData;
+              newFunctionData.insideCode.push(arg0);
+              setFunctions((prev) => ({
+                ...prev,
+                [functionName]: newFunctionData,
+              }));
+            }}
             setIsOpen={setIsOpen}
           />
         </div>
@@ -61,8 +68,8 @@ export default function FunctionCodes({
       <div className="border-2 border-black rounded-md p-2">
         <div>let value = 30;</div>
         <input value={"let value = 30;"} />
-        {functionData.insideCode.map((c) => (
-          <div>{c}</div>
+        {functionData.insideCode.map((code) => (
+          <div>{JSON.stringify(code)}</div>
         ))}
       </div>
     </div>
