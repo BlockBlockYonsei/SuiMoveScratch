@@ -30,29 +30,27 @@ export default function StructFields({
   structData,
   setStructs,
 }: Props) {
-  const addStructField = (name: string) => {
-    if (structData.fields.some((field) => field.name === name)) return;
-
-    const newField: SuiMoveNormalizedField = {
-      name: name,
-      type: "U64",
-    };
-    const newStructData = {
-      ...structData,
-      fields: [...structData.fields, newField],
-    };
-    setStructs((prev) => ({
-      ...prev,
-      [structName]: newStructData,
-    }));
-  };
-
   return (
     <div>
       <AddButton
         title="필드 추가"
         placeholder="Filed Name을 입력하세요"
-        callback={addStructField}
+        callback={(name: string) => {
+          if (structData.fields.some((field) => field.name === name)) return;
+
+          const newField: SuiMoveNormalizedField = {
+            name: name,
+            type: "U64",
+          };
+          const newStructData = {
+            ...structData,
+            fields: [...structData.fields, newField],
+          };
+          setStructs((prev) => ({
+            ...prev,
+            [structName]: newStructData,
+          }));
+        }}
       />
 
       {/* 필드 보여주는 곳 */}

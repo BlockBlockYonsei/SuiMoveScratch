@@ -32,23 +32,21 @@ export default function FunctionParameters({
   parameterNames: string[];
   setParameterNames: React.Dispatch<React.SetStateAction<string[]>>;
 }) {
-  const addFunctionParameter = (name: string) => {
-    let newFunctionData = functionData;
-    newFunctionData.function.parameters.push("U64");
-
-    setFunctions((prev) => ({
-      ...prev,
-      [functionName]: newFunctionData,
-    }));
-    setParameterNames((prev) => [...prev, name]);
-  };
-
   return (
     <div>
       <AddButton
         title="파라미터 추가"
         placeholder="Parameter Name을 입력하세요"
-        callback={addFunctionParameter}
+        callback={(name: string) => {
+          let newFunctionData = functionData;
+          newFunctionData.function.parameters.push("U64");
+
+          setFunctions((prev) => ({
+            ...prev,
+            [functionName]: newFunctionData,
+          }));
+          setParameterNames((prev) => [...prev, name]);
+        }}
       />
       {functionData.function.parameters.map((type, index) => {
         const setType = (type: SuiMoveNormalizedType) => {

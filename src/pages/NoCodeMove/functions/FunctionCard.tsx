@@ -104,7 +104,6 @@ export default function FunctionCard({
       </div>
       <div className="font-bold">Type Parameters:</div>
       <TypeParameters
-        // typeParameterNames={typeParameterNames}
         name={functionName}
         data={functionData}
         setDatas={setFunctions}
