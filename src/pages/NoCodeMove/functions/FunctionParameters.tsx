@@ -48,10 +48,10 @@ export default function FunctionParameters({
           setParameterNames((prev) => [...prev, name]);
         }}
       />
-      {functionData.function.parameters.map((type, index) => {
+      {functionData.function.parameters.map((type, i) => {
         const setType = (type: SuiMoveNormalizedType) => {
           let newFunctionData = functionData;
-          newFunctionData.function.parameters[index] = type;
+          newFunctionData.function.parameters[i] = type;
           setFunctions((prev) => ({
             ...prev,
             [functionName]: newFunctionData,
@@ -60,9 +60,11 @@ export default function FunctionParameters({
 
         return (
           <div>
-            <span>
-              Param{index}({parameterNames[index]})
-            </span>{" "}
+            <span className="text-lg font-semibold">
+              {`P${i}`}(
+              <span className="text-blue-500 ">{`${parameterNames[i]}`}</span>
+              ):
+            </span>
             <TypeButton
               imports={imports}
               structs={structs}

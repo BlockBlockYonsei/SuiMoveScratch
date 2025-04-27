@@ -63,8 +63,12 @@ export default function TypeParameters<
               }));
             };
             return (
-              <div key={i} className="font-semibold">
-                <span>{`T${i}(${typeParameterNames[i]}): `}</span>
+              <div key={i}>
+                <span className="text-lg font-semibold">
+                  {`T${i}`}(
+                  <span className="text-blue-500 ">{`${typeParameterNames[i]}`}</span>
+                  ):
+                </span>
                 <AbilityCard
                   updateAbilitySet={updateAbilitySet}
                   abilitySet={t}
@@ -100,8 +104,12 @@ export default function TypeParameters<
               }));
             };
             return (
-              <div key={i} className="font-semibold">
-                <span>{`T${i}(${typeParameterNames[i]}): `}</span>
+              <div key={i}>
+                <span className="text-lg font-semibold">
+                  {`T${i}`}(
+                  <span className="text-blue-500 ">{`${typeParameterNames[i]}`}</span>
+                  ):
+                </span>
                 <AbilityCard
                   updateAbilitySet={updateAbilitySet}
                   abilitySet={t.constraints}

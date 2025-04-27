@@ -76,7 +76,7 @@ export default function StructFields({
             <TypeButton
               imports={imports}
               structs={structs}
-              typeParameters={[]}
+              typeParameters={structData.typeParameters}
               setType={setType}
               type={field.type}
             />
