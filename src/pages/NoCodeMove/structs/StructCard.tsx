@@ -74,12 +74,10 @@ export default function StructCard({
         <span className="text-emerald-500 text-xl font-semibold">
           {structName}{" "}
         </span>
-        <div>
-          <AbilityCard
-            updateAbilitySet={updateAbilitySet}
-            abilitySet={structData.abilities}
-          />
-        </div>
+        <AbilityCard
+          updateAbilitySet={updateAbilitySet}
+          abilitySet={structData.abilities}
+        />
         &#123;
       </div>
       <div className="font-bold">Type Parameters:</div>
