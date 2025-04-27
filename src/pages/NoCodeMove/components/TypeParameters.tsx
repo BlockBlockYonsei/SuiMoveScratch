@@ -7,17 +7,19 @@ import {
 import AbilityCard from "./AbilityCard";
 import { SuiMoveFunction } from "../_Functions";
 import AddButton from "./AddButton";
+import { useState } from "react";
 
 interface Props<T extends SuiMoveNormalizedStruct | SuiMoveFunction> {
   name: string;
   data: T;
   setDatas: React.Dispatch<React.SetStateAction<Record<string, T>>>;
-  typeParameterNames: string[];
-  addTypeParameter: (typeParameterName: string) => void;
+  addTypeParameter: () => void;
 }
 export default function TypeParameters<
   T extends SuiMoveNormalizedStruct | SuiMoveFunction
->({ name, data, setDatas, typeParameterNames, addTypeParameter }: Props<T>) {
+>({ name, data, setDatas, addTypeParameter }: Props<T>) {
+  const [typeParameterNames, setTypeParameterNames] = useState<string[]>([]);
+
   return (
     <div>
       <AddButton
@@ -25,7 +27,10 @@ export default function TypeParameters<
         inputClass=""
         title="타입 파라미터 추가"
         placeholder="타입 파라미터 이름을 입력하세요"
-        callback={addTypeParameter}
+        callback={(name: string) => {
+          addTypeParameter();
+          setTypeParameterNames((prev) => [...prev, name]);
+        }}
       />
 
       {"function" in data

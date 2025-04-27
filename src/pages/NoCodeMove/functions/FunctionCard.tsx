@@ -33,12 +33,9 @@ export default function FunctionCard({
   setFunctions,
   structs,
 }: Props) {
-  const [typeParameterNames, setTypeParameterNames] = useState<string[]>([]);
-
   const [parameterNames, setParameterNames] = useState<string[]>([]);
-  const addTypeParameter = (typeParameterName: string) => {
-    setTypeParameterNames((prev) => [...prev, typeParameterName]);
 
+  const addTypeParameter = () => {
     const newTypeParmeter: SuiMoveAbilitySet = {
       abilities: [],
     };
@@ -107,7 +104,7 @@ export default function FunctionCard({
       </div>
       <div className="font-bold">Type Parameters:</div>
       <TypeParameters
-        typeParameterNames={typeParameterNames}
+        // typeParameterNames={typeParameterNames}
         name={functionName}
         data={functionData}
         setDatas={setFunctions}

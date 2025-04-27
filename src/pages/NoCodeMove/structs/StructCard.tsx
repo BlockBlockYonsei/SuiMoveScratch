@@ -5,7 +5,6 @@ import {
   SuiMoveNormalizedStruct,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
-import { useState } from "react";
 import StructFields from "./StructFields";
 import TypeParameters from "../components/TypeParameters";
 import AbilityCard from "../components/AbilityCard";
@@ -35,8 +34,6 @@ export default function StructCard({
   structData,
   setStructs,
 }: Props) {
-  const [typeParameterNames, setTypeParameterNames] = useState<string[]>([]);
-
   const updateAbilitySet = (
     getNewAbilitySet: (
       abilitySet: SuiMoveAbilitySet,
@@ -56,9 +53,7 @@ export default function StructCard({
     }));
   };
 
-  const addTypeParameter = (typeParameterName: string) => {
-    setTypeParameterNames((prev) => [...prev, typeParameterName]);
-
+  const addTypeParameter = () => {
     const newTypeParmeter: SuiMoveStructTypeParameter = {
       constraints: { abilities: [] },
       isPhantom: false,
@@ -92,7 +87,6 @@ export default function StructCard({
         name={structName}
         data={structData}
         setDatas={setStructs}
-        typeParameterNames={typeParameterNames}
         addTypeParameter={addTypeParameter}
       />
 
