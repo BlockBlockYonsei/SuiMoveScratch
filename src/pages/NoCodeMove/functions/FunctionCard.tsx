@@ -5,7 +5,6 @@ import {
   SuiMoveVisibility,
 } from "@mysten/sui/client";
 import { SuiMoveFunction } from "../_Functions";
-import { useState } from "react";
 import FunctionParameters from "./FunctionParameters";
 import FunctionReturns from "./FunctionReturns";
 import TypeParameters from "../components/TypeParameters";
@@ -33,8 +32,6 @@ export default function FunctionCard({
   setFunctions,
   structs,
 }: Props) {
-  const [parameterNames, setParameterNames] = useState<string[]>([]);
-
   const addTypeParameter = () => {
     const newTypeParmeter: SuiMoveAbilitySet = {
       abilities: [],
@@ -118,8 +115,6 @@ export default function FunctionCard({
         imports={imports}
         structs={structs}
         setFunctions={setFunctions}
-        parameterNames={parameterNames}
-        setParameterNames={setParameterNames}
       />
 
       {/* Codes in Function */}
