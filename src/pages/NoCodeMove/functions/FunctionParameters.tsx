@@ -5,14 +5,17 @@ import {
 } from "@mysten/sui/client";
 import { SuiMoveFunction } from "../_Functions";
 import { useState } from "react";
-import TypeModal from "./TypeModal";
+import TypeModal from "../components/TypeModal";
+import AddButton from "../components/AddButton";
 
-export default function FunctionReturns({
+export default function FunctionParameters({
   functionName,
   functionData,
   imports,
   structs,
   setFunctions,
+  parameterNames,
+  setParameterNames,
 }: {
   functionName: string;
   functionData: SuiMoveFunction;
@@ -21,27 +24,29 @@ export default function FunctionReturns({
   setFunctions: React.Dispatch<
     React.SetStateAction<Record<string, SuiMoveFunction>>
   >;
+  parameterNames: string[];
+  setParameterNames: React.Dispatch<React.SetStateAction<string[]>>;
 }) {
+  const addFunctionParameter = (name: string) => {
+    let newFunctionData = functionData;
+    newFunctionData.function.parameters.push("U64");
+
+    setFunctions((prev) => ({
+      ...prev,
+      [functionName]: newFunctionData,
+    }));
+    setParameterNames((prev) => [...prev, name]);
+  };
+
   return (
     <div>
-      <div>
-        <button
-          onClick={() => {
-            let newFunctionData = functionData;
-            newFunctionData.function.return.push("U64");
-
-            setFunctions((prev) => ({
-              ...prev,
-              [functionName]: newFunctionData,
-            }));
-          }}
-          className="border-2 border-blue-500 px-2 rounded-md cursor-pointer hover:bg-blue-600 transition"
-        >
-          ➕ 리턴 타입 추가
-        </button>
-      </div>
-      {functionData.function.return.map((param, index) => (
-        <FunctionReturnCard
+      <AddButton
+        title="파라미터 추가"
+        placeholder="Parameter Name을 입력하세요"
+        callback={addFunctionParameter}
+      />
+      {functionData.function.parameters.map((param, index) => (
+        <FunctionParameterCard
           key={param.toString()}
           index={index}
           param={param}
@@ -51,13 +56,14 @@ export default function FunctionReturns({
           functionName={functionName}
           functionData={functionData}
           setFunctions={setFunctions}
+          parameterNames={parameterNames}
         />
       ))}
     </div>
   );
 }
 
-export function FunctionReturnCard({
+export function FunctionParameterCard({
   key,
   index,
   param,
@@ -66,6 +72,7 @@ export function FunctionReturnCard({
   structs,
   functionName,
   functionData,
+  parameterNames,
   setFunctions,
 }: // setParams,
 {
@@ -77,6 +84,7 @@ export function FunctionReturnCard({
   structs: Record<string, SuiMoveNormalizedStruct>;
   functionName: string;
   functionData: SuiMoveFunction;
+  parameterNames: string[];
   setFunctions: React.Dispatch<
     React.SetStateAction<Record<string, SuiMoveFunction>>
   >;
@@ -85,7 +93,7 @@ export function FunctionReturnCard({
 
   const setType = (type: SuiMoveNormalizedType) => {
     let newFunctionData = functionData;
-    newFunctionData.function.return[index] = type;
+    newFunctionData.function.parameters[index] = type;
     setFunctions((prev) => ({
       ...prev,
       [functionName]: newFunctionData,
@@ -97,11 +105,11 @@ export function FunctionReturnCard({
   return (
     <div key={key}>
       <div className="relative">
-        <span>Return{index}</span> :{" "}
+        <span>
+          Param{index}({parameterNames[index]})
+        </span>{" "}
+        :{" "}
         <button
-          onKeyDown={(e) => {
-            if (e.key === "Escape") setIsOpen(false);
-          }}
           onClick={() => {
             setIsOpen((prev) => !prev);
           }}

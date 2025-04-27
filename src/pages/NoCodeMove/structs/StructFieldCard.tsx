@@ -4,7 +4,7 @@ import {
   SuiMoveNormalizedType,
 } from "@mysten/sui/client";
 import { useState } from "react";
-import TypeModal from "./TypeModal";
+import TypeModal from "../components/TypeModal";
 
 interface Props {
   key?: React.Key | null | undefined;
@@ -27,7 +27,6 @@ export default function StructFieldCard({
   setStructs,
   field,
 }: Props) {
-  // const [isOpen, setIsOpen] = useState<{ [key: string]: boolean }>({});
   const [isOpen, setIsOpen] = useState(false);
 
   const setType = (type: SuiMoveNormalizedType) => {
@@ -72,7 +71,6 @@ export default function StructFieldCard({
           <TypeModal
             imports={imports}
             structs={structs}
-            // typeParameters={[{ abilities: ["Copy"] }]}
             typeParameters={[]}
             setType={setType}
           ></TypeModal>

@@ -1,9 +1,5 @@
-import { useSuiClientQuery } from "@mysten/dapp-kit";
-import {
-  SuiMoveNormalizedModules,
-  SuiMoveNormalizedStruct,
-} from "@mysten/sui/client";
-import { useState } from "react";
+import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
+import ImportButton from "./imports/ImportButton";
 
 interface Props {
   imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
@@ -15,65 +11,20 @@ interface Props {
 }
 
 export default function Imports({ imports, setImports }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
-
   const packages = [
     "0x0000000000000000000000000000000000000000000000000000000000000001",
     "0x0000000000000000000000000000000000000000000000000000000000000002",
   ];
 
-  const addImport = (
-    data: SuiMoveNormalizedModules,
-    pkgAddress: string,
-    moduleName: string,
-    structName: string
-  ) => {
-    if (moduleName) {
-      const key = pkgAddress + "::" + moduleName;
-      setImports((prev) => ({
-        ...prev,
-        [key]: {
-          ...(prev[key] || {}),
-          [structName]: data[moduleName].structs[structName],
-        },
-      }));
-      setIsOpen(false);
-    }
-  };
   return (
     <section className="bg-white p-4 rounded-xl border-2 border-black">
+      {/* Import 제목 및 Import 추가 버튼 */}
       <div className="flex items-center gap-4">
-        <h1 className="inline-block bg-gray-200 text-3xl">Imports</h1>
-        <div className="relative py-2">
-          <button
-            onKeyDown={(e) => {
-              if (e.key === "Escape") setIsOpen(false);
-            }}
-            onClick={() => setIsOpen((prev) => !prev)}
-            className="p-2 px-4 rounded-xl bg-blue-500 cursor-pointer hover:bg-blue-600 text-white transition"
-          >
-            ➕ Import 추가
-          </button>
-          <div
-            className={`${
-              isOpen ? "" : "hidden"
-            } absolute left-0 p-4 mt-2 w-96 z-50 bg-white rounded-xl shadow overflow-auto max-h-64 `}
-          >
-            {packages.map((pkgAddress) => (
-              <div>
-                <h2 className="text-2xl">
-                  {pkgAddress.slice(0, 5)}...{pkgAddress.slice(-4)}
-                </h2>
-                <ul className="w-48 bg-white border rounded-xl shadow-lg z-10">
-                  <ImportModal pkgAddress={pkgAddress} addImport={addImport} />
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
+        <h2 className="inline-block bg-gray-200 text-3xl">Imports</h2>
+        <ImportButton packages={packages} setImports={setImports} />
       </div>
 
-      {/* imported modules */}
+      {/* imort 한 module 보여주는 코드 */}
       {Object.entries(imports)
         .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
         .map(([key, values]) => {
@@ -96,70 +47,5 @@ export default function Imports({ imports, setImports }: Props) {
           );
         })}
     </section>
-  );
-}
-
-function ImportModal({
-  pkgAddress,
-  addImport,
-}: {
-  pkgAddress: string;
-  addImport: (
-    data: SuiMoveNormalizedModules,
-    pkgAddress: string,
-    moduleName: string,
-    structName: string
-  ) => void;
-}) {
-  const { data, isPending, error } = useSuiClientQuery(
-    "getNormalizedMoveModulesByPackage",
-    {
-      package: pkgAddress,
-    },
-    {
-      enabled: true,
-    }
-  );
-
-  if (isPending) return <div>Loading...</div>;
-
-  if (error) return <div>Error: {error?.message || "error"}</div>;
-
-  console.log(data);
-  return (
-    <>
-      {Object.entries(data).map(([moduleName, moduleData]) => {
-        return (
-          <div key={moduleName} className="relative group">
-            <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
-              {moduleName}
-            </div>
-
-            <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
-              <li
-                onClick={() => {
-                  addImport(data, pkgAddress, moduleName, "Self");
-                }}
-                className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
-              >
-                Self
-              </li>
-              {Object.keys(moduleData.structs).length > 0 &&
-                Object.keys(moduleData.structs).map((structName) => (
-                  <li
-                    key={structName}
-                    onClick={() => {
-                      addImport(data, pkgAddress, moduleName, structName);
-                    }}
-                    className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
-                  >
-                    {structName}
-                  </li>
-                ))}
-            </ul>
-          </div>
-        );
-      })}
-    </>
   );
 }
