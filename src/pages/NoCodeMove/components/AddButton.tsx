@@ -25,7 +25,7 @@ export default function AddButton({
   }, [isEditing]);
 
   return (
-    <div>
+    <div className="relative">
       <button
         onClick={() => setIsEditing(true)}
         className={`border-2 border-blue-500 px-2 my-2 rounded-md cursor-pointer hover:bg-blue-600 transition ${buttonClass} `}
@@ -35,7 +35,7 @@ export default function AddButton({
       <div
         className={`${
           isEditing ? "" : "hidden"
-        } absolute px-3 py-2 bg-gray-200 rounded-md ${inputClass}`}
+        } absolute px-3 py-2 bg-gray-200 rounded-md z-10 ${inputClass}`}
       >
         <input
           className={`focus:outline-none`}

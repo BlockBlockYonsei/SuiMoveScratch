@@ -4,8 +4,9 @@ import {
   SuiMoveNormalizedType,
 } from "@mysten/sui/client";
 import { SuiMoveFunction } from "../_Functions";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import TypeModal from "../components/TypeModal";
+import AddButton from "../components/AddButton";
 
 export default function FunctionParameters({
   functionName,
@@ -26,27 +27,24 @@ export default function FunctionParameters({
   parameterNames: string[];
   setParameterNames: React.Dispatch<React.SetStateAction<string[]>>;
 }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  // const [params, setParams] = useState<Record<string, string>>({});
-  const inputRef = useRef<HTMLInputElement>(null);
+  const addFunctionParameter = (name: string) => {
+    let newFunctionData = functionData;
+    newFunctionData.function.parameters.push("U64");
 
-  useEffect(() => {
-    if (isEditing && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isEditing]);
+    setFunctions((prev) => ({
+      ...prev,
+      [functionName]: newFunctionData,
+    }));
+    setParameterNames((prev) => [...prev, name]);
+  };
 
   return (
     <div>
-      <div>
-        <button
-          onClick={() => setIsEditing(true)}
-          className="border-2 border-blue-500 px-2 rounded-md cursor-pointer hover:bg-blue-600 transition"
-        >
-          ➕ 파라미터 추가
-        </button>
-      </div>
+      <AddButton
+        title="파라미터 추가"
+        placeholder="Parameter Name을 입력하세요"
+        callback={addFunctionParameter}
+      />
       {functionData.function.parameters.map((param, index) => (
         <FunctionParameterCard
           key={param.toString()}
@@ -61,38 +59,6 @@ export default function FunctionParameters({
           parameterNames={parameterNames}
         />
       ))}
-      {isEditing && (
-        <div>
-          <input
-            ref={inputRef}
-            value={inputValue}
-            placeholder="Parameter Name을 입력하세요."
-            onChange={(e) => setInputValue(e.target.value)}
-            onBlur={() => {
-              setInputValue("");
-              setIsEditing(false);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                const trimmed = inputValue.trim();
-                if (trimmed) {
-                  let newFunctionData = functionData;
-                  newFunctionData.function.parameters.push("U64");
-
-                  setFunctions((prev) => ({
-                    ...prev,
-                    [functionName]: newFunctionData,
-                  }));
-                  setParameterNames((prev) => [...prev, trimmed]);
-                }
-                setInputValue("");
-                setIsEditing(false);
-              }
-            }}
-            className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none"
-          />
-        </div>
-      )}
     </div>
   );
 }
