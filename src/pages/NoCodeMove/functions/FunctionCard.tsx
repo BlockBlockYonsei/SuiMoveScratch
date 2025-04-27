@@ -111,7 +111,6 @@ export default function FunctionCard({
         name={functionName}
         data={functionData}
         setDatas={setFunctions}
-        typeParameters={functionData.function.typeParameters}
         addTypeParameter={addTypeParameter}
       />
 

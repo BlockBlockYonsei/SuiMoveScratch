@@ -17,7 +17,6 @@ export default function Main() {
         SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
       >
     >
-    // Record<string, Record<string, SuiMoveNormalizedStruct>>
   >({});
   const [structs, setStructs] = useState<
     Record<string, SuiMoveNormalizedStruct>

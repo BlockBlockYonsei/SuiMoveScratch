@@ -5,12 +5,6 @@ import {
 import ImportButton from "./imports/ImportButton";
 
 interface Props {
-  // imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
-  // setImports: React.Dispatch<
-  //   React.SetStateAction<
-  //     Record<string, Record<string, SuiMoveNormalizedStruct>>
-  //   >
-  // >;
   imports: Record<
     string,
     Record<

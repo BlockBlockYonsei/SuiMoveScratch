@@ -93,7 +93,6 @@ export default function StructCard({
         data={structData}
         setDatas={setStructs}
         typeParameterNames={typeParameterNames}
-        typeParameters={structData.typeParameters}
         addTypeParameter={addTypeParameter}
       />
 
