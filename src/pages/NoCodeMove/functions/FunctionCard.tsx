@@ -19,6 +19,7 @@ interface Props {
     >
   >;
   structs: Record<string, SuiMoveNormalizedStruct>;
+  functions: Record<string, SuiMoveFunction>;
   functionName: string;
   functionData: SuiMoveFunction;
   setFunctions: React.Dispatch<
@@ -29,6 +30,7 @@ interface Props {
 export default function FunctionCard({
   imports,
   structs,
+  functions,
   functionName,
   functionData,
   setFunctions,
@@ -83,6 +85,7 @@ export default function FunctionCard({
       <FunctionCodes
         imports={imports}
         structs={structs}
+        functions={functions}
         functionName={functionName}
         functionData={functionData}
         setFunctions={setFunctions}

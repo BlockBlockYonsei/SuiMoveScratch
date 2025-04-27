@@ -5,16 +5,10 @@ import {
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import TypeModal from "./TypeModal";
 
-export default function TypeButton({
-  imports,
-  structs,
-  typeParameters,
-  type,
-  setType,
-}: {
+interface Props {
   imports: Record<
     string,
     Record<
@@ -26,28 +20,16 @@ export default function TypeButton({
   typeParameters: SuiMoveStructTypeParameter[] | SuiMoveAbilitySet[]; // strudt or function
   type: SuiMoveNormalizedType;
   setType: (arg0: SuiMoveNormalizedType) => void;
-}) {
+}
+
+export default function TypeButton({
+  imports,
+  structs,
+  typeParameters,
+  type,
+  setType,
+}: Props) {
   const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // 바깥 클릭 감지 로직
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      // 만약 ref로 감싸진 영역 외부를 클릭하면
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   return (
     <div className="relative inline-block">
       <button
@@ -65,7 +47,7 @@ export default function TypeButton({
           ? type.Struct.name
           : "Unknown Type"}
       </button>
-      <div className={`${isOpen ? "" : "hidden"} `} ref={containerRef}>
+      <div className={`${isOpen ? "" : "hidden"} `}>
         <TypeModal
           imports={imports}
           structs={structs}

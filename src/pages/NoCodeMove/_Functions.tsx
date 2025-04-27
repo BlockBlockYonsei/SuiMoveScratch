@@ -74,6 +74,7 @@ export default function Functions({
                 functionData={functionData}
                 imports={imports}
                 structs={structs}
+                functions={functions}
                 setFunctions={setFunctions}
               ></FunctionCard>
             </div>

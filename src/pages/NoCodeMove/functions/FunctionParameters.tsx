@@ -8,13 +8,7 @@ import AddButton from "../components/AddButton";
 import TypeButton from "../components/TypeButton";
 import { useState } from "react";
 
-export default function FunctionParameters({
-  imports,
-  structs,
-  functionName,
-  functionData,
-  setFunctions,
-}: {
+interface Props {
   imports: Record<
     string,
     Record<
@@ -28,7 +22,14 @@ export default function FunctionParameters({
   setFunctions: React.Dispatch<
     React.SetStateAction<Record<string, SuiMoveFunction>>
   >;
-}) {
+}
+export default function FunctionParameters({
+  imports,
+  structs,
+  functionName,
+  functionData,
+  setFunctions,
+}: Props) {
   const [parameterNames, setParameterNames] = useState<string[]>([]);
   return (
     <div>
