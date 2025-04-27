@@ -1,5 +1,6 @@
 import {
   SuiMoveNormalizedField,
+  SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
 } from "@mysten/sui/client";
@@ -8,7 +9,13 @@ import TypeModal from "../components/TypeModal";
 
 interface Props {
   key?: React.Key | null | undefined;
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
+  imports: Record<
+    string,
+    Record<
+      string,
+      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+    >
+  >;
   structs: Record<string, SuiMoveNormalizedStruct>;
   structName: string;
   structData: SuiMoveNormalizedStruct;

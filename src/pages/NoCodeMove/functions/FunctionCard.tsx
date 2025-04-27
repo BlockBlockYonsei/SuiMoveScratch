@@ -1,5 +1,6 @@
 import {
   SuiMoveAbilitySet,
+  SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
   SuiMoveVisibility,
 } from "@mysten/sui/client";
@@ -10,20 +11,26 @@ import FunctionReturns from "./FunctionReturns";
 import TypeParameterCards from "../components/TypeParameterCards";
 
 interface Props {
+  imports: Record<
+    string,
+    Record<
+      string,
+      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+    >
+  >;
   functionName: string;
   functionData: SuiMoveFunction;
   setFunctions: React.Dispatch<
     React.SetStateAction<Record<string, SuiMoveFunction>>
   >;
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
   structs: Record<string, SuiMoveNormalizedStruct>;
 }
 
 export default function FunctionCard({
+  imports,
   functionName,
   functionData,
   setFunctions,
-  imports,
   structs,
 }: Props) {
   const [typeParameterNames, setTypeParameterNames] = useState<string[]>([]);
@@ -98,6 +105,7 @@ export default function FunctionCard({
           </span>
         </div>
       </div>
+      <div className="font-bold">Type Parameters:</div>
       <TypeParameterCards
         typeParameterNames={typeParameterNames}
         name={functionName}
@@ -119,6 +127,15 @@ export default function FunctionCard({
         setParameterNames={setParameterNames}
       />
 
+      {/* Codes in Function */}
+      <div className="font-bold">Codes in Function:</div>
+      <div className="border-2 border-black rounded-md p-2">
+        <div>let value = 30;</div>
+        <input value={"let value = 30;"} />
+        {functionData.insideCode.map((c) => (
+          <div>{c}</div>
+        ))}
+      </div>
       {/* Return : 이것도 Function Card 에 넣어야 함 */}
       <div className="font-bold">Returns:</div>
       <FunctionReturns

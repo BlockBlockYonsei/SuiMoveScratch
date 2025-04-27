@@ -10,14 +10,20 @@ import { generateImportsCode } from "./utils/generateCode";
 
 export default function Main() {
   const [imports, setImports] = useState<
-    // Record<string, Record<string, SuiMoveNormalizedStruct | SuiMoveNormalizedFunction>>
-    Record<string, Record<string, SuiMoveNormalizedStruct>>
+    Record<
+      string,
+      Record<
+        string,
+        SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+      >
+    >
+    // Record<string, Record<string, SuiMoveNormalizedStruct>>
   >({});
   const [structs, setStructs] = useState<
     Record<string, SuiMoveNormalizedStruct>
   >({});
   const [functions, setFunctions] = useState<Record<string, SuiMoveFunction>>(
-    {},
+    {}
   );
 
   // =================================================
@@ -82,14 +88,14 @@ export default function Main() {
         <div className="text-3xl">Imports</div>
         <div className="min-h-24 border-2 border-black rounded-md">
           {Object.entries(imports).map(([pkgModuleName, module]) => (
-            <div>
+            <div key={pkgModuleName}>
               <div className="text-2xl">
                 {pkgModuleName.split("::")[0].slice(0, 4)}...
                 {pkgModuleName.split("::")[0].slice(-3)}::
                 {pkgModuleName.split("::")[1]}
               </div>
               {Object.entries(module).map(([moduleName, moduleData]) => (
-                <div>
+                <div key={moduleName}>
                   <div>{moduleName}</div>
                   <div>{JSON.stringify(moduleData)}</div>
                 </div>
@@ -101,7 +107,7 @@ export default function Main() {
         <div className="text-3xl">Structs</div>
         <div className="min-h-24 border-2 border-black rounded-md">
           {Object.entries(structs).map(([key, value]) => (
-            <div>
+            <div key={key}>
               <div className="text-2xl">{key}</div>
               <div>{JSON.stringify(value)}</div>
             </div>
@@ -111,7 +117,7 @@ export default function Main() {
         <div className="text-3xl">Functions</div>
         <div className="min-h-24 border-2 border-black rounded-md">
           {Object.entries(functions).map(([key, value]) => (
-            <div>
+            <div key={key}>
               <div className="text-2xl">{key}</div>
               <div>{JSON.stringify(value)}</div>
             </div>

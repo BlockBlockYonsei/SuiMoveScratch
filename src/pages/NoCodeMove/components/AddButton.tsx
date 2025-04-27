@@ -25,7 +25,7 @@ export default function AddButton({
   }, [isEditing]);
 
   return (
-    <div className="relative">
+    <div className="relative inline-block">
       <button
         onClick={() => setIsEditing(true)}
         className={`border-2 border-blue-500 px-2 my-2 rounded-md cursor-pointer hover:bg-blue-600 transition ${buttonClass} `}

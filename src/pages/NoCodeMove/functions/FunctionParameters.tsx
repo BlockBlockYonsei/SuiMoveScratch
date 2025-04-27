@@ -1,5 +1,6 @@
 import {
   SuiMoveAbilitySet,
+  SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
 } from "@mysten/sui/client";
@@ -19,7 +20,13 @@ export default function FunctionParameters({
 }: {
   functionName: string;
   functionData: SuiMoveFunction;
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
+  imports: Record<
+    string,
+    Record<
+      string,
+      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+    >
+  >;
   structs: Record<string, SuiMoveNormalizedStruct>;
   setFunctions: React.Dispatch<
     React.SetStateAction<Record<string, SuiMoveFunction>>
@@ -80,7 +87,13 @@ export function FunctionParameterCard({
   index: number;
   param: SuiMoveNormalizedType;
   typeParameters: SuiMoveAbilitySet[];
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
+  imports: Record<
+    string,
+    Record<
+      string,
+      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+    >
+  >;
   structs: Record<string, SuiMoveNormalizedStruct>;
   functionName: string;
   functionData: SuiMoveFunction;

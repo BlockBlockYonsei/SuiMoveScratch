@@ -1,11 +1,32 @@
-import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
+import {
+  SuiMoveNormalizedFunction,
+  SuiMoveNormalizedStruct,
+} from "@mysten/sui/client";
 import ImportButton from "./imports/ImportButton";
 
 interface Props {
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
+  // imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
+  // setImports: React.Dispatch<
+  //   React.SetStateAction<
+  //     Record<string, Record<string, SuiMoveNormalizedStruct>>
+  //   >
+  // >;
+  imports: Record<
+    string,
+    Record<
+      string,
+      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+    >
+  >;
   setImports: React.Dispatch<
     React.SetStateAction<
-      Record<string, Record<string, SuiMoveNormalizedStruct>>
+      Record<
+        string,
+        Record<
+          string,
+          SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+        >
+      >
     >
   >;
 }

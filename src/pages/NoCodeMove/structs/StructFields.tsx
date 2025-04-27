@@ -1,12 +1,19 @@
 import {
   SuiMoveNormalizedField,
+  SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
 } from "@mysten/sui/client";
 import StructFieldCard from "./StructFieldCard";
 import AddButton from "../components/AddButton";
 
 interface Props {
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
+  imports: Record<
+    string,
+    Record<
+      string,
+      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+    >
+  >;
   structs: Record<string, SuiMoveNormalizedStruct>; // 여긴 필요 없고, StructFieldCards에서 필요
   structName: string;
   structData: SuiMoveNormalizedStruct;

@@ -1,5 +1,6 @@
 import {
   SuiMoveAbilitySet,
+  SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
@@ -11,7 +12,13 @@ export default function TypeModal({
   typeParameters,
   setType,
 }: {
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
+  imports: Record<
+    string,
+    Record<
+      string,
+      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+    >
+  >;
   structs: Record<string, SuiMoveNormalizedStruct>;
   typeParameters: SuiMoveStructTypeParameter[] | SuiMoveAbilitySet[]; // strudt or function
   setType: (arg0: SuiMoveNormalizedType) => void;
@@ -38,7 +45,13 @@ export default function TypeModal({
     },
     {} as Record<
       string,
-      Record<string, Record<string, SuiMoveNormalizedStruct>>
+      Record<
+        string,
+        Record<
+          string,
+          SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+        >
+      >
     >
   );
 
@@ -46,6 +59,7 @@ export default function TypeModal({
     <div
       className={`absolute left-0 p-4 mt-2 w-96 z-50 bg-white rounded-xl shadow overflow-auto min-h-48 max-h-64`}
     >
+      {/* Primitive Type 보여주는 박스 */}
       <div className="w-48 bg-white border rounded-xl shadow-lg z-10 relative group">
         <h3 className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
           Primitive Type
@@ -64,6 +78,8 @@ export default function TypeModal({
           ))}
         </ul>
       </div>
+
+      {/* Type Parameter Type 보여주는 박스 */}
       <div className="w-48 bg-white border rounded-xl shadow-lg z-10 relative group ">
         <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
           Type Parameters
@@ -90,6 +106,8 @@ export default function TypeModal({
           ))}
         </ul>
       </div>
+
+      {/* 현재 모듈에서 정의된 Struct 보여주는 박스 */}
       <div className="w-48 bg-white border rounded-xl shadow-lg z-10 relative group ">
         <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
           Current Module Structs
@@ -116,6 +134,8 @@ export default function TypeModal({
           ))}
         </ul>
       </div>
+
+      {/* Import 한 Struct를 Module 별로 보여주는 섹션 */}
       {Object.entries(groupedByPackage).map(([packageAddress, modules]) => {
         return (
           <div key={packageAddress}>
@@ -131,25 +151,28 @@ export default function TypeModal({
                     {moduleName}
                   </div>
                   <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
-                    {Object.keys(importedTypes).map((typeName) => (
-                      <li
-                        key={typeName}
-                        onClick={() => {
-                          const type = {
-                            Struct: {
-                              address: packageAddress,
-                              module: moduleName,
-                              name: typeName,
-                              typeArguments: [],
-                            },
-                          };
-                          setType(type);
-                        }}
-                        className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
-                      >
-                        {typeName}
-                      </li>
-                    ))}
+                    {Object.keys(importedTypes).map((typeName) => {
+                      if (typeName === "Self") return;
+                      return (
+                        <li
+                          key={typeName}
+                          onClick={() => {
+                            const type = {
+                              Struct: {
+                                address: packageAddress,
+                                module: moduleName,
+                                name: typeName,
+                                typeArguments: [],
+                              },
+                            };
+                            setType(type);
+                          }}
+                          className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
+                        >
+                          {typeName}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               ))}

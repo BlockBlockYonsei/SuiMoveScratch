@@ -1,5 +1,6 @@
 import {
   SuiMoveAbilitySet,
+  SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
 } from "@mysten/sui/client";
@@ -8,15 +9,21 @@ import { useState } from "react";
 import TypeModal from "../components/TypeModal";
 
 export default function FunctionReturns({
+  imports,
   functionName,
   functionData,
-  imports,
   structs,
   setFunctions,
 }: {
+  imports: Record<
+    string,
+    Record<
+      string,
+      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+    >
+  >;
   functionName: string;
   functionData: SuiMoveFunction;
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
   structs: Record<string, SuiMoveNormalizedStruct>;
   setFunctions: React.Dispatch<
     React.SetStateAction<Record<string, SuiMoveFunction>>
@@ -73,7 +80,13 @@ export function FunctionReturnCard({
   index: number;
   param: SuiMoveNormalizedType;
   typeParameters: SuiMoveAbilitySet[];
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
+  imports: Record<
+    string,
+    Record<
+      string,
+      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+    >
+  >;
   structs: Record<string, SuiMoveNormalizedStruct>;
   functionName: string;
   functionData: SuiMoveFunction;

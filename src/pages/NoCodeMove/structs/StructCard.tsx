@@ -1,6 +1,7 @@
 import {
   SuiMoveAbility,
   SuiMoveAbilitySet,
+  SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
@@ -11,13 +12,19 @@ import AbilityCard from "../components/AbilityCard";
 
 interface Props {
   key?: React.Key | null | undefined;
+  imports: Record<
+    string,
+    Record<
+      string,
+      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+    >
+  >;
   structs: Record<string, SuiMoveNormalizedStruct>; // 여기에선 필요 없는데 StructFields 에서 필요
   structName: string;
   structData: SuiMoveNormalizedStruct;
   setStructs: React.Dispatch<
     React.SetStateAction<Record<string, SuiMoveNormalizedStruct>>
   >;
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
 }
 
 export default function StructCard({

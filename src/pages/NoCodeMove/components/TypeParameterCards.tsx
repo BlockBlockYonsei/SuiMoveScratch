@@ -12,6 +12,7 @@ import AddButton from "./AddButton";
 interface Props {
   name: string;
   data: SuiMoveNormalizedStruct | SuiMoveFunction;
+  // setDatas: React.Dispatch<React.SetStateAction<Record<string, SuiMoveNormalizedStruct> | Record<string, SuiMoveFunction>>>;
   setDatas: React.Dispatch<React.SetStateAction<Record<string, any>>>;
   typeParameterNames: string[];
   typeParameters: SuiMoveStructTypeParameter[] | SuiMoveAbilitySet[];
@@ -42,7 +43,39 @@ export default function TypeParameterCards({
           ) => SuiMoveAbilitySet,
           ability: SuiMoveAbility
         ) => {
-          if ("constraints" in t) {
+          if ("function" in data && !("constraints" in t)) {
+            const newAbilitySet = getNewAbilitySet(t, ability);
+            const newTypeParameter = newAbilitySet;
+
+            function isAbilitySet(
+              item: SuiMoveStructTypeParameter | SuiMoveAbilitySet
+            ): item is SuiMoveAbilitySet {
+              return "abilities" in item;
+            }
+
+            const onlyAbilitySets = typeParameters.filter(isAbilitySet);
+
+            const newTypeParameters = [
+              ...onlyAbilitySets.slice(0, i),
+              newTypeParameter,
+              ...onlyAbilitySets.slice(i + 1),
+            ];
+
+            const newNormalizedFunctionData: SuiMoveNormalizedFunction = {
+              ...data.function,
+              typeParameters: newTypeParameters,
+            };
+
+            const newData = {
+              ...data,
+              function: newNormalizedFunctionData,
+            };
+
+            setDatas((prev) => ({
+              ...prev,
+              [name]: newData,
+            }));
+          } else if ("constraints" in t) {
             const newAbilitySet = getNewAbilitySet(t.constraints, ability);
             const newTypeParameter = {
               ...t,
@@ -63,40 +96,6 @@ export default function TypeParameterCards({
               ...prev,
               [name]: newtData,
             }));
-          } else {
-            if ("function" in data) {
-              const newAbilitySet = getNewAbilitySet(t, ability);
-              const newTypeParameter = newAbilitySet;
-
-              function isAbilitySet(
-                item: SuiMoveStructTypeParameter | SuiMoveAbilitySet
-              ): item is SuiMoveAbilitySet {
-                return "abilities" in item;
-              }
-
-              const onlyAbilitySets = typeParameters.filter(isAbilitySet);
-
-              const newTypeParameters = [
-                ...onlyAbilitySets.slice(0, i),
-                newTypeParameter,
-                ...onlyAbilitySets.slice(i + 1),
-              ];
-
-              const newNormalizedFunctionData: SuiMoveNormalizedFunction = {
-                ...data.function,
-                typeParameters: newTypeParameters,
-              };
-
-              const newData = {
-                ...data,
-                function: newNormalizedFunctionData,
-              };
-
-              setDatas((prev) => ({
-                ...prev,
-                [name]: newData,
-              }));
-            }
           }
         };
         return (
