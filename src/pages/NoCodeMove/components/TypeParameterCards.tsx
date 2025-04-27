@@ -5,9 +5,9 @@ import {
   SuiMoveNormalizedStruct,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
-import { useEffect, useRef, useState } from "react";
 import AbilityCard from "./AbilityCard";
 import { SuiMoveFunction } from "../_Functions";
+import AddButton from "./AddButton";
 
 interface Props {
   name: string;
@@ -25,25 +25,15 @@ export default function TypeParameterCards({
   typeParameters,
   addTypeParameter,
 }: Props) {
-  const [isEditing, setIsEditing] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [inputValue, setInputValue] = useState("");
-
-  useEffect(() => {
-    if (isEditing && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isEditing]);
-
   return (
     <div>
-      <button
-        onClick={() => setIsEditing(true)}
-        className="border-2 border-blue-500 px-2 rounded-md cursor-pointer hover:bg-blue-600 transition"
-      >
-        ➕ 타입 파라미터 추가
-      </button>
-
+      <AddButton
+        buttonClass=""
+        inputClass=""
+        title="타입 파라미터 추가"
+        placeholder="타입 파라미터 이름을 입력하세요"
+        callback={addTypeParameter}
+      />
       {typeParameters.map((t, i) => {
         const updateAbilitySet = (
           getNewAbilitySet: (
@@ -123,32 +113,6 @@ export default function TypeParameterCards({
           </div>
         );
       })}
-      {isEditing && (
-        <input
-          ref={inputRef}
-          value={inputValue}
-          placeholder="Type Parameter Name을 입력하세요."
-          onChange={(e) => setInputValue(e.target.value)}
-          onBlur={() => {
-            setInputValue("");
-            setIsEditing(false);
-          }}
-          onKeyDown={(e) => {
-            if (e.key !== "Enter") return;
-
-            try {
-              const trimmed = inputValue.trim();
-              if (!trimmed) return;
-
-              addTypeParameter(trimmed);
-            } finally {
-              setInputValue("");
-              setIsEditing(false);
-            }
-          }}
-          className="block px-3 py-2 border border-gray-300 rounded-xl focus:outline-none"
-        />
-      )}
     </div>
   );
 }
