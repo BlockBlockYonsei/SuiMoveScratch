@@ -15,7 +15,7 @@ interface Props<T extends SuiMoveNormalizedStruct | SuiMoveFunction> {
   typeParameterNames: string[];
   addTypeParameter: (typeParameterName: string) => void;
 }
-export default function TypeParameterCards<
+export default function TypeParameters<
   T extends SuiMoveNormalizedStruct | SuiMoveFunction
 >({ name, data, setDatas, typeParameterNames, addTypeParameter }: Props<T>) {
   return (

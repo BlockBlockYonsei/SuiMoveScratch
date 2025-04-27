@@ -7,7 +7,7 @@ import {
 } from "@mysten/sui/client";
 import { useState } from "react";
 import StructFields from "./StructFields";
-import TypeParameterCards from "../components/TypeParameterCards";
+import TypeParameters from "../components/TypeParameters";
 import AbilityCard from "../components/AbilityCard";
 
 interface Props {
@@ -88,7 +88,7 @@ export default function StructCard({
         &#123;
       </div>
       <div className="font-bold">Type Parameters:</div>
-      <TypeParameterCards
+      <TypeParameters
         name={structName}
         data={structData}
         setDatas={setStructs}

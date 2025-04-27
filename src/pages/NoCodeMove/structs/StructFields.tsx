@@ -69,7 +69,6 @@ export default function StructFields({
             ...prev,
             [structName]: newStructData,
           }));
-          // setIsOpen((prev) => !prev);
         };
         return (
           <div key={field.name}>

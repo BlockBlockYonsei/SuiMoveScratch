@@ -8,7 +8,7 @@ import { SuiMoveFunction } from "../_Functions";
 import { useState } from "react";
 import FunctionParameters from "./FunctionParameters";
 import FunctionReturns from "./FunctionReturns";
-import TypeParameterCards from "../components/TypeParameterCards";
+import TypeParameters from "../components/TypeParameters";
 
 interface Props {
   imports: Record<
@@ -106,7 +106,7 @@ export default function FunctionCard({
         </div>
       </div>
       <div className="font-bold">Type Parameters:</div>
-      <TypeParameterCards
+      <TypeParameters
         typeParameterNames={typeParameterNames}
         name={functionName}
         data={functionData}
