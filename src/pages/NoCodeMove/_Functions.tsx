@@ -7,46 +7,30 @@ import AddButton from "./components/AddButton";
 
 export interface SuiMoveFunction {
   function: SuiMoveNormalizedFunction;
-  insideCode: string[];
+  insideCode: Record<string, SuiMoveNormalizedFunction>;
 }
 
 interface Props {
+  imports: Record<
+    string,
+    Record<
+      string,
+      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+    >
+  >;
+  structs: Record<string, SuiMoveNormalizedStruct>;
   functions: Record<string, SuiMoveFunction>;
   setFunctions: React.Dispatch<
     React.SetStateAction<Record<string, SuiMoveFunction>>
   >;
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
-  structs: Record<string, SuiMoveNormalizedStruct>;
 }
 
 export default function Functions({
-  functions,
-  setFunctions,
   imports,
   structs,
+  functions,
+  setFunctions,
 }: Props) {
-  const addFunction = (name: string) => {
-    const CURRENT_PACKAGE = "0x0";
-    const CURRENT_MODULE = "CurrentModule";
-
-    const newFunction: SuiMoveNormalizedFunction = {
-      isEntry: false,
-      parameters: [],
-      return: [],
-      typeParameters: [],
-      visibility: "Private",
-    };
-    const newSuiMoveFunction: SuiMoveFunction = {
-      function: newFunction,
-      insideCode: [],
-    };
-
-    setFunctions((prev) => ({
-      ...prev,
-      [name]: newSuiMoveFunction,
-    }));
-  };
-
   return (
     <div>
       <div className="bg-white p-4 rounded-xl border-2 border-black">
@@ -57,7 +41,24 @@ export default function Functions({
             buttonClass="bg-blue-500 text-white px-4 py-2 my-2 rounded-xl cursor-pointer hover:bg-blue-600 transition"
             title="Function 추가"
             placeholder="Function Name을 입력하세요"
-            callback={addFunction}
+            callback={(name: string) => {
+              const newFunction: SuiMoveNormalizedFunction = {
+                isEntry: false,
+                parameters: [],
+                return: [],
+                typeParameters: [],
+                visibility: "Private",
+              };
+              const newSuiMoveFunction: SuiMoveFunction = {
+                function: newFunction,
+                insideCode: {},
+              };
+
+              setFunctions((prev) => ({
+                ...prev,
+                [name]: newSuiMoveFunction,
+              }));
+            }}
           />
         </div>
 
@@ -73,6 +74,7 @@ export default function Functions({
                 functionData={functionData}
                 imports={imports}
                 structs={structs}
+                functions={functions}
                 setFunctions={setFunctions}
               ></FunctionCard>
             </div>
