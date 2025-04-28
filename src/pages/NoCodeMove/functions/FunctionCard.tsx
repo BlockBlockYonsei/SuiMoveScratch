@@ -1,14 +1,14 @@
 import {
-  SuiMoveAbilitySet,
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
 } from "@mysten/sui/client";
 import { SuiMoveFunction } from "../_Functions";
 import FunctionParameters from "./FunctionParameters";
 import FunctionReturns from "./FunctionReturns";
-import TypeParameters from "../components/TypeParameters";
-import FunctionInfoCard from "./FunctionInfoCard";
+import FunctionInfo from "./FunctionInfo";
 import FunctionCodes from "./FunctionCodes";
+import { useState } from "react";
+import FunctionTypeParameters from "./FunctionTypeParameters";
 
 interface Props {
   imports: Record<
@@ -35,39 +35,24 @@ export default function FunctionCard({
   functionData,
   setFunctions,
 }: Props) {
-  const addTypeParameter = () => {
-    const newTypeParmeter: SuiMoveAbilitySet = {
-      abilities: [],
-    };
-    const newFunctionData = {
-      ...functionData,
-      function: {
-        ...functionData.function,
-        typeParameters: [
-          ...functionData.function.typeParameters,
-          newTypeParmeter,
-        ],
-      },
-    };
-    setFunctions((prev) => ({
-      ...prev,
-      [functionName]: newFunctionData,
-    }));
-  };
+  const [typeParameterNames, setTypeParameterNames] = useState<string[]>([]);
+  const [parameterNames, setParameterNames] = useState<string[]>([]);
+
   return (
     <div>
-      <FunctionInfoCard
+      <FunctionInfo
         functionName={functionName}
         functionData={functionData}
         setFunctions={setFunctions}
       />
 
       <div className="font-bold">Type Parameters:</div>
-      <TypeParameters
-        name={functionName}
-        data={functionData}
-        setDatas={setFunctions}
-        addTypeParameter={addTypeParameter}
+      <FunctionTypeParameters
+        functionName={functionName}
+        functionData={functionData}
+        setFunctions={setFunctions}
+        typeParameterNames={typeParameterNames}
+        setTypeParameterNames={setTypeParameterNames}
       />
 
       {/* Function Parameter */}
@@ -78,6 +63,8 @@ export default function FunctionCard({
         imports={imports}
         structs={structs}
         setFunctions={setFunctions}
+        parameterNames={parameterNames}
+        setParameterNames={setParameterNames}
       />
 
       {/* Codes in Function */}

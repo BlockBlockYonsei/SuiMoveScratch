@@ -6,7 +6,6 @@ import {
 import { SuiMoveFunction } from "../_Functions";
 import AddButton from "../components/AddButton";
 import TypeButton from "../components/TypeButton";
-import { useState } from "react";
 
 interface Props {
   imports: Record<
@@ -22,6 +21,8 @@ interface Props {
   setFunctions: React.Dispatch<
     React.SetStateAction<Record<string, SuiMoveFunction>>
   >;
+  parameterNames: string[];
+  setParameterNames: React.Dispatch<React.SetStateAction<string[]>>;
 }
 export default function FunctionParameters({
   imports,
@@ -29,8 +30,9 @@ export default function FunctionParameters({
   functionName,
   functionData,
   setFunctions,
+  parameterNames,
+  setParameterNames,
 }: Props) {
-  const [parameterNames, setParameterNames] = useState<string[]>([]);
   return (
     <div>
       <AddButton

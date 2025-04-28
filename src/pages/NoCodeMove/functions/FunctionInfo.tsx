@@ -8,7 +8,7 @@ interface Props {
     React.SetStateAction<Record<string, SuiMoveFunction>>
   >;
 }
-export default function FunctionInfoCard({
+export default function FunctionInfo({
   functionName,
   functionData,
   setFunctions,
