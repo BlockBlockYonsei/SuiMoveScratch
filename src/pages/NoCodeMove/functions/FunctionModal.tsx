@@ -104,7 +104,7 @@ export default function FunctionModal({
                     {moduleName}
                   </div>
                   <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
-                    {Object.entries(moduleData["Self"]).map(
+                    {Object.entries(moduleData["Self"] ?? {}).map(
                       ([functionName, functionData]) => {
                         return (
                           <li
