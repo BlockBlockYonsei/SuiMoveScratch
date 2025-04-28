@@ -7,7 +7,7 @@ import AddButton from "./components/AddButton";
 
 export interface SuiMoveFunction {
   function: SuiMoveNormalizedFunction;
-  insideCode: SuiMoveNormalizedFunction[];
+  insideCode: Record<string, SuiMoveNormalizedFunction>;
 }
 
 interface Props {
@@ -51,7 +51,7 @@ export default function Functions({
               };
               const newSuiMoveFunction: SuiMoveFunction = {
                 function: newFunction,
-                insideCode: [],
+                insideCode: {},
               };
 
               setFunctions((prev) => ({

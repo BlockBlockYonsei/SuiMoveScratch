@@ -13,7 +13,7 @@ interface Props {
     >
   >;
   functions: Record<string, SuiMoveFunction>;
-  addCode: (arg0: SuiMoveNormalizedFunction) => void;
+  addCode: (funcName: string, funcData: SuiMoveNormalizedFunction) => void;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -78,7 +78,7 @@ export default function FunctionModal({
               key={functionName}
               className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
               onClick={() => {
-                addCode(functionData.function);
+                addCode(functionName, functionData.function);
                 setIsOpen(false);
               }}
             >
@@ -98,31 +98,46 @@ export default function FunctionModal({
               {packageAddress.slice(-3)} Package
             </h3>
             <div className="w-48 bg-white border rounded-xl shadow-lg z-10 ">
-              {Object.entries(modules).map(([moduleName, moduleData]) => (
-                <div key={moduleName} className="relative group">
-                  <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
-                    {moduleName}
-                  </div>
-                  <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
-                    {Object.entries(moduleData["Self"] ?? {}).map(
-                      ([functionName, functionData]) => {
-                        return (
-                          <li
-                            key={functionName}
-                            onClick={() => {
-                              addCode(functionData);
-                              setIsOpen(false);
-                            }}
-                            className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
-                          >
-                            {functionName}
-                          </li>
-                        );
-                      }
-                    )}
-                  </ul>
-                </div>
-              ))}
+              {Object.entries(modules).map(([moduleName, moduleData]) => {
+                const selfModule = moduleData["Self"];
+
+                if (
+                  selfModule &&
+                  typeof selfModule === "object" &&
+                  !("fields" in selfModule)
+                ) {
+                  return (
+                    <div key={moduleName} className="relative group">
+                      <div className="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-xl transition">
+                        {moduleName}
+                      </div>
+                      <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
+                        {Object.entries(selfModule).map(
+                          ([functionName, functionData]) => {
+                            if (
+                              functionData.isEntry === true ||
+                              functionData.visibility !== "Public"
+                            )
+                              return;
+                            return (
+                              <li
+                                key={functionName}
+                                onClick={() => {
+                                  addCode(functionName, functionData);
+                                  setIsOpen(false);
+                                }}
+                                className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"
+                              >
+                                {functionName}
+                              </li>
+                            );
+                          }
+                        )}
+                      </ul>
+                    </div>
+                  );
+                }
+              })}
             </div>
           </div>
         );

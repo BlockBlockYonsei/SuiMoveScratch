@@ -5,6 +5,7 @@ import {
 import { SuiMoveFunction } from "../_Functions";
 import FunctionModal from "./FunctionModal";
 import { useState } from "react";
+import { parseSuiMoveNormalizedType } from "../../PackageViewer1/utils";
 
 interface Props {
   imports: Record<
@@ -53,9 +54,12 @@ export default function FunctionCodes({
           <FunctionModal
             imports={imports}
             functions={functions}
-            addCode={(arg0: SuiMoveNormalizedFunction) => {
+            addCode={(
+              funcName: string,
+              funcData: SuiMoveNormalizedFunction
+            ) => {
               let newFunctionData = functionData;
-              newFunctionData.insideCode.push(arg0);
+              newFunctionData.insideCode[funcName] = funcData;
               setFunctions((prev) => ({
                 ...prev,
                 [functionName]: newFunctionData,
@@ -65,12 +69,67 @@ export default function FunctionCodes({
           />
         </div>
       </div>
-      <div className="border-2 border-black rounded-md p-2">
+      <div className="border-2 border-black rounded-md p-2 overflow-x-auto whitespace-nowrap">
         <div>let value = 30;</div>
         <input value={"let value = 30;"} />
-        {functionData.insideCode.map((code) => (
-          <div>{JSON.stringify(code)}</div>
-        ))}
+
+        {Object.entries(functionData.insideCode).map(([funcName, codeLine]) => {
+          return (
+            <div className="">
+              <span className="font-semibold">
+                <span className="text-blue-500">let </span>(
+                {codeLine.return.map((r) => {
+                  const returnType = parseSuiMoveNormalizedType(r);
+                  return (
+                    <span>
+                      <span>
+                        {returnType.prefix === "value" ? "" : returnType.prefix}
+                      </span>
+                      <span className="text-emerald-500">
+                        {typeof returnType.core === "string"
+                          ? returnType.core
+                          : "Struct" in returnType.core
+                          ? returnType.core.Struct.name
+                          : "TypeParameter" in returnType.core
+                          ? returnType.core.TypeParameter
+                          : "Unknown Type"}
+                      </span>
+                      ,{" "}
+                    </span>
+                  );
+                })}
+                ) = <span className="text-pink-500">{funcName}</span>&lt;
+                {codeLine.typeParameters.map((tp, i) => {
+                  return (
+                    <span>
+                      T{i}: {tp.abilities.join(", ")},
+                    </span>
+                  );
+                })}
+                &gt;(
+                {codeLine.parameters.map((p) => {
+                  const parameterType = parseSuiMoveNormalizedType(p);
+                  return (
+                    <span>
+                      <span>{parameterType.prefix}</span>
+                      <span className="text-emerald-500">
+                        {typeof parameterType.core === "string"
+                          ? parameterType.core
+                          : "Struct" in parameterType.core
+                          ? parameterType.core.Struct.name
+                          : "TypeParameter" in parameterType.core
+                          ? parameterType.core.TypeParameter
+                          : "Unknown Type"}
+                      </span>
+                      ,{" "}
+                    </span>
+                  );
+                })}
+                )
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
