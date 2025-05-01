@@ -31,6 +31,25 @@ export default function Functions({
   functions,
   setFunctions,
 }: Props) {
+  const addFunction = (name: string) => {
+    const newFunction: SuiMoveNormalizedFunction = {
+      isEntry: false,
+      parameters: [],
+      return: [],
+      typeParameters: [],
+      visibility: "Private",
+    };
+    const newSuiMoveFunction: SuiMoveFunction = {
+      function: newFunction,
+      insideCode: [],
+    };
+
+    setFunctions((prev) => ({
+      ...prev,
+      [name]: newSuiMoveFunction,
+    }));
+  };
+
   return (
     <div>
       <div className="bg-white p-4 rounded-xl border-2 border-black">

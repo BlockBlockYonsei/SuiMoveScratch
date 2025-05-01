@@ -20,6 +20,14 @@ interface Props {
 }
 
 export default function Structs({ structs, setStructs, imports }: Props) {
+  const addStruct = (name: string) => {
+    const newStruct = newEmptyStruct();
+    setStructs((prev) => ({
+      ...prev,
+      [name]: newStruct,
+    }));
+  };
+
   return (
     <div>
       <div className="bg-white p-4 rounded-xl border-2 border-black">
