@@ -1,7 +1,4 @@
-import {
-  SuiMoveNormalizedFunction,
-  SuiMoveNormalizedStruct,
-} from "@mysten/sui/client";
+import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 import { useEffect, useState } from "react";
 import Imports from "./_Imports";
 import Structs from "./_Structs";
@@ -17,7 +14,7 @@ export default function Main() {
     Record<string, SuiMoveNormalizedStruct>
   >({});
   const [functions, setFunctions] = useState<Record<string, SuiMoveFunction>>(
-    {},
+    {}
   );
 
   // =================================================

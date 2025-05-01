@@ -26,9 +26,6 @@ export default function Functions({
   structs,
 }: Props) {
   const addFunction = (name: string) => {
-    const CURRENT_PACKAGE = "0x0";
-    const CURRENT_MODULE = "CurrentModule";
-
     const newFunction: SuiMoveNormalizedFunction = {
       isEntry: false,
       parameters: [],

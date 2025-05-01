@@ -69,7 +69,7 @@ export default function TypeModal({
           Type Parameters
         </div>
         <ul className="absolute left-full top-0 w-40 bg-white border rounded-xl shadow-lg hidden group-hover:block z-20">
-          {typeParameters.map((type, i) => (
+          {typeParameters.map((_type, i) => (
             <li
               key={i}
               onClick={() => {

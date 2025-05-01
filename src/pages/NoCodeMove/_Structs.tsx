@@ -12,9 +12,6 @@ interface Props {
 }
 
 export default function Structs({ structs, setStructs, imports }: Props) {
-  const CURRENT_PACKAGE = "0x0";
-  const CURRENT_MODULE = "CurrentModule";
-
   const addStruct = (name: string) => {
     const newStruct = newEmptyStruct();
     setStructs((prev) => ({
