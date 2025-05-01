@@ -1,23 +1,29 @@
 import {
   SuiMoveAbility,
   SuiMoveAbilitySet,
+  SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
-  SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
-import { useState } from "react";
 import StructFields from "./StructFields";
-import TypeParameterCards from "../components/TypeParameterCards";
 import AbilityCard from "../components/AbilityCard";
+import { useState } from "react";
+import StructTypeParameters from "./StructTypeParameters";
 
 interface Props {
   key?: React.Key | null | undefined;
+  imports: Record<
+    string,
+    Record<
+      string,
+      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+    >
+  >;
   structs: Record<string, SuiMoveNormalizedStruct>; // 여기에선 필요 없는데 StructFields 에서 필요
   structName: string;
   structData: SuiMoveNormalizedStruct;
   setStructs: React.Dispatch<
     React.SetStateAction<Record<string, SuiMoveNormalizedStruct>>
   >;
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
 }
 
 export default function StructCard({
@@ -49,23 +55,6 @@ export default function StructCard({
     }));
   };
 
-  const addTypeParameter = (typeParameterName: string) => {
-    setTypeParameterNames((prev) => [...prev, typeParameterName]);
-
-    const newTypeParmeter: SuiMoveStructTypeParameter = {
-      constraints: { abilities: [] },
-      isPhantom: false,
-    };
-    const newStructData = {
-      ...structData,
-      typeParameters: [...structData.typeParameters, newTypeParmeter],
-    };
-    setStructs((prev) => ({
-      ...prev,
-      [structName]: newStructData,
-    }));
-  };
-
   return (
     <div key={key}>
       {/* Struct 이름 및 Abilities */}
@@ -81,13 +70,12 @@ export default function StructCard({
         &#123;
       </div>
       <div className="font-bold">Type Parameters:</div>
-      <TypeParameterCards
-        name={structName}
-        data={structData}
-        setDatas={setStructs}
+      <StructTypeParameters
+        structName={structName}
+        structData={structData}
+        setStructs={setStructs}
         typeParameterNames={typeParameterNames}
-        typeParameters={structData.typeParameters}
-        addTypeParameter={addTypeParameter}
+        setTypeParameterNames={setTypeParameterNames}
       />
 
       <div className="font-bold">Fields:</div>

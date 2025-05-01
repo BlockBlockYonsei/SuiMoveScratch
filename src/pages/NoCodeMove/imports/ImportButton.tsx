@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ImportModal from "./ImportModal";
 import {
+  SuiMoveNormalizedFunction,
   SuiMoveNormalizedModules,
   SuiMoveNormalizedStruct,
 } from "@mysten/sui/client";
@@ -12,7 +13,13 @@ export default function ImportButton({
   packages: string[];
   setImports: React.Dispatch<
     React.SetStateAction<
-      Record<string, Record<string, SuiMoveNormalizedStruct>>
+      Record<
+        string,
+        Record<
+          string,
+          SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+        >
+      >
     >
   >;
 }) {
@@ -24,8 +31,18 @@ export default function ImportButton({
     moduleName: string,
     structName: string
   ) => {
-    if (moduleName) {
-      const key = pkgAddress + "::" + moduleName;
+    if (!moduleName) return;
+
+    const key = pkgAddress + "::" + moduleName;
+    if (structName === "Self") {
+      setImports((prev) => ({
+        ...prev,
+        [key]: {
+          ...(prev[key] || {}),
+          [structName]: data[moduleName].exposedFunctions,
+        },
+      }));
+    } else {
       setImports((prev) => ({
         ...prev,
         [key]: {
@@ -33,8 +50,8 @@ export default function ImportButton({
           [structName]: data[moduleName].structs[structName],
         },
       }));
-      setIsOpen(false);
     }
+    setIsOpen(false);
   };
   return (
     <div className="relative">
