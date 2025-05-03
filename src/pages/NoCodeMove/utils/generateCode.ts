@@ -49,6 +49,28 @@ export function generateStructCode(name: string, struct: any): string {
   return `public struct ${name}${generics} has ${abilities} {\n${fields}\n}`;
 }
 
+function generateFunctionCode(name: string, func: any): string {
+  const visibility = func.function.visibility.toLowerCase();
+  const isEntry = func.function.isEntry;
+  const entryKeyword = isEntry ? "entry " : "";
+  const visKeyword = visibility !== "private" ? `${visibility} ` : "";
+  const typeParams = func.function.typeParameters
+    .map((tp: any, i: number) => {
+      const name = func.function.typeParameters.length === 1 ? "T" : `T${i}`;
+      const abilities = tp.abilities?.map((a: string) => a.toLowerCase()).join(" + ");
+      return `${name}${abilities ? `: ${abilities}` : ""}`;
+    })
+    .join(", ");
+  const generics = typeParams ? `<${typeParams}>` : "";
+  const parameters = func.function.parameters.map((p: any, i: number) => `arg${i}: ${formatType(p)}`).join(", ");
+  const returnType = func.function.return.length === 0
+    ? ""
+    : `: ${func.function.return.length === 1
+      ? formatType(func.function.return[0])
+      : `(${func.function.return.map(formatType).join(", ")})`}`;
+  return `  ${entryKeyword}${visKeyword}fun ${name}${generics}(${parameters})${returnType} {\n    // TODO: implement\n  }`;
+}
+
 export function generateMoveCode({
   imports,
   structs,
@@ -67,9 +89,9 @@ export function generateMoveCode({
   const structSection = Object.entries(structs)
     .map(([name, struct]) => generateStructCode(name, struct))
     .join("\n\n");
-  {
-    /* functionSection */
-  }
+  const functionSection = Object.entries(functions)
+    .map(([name, func]) => generateFunctionCode(name, func))
+    .join("\n\n");
 
   return [
     moduleHeader,
@@ -79,9 +101,7 @@ export function generateMoveCode({
     structSection,
     "",
     "// ====== Functions ======",
-    {
-      /* functionSection */
-    },
+    functionSection,
   ].join("\n");
 }
 
