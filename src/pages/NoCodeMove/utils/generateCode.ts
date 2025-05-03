@@ -34,15 +34,16 @@ export function generateStructCode(name: string, struct: any): string {
   const typeParams = struct.typeParameters
     .map((tp: any, i: number) => {
       const phantom = tp.isPhantom ? "phantom " : "";
+      const name = struct.typeParameters.length === 1 ? "T" : `T${i}`;
       const abilities = tp.constraints?.abilities?.map((a: string) => a.toLowerCase()).join(" + ");
-      return `${phantom}T${i}${abilities ? `: ${abilities}` : ""}`;
+      return `${phantom}${name}${abilities ? `: ${abilities}` : ""}`;
     })
     .join(", ");
 
   const generics = typeParams ? `<${typeParams}>` : "";
 
   const fields = struct.fields
-    .map((f: any) => `  ${f.name}: ${formatType(f.type)}`)
+    .map((f: any) => `  ${f.name}: ${formatType(f.type)},`)
     .join("\n");
 
   return `public struct ${name}${generics} has ${abilities} {\n${fields}\n}`;
