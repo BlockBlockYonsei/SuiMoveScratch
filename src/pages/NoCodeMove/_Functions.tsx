@@ -2,90 +2,86 @@ import {
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
 } from "@mysten/sui/client";
-import { useEffect, useRef, useState } from "react";
-import FunctionCard from "./components/FunctionCard";
-// import { parseSuiMoveNormalizedType } from "../PackageViewer1/utils";
+import FunctionCard from "./functions/FunctionCard";
+import AddButton from "./components/AddButton";
 
 export interface SuiMoveFunction {
   function: SuiMoveNormalizedFunction;
-  insideCode: string[];
+  insideCode: Record<string, SuiMoveNormalizedFunction>;
 }
 
 interface Props {
+  imports: Record<
+    string,
+    Record<
+      string,
+      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+    >
+  >;
+  structs: Record<string, SuiMoveNormalizedStruct>;
   functions: Record<string, SuiMoveFunction>;
   setFunctions: React.Dispatch<
     React.SetStateAction<Record<string, SuiMoveFunction>>
   >;
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
-  structs: Record<string, SuiMoveNormalizedStruct>;
 }
 
 export default function Functions({
-  functions,
-  setFunctions,
   imports,
   structs,
+  functions,
+  setFunctions,
 }: Props) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
+  const addFunction = (name: string) => {
+    const newFunction: SuiMoveNormalizedFunction = {
+      isEntry: false,
+      parameters: [],
+      return: [],
+      typeParameters: [],
+      visibility: "Private",
+    };
+    const newSuiMoveFunction: SuiMoveFunction = {
+      function: newFunction,
+      insideCode: [],
+    };
 
-  useEffect(() => {
-    if (isEditing && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isEditing]);
-
-  const addFunction = (e: any) => {
-    if (e.key === "Enter") {
-      const trimmed = inputValue.trim();
-      const newSuiMoveFunction = newEmptySuiMoveFunction();
-
-      if (trimmed) {
-        setFunctions((prev) => ({
-          ...prev,
-          [trimmed]: newSuiMoveFunction,
-        }));
-      }
-      setInputValue("");
-      setIsEditing(false);
-    }
+    setFunctions((prev) => ({
+      ...prev,
+      [name]: newSuiMoveFunction,
+    }));
   };
 
   return (
     <div>
       <div className="bg-white p-4 rounded-xl border-2 border-black">
+        {/* Function 제목 및 Function 추가 버튼 */}
         <div className="flex items-center gap-4 py-2">
-          <div className="inline-block bg-gray-200 text-3xl">Function</div>
-          <div className="relative">
-            <button
-              onClick={() => setIsEditing(true)}
-              className="bg-blue-500 text-white px-4 py-2 my-2 rounded-xl cursor-pointer hover:bg-blue-600 transition"
-            >
-              ➕ Function 추가
-            </button>
-            <div
-              className={`${isEditing ? "" : "hidden"} absolute bg-gray-200`}
-            >
-              <input
-                ref={inputRef}
-                value={inputValue}
-                placeholder="Function Name을 입력하세요."
-                onBlur={() => {
-                  setInputValue("");
-                  setIsEditing(false);
-                }}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={(e) => {
-                  addFunction(e);
-                }}
-                className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none"
-              />
-            </div>
-          </div>
+          <h2 className="inline-block bg-gray-200 text-3xl">Function</h2>
+          <AddButton
+            buttonClass="bg-blue-500 text-white px-4 py-2 my-2 rounded-xl cursor-pointer hover:bg-blue-600 transition"
+            title="Function 추가"
+            placeholder="Function Name을 입력하세요"
+            callback={(name: string) => {
+              const newFunction: SuiMoveNormalizedFunction = {
+                isEntry: false,
+                parameters: [],
+                return: [],
+                typeParameters: [],
+                visibility: "Private",
+              };
+              const newSuiMoveFunction: SuiMoveFunction = {
+                function: newFunction,
+                insideCode: {},
+              };
+
+              setFunctions((prev) => ({
+                ...prev,
+                [name]: newSuiMoveFunction,
+              }));
+            }}
+          />
         </div>
 
-        {/* Functions 하나씩 보여주는 곳 */}
+        {/* FunctionCard 하나씩 보여주는 곳 */}
         {Object.entries(functions).map(([functionName, functionData]) => {
           return (
             <div
@@ -97,6 +93,7 @@ export default function Functions({
                 functionData={functionData}
                 imports={imports}
                 structs={structs}
+                functions={functions}
                 setFunctions={setFunctions}
               ></FunctionCard>
             </div>
@@ -105,25 +102,4 @@ export default function Functions({
       </div>
     </div>
   );
-}
-
-function newEmptySuiMoveFunction() {
-  const CURRENT_PACKAGE =
-    "0x1111111111111111111111111111111111111111111111111111111111111111";
-
-  const CURRENT_MODULE = "CurrentModule";
-
-  const newFunction: SuiMoveNormalizedFunction = {
-    isEntry: false,
-    parameters: [],
-    return: [],
-    typeParameters: [],
-    visibility: "Private",
-  };
-  const newSuiMoveFunction: SuiMoveFunction = {
-    function: newFunction,
-    insideCode: [],
-  };
-
-  return newSuiMoveFunction;
 }

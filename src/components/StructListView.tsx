@@ -1,0 +1,92 @@
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
+
+function StructCardView({
+  structName,
+  struct,
+}: {
+  structName: string;
+  struct: SuiMoveNormalizedStruct;
+}) {
+  return (
+    <Card className="w-full max-w-xl mx-auto mb-6">
+      <CardHeader>
+        <CardTitle className="text-xl font-bold text-emerald-600">
+          {structName}
+        </CardTitle>
+        <CardDescription>
+          {struct.abilities.abilities.length > 0
+            ? `has ${struct.abilities.abilities.join(", ")}`
+            : "No abilities"}
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        <div>
+          <h4 className="font-semibold text-sm text-muted-foreground mb-1">
+            Type Parameters
+          </h4>
+          {struct.typeParameters.length === 0 ? (
+            <p className="text-sm text-gray-500">None</p>
+          ) : (
+            struct.typeParameters.map((param, idx) => (
+              <div
+                key={idx}
+                className="text-sm text-gray-800 flex items-center justify-between"
+              >
+                <span>
+                  T{idx}
+                  {param.isPhantom && " (phantom)"}
+                </span>
+                <span className="text-xs text-gray-500">
+                  {param.constraints.abilities.join(", ")}
+                </span>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div>
+          <h4 className="font-semibold text-sm text-muted-foreground mb-1">
+            Fields
+          </h4>
+          {struct.fields.length === 0 ? (
+            <p className="text-sm text-gray-500">None</p>
+          ) : (
+            struct.fields.map((field) => (
+              <div
+                key={field.name}
+                className="flex justify-between text-sm text-gray-800"
+              >
+                <span>{field.name}</span>
+                <span className="text-xs text-gray-500">
+                  {JSON.stringify(field.type)}
+                </span>
+              </div>
+            ))
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default function StructListView({
+  structs,
+}: {
+  structs: Record<string, SuiMoveNormalizedStruct>;
+}) {
+  return (
+    <div className="space-y-4">
+      {Object.entries(structs).map(([name, struct]) => (
+        <StructCardView key={name} structName={name} struct={struct} />
+      ))}
+    </div>
+  );
+}
