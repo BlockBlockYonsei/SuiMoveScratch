@@ -29,12 +29,12 @@ export function generateImportsCode(
 }
 
 export function generateStructCode(name: string, struct: any): string {
-  const abilities = struct.abilities.abilities.join(", ");
+  const abilities = struct.abilities.abilities.map((a: string) => a.toLowerCase()).join(", ");
 
   const typeParams = struct.typeParameters
     .map((tp: any, i: number) => {
       const phantom = tp.isPhantom ? "phantom " : "";
-      const abilities = tp.constraints?.abilities?.join(" + ");
+      const abilities = tp.constraints?.abilities?.map((a: string) => a.toLowerCase()).join(" + ");
       return `${phantom}T${i}${abilities ? `: ${abilities}` : ""}`;
     })
     .join(", ");
