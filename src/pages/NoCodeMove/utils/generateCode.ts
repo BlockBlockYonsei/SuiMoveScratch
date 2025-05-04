@@ -1,5 +1,3 @@
-import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
-
 const PACKAGE_ALIASES: Record<string, string> = {
   "0x0000000000000000000000000000000000000000000000000000000000000001": "std",
   "0x0000000000000000000000000000000000000000000000000000000000000002": "sui",
@@ -87,7 +85,7 @@ export function generateFunctionCode(name: string, func: any): string {
             ? formatType(func.function.return[0])
             : `(${func.function.return.map(formatType).join(", ")})`
         }`;
-  return `  ${entryKeyword}${visKeyword}fun ${name}${generics}(${parameters})${returnType} {\n    // TODO: implement\n  }`;
+  return `${entryKeyword}${visKeyword}fun ${name}${generics}(${parameters})${returnType} {\n  // TODO: implement\n}`;
 }
 
 export function generateMoveCode({

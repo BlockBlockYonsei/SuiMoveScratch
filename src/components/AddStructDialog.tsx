@@ -94,6 +94,7 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
         abilities: { abilities },
         fields,
         typeParameters,
+        typeParameterNames,
       },
     }));
 
