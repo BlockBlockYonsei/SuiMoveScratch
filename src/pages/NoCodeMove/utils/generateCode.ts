@@ -31,13 +31,17 @@ export function generateImportsCode(
 }
 
 export function generateStructCode(name: string, struct: any): string {
-  const abilities = struct.abilities.abilities.map((a: string) => a.toLowerCase()).join(", ");
+  const abilities = struct.abilities.abilities
+    .map((a: string) => a.toLowerCase())
+    .join(", ");
 
   const typeParams = struct.typeParameters
     .map((tp: any, i: number) => {
       const phantom = tp.isPhantom ? "phantom " : "";
       const name = struct.typeParameters.length === 1 ? "T" : `T${i}`;
-      const abilities = tp.constraints?.abilities?.map((a: string) => a.toLowerCase()).join(" + ");
+      const abilities = tp.constraints?.abilities
+        ?.map((a: string) => a.toLowerCase())
+        .join(" + ");
       return `${phantom}${name}${abilities ? `: ${abilities}` : ""}`;
     })
     .join(", ");
@@ -59,17 +63,24 @@ function generateFunctionCode(name: string, func: any): string {
   const typeParams = func.function.typeParameters
     .map((tp: any, i: number) => {
       const name = func.function.typeParameters.length === 1 ? "T" : `T${i}`;
-      const abilities = tp.abilities?.map((a: string) => a.toLowerCase()).join(" + ");
+      const abilities = tp.abilities
+        ?.map((a: string) => a.toLowerCase())
+        .join(" + ");
       return `${name}${abilities ? `: ${abilities}` : ""}`;
     })
     .join(", ");
   const generics = typeParams ? `<${typeParams}>` : "";
-  const parameters = func.function.parameters.map((p: any, i: number) => `arg${i}: ${formatType(p)}`).join(", ");
-  const returnType = func.function.return.length === 0
-    ? ""
-    : `: ${func.function.return.length === 1
-      ? formatType(func.function.return[0])
-      : `(${func.function.return.map(formatType).join(", ")})`}`;
+  const parameters = func.function.parameters
+    .map((p: any, i: number) => `arg${i}: ${formatType(p)}`)
+    .join(", ");
+  const returnType =
+    func.function.return.length === 0
+      ? ""
+      : `: ${
+          func.function.return.length === 1
+            ? formatType(func.function.return[0])
+            : `(${func.function.return.map(formatType).join(", ")})`
+        }`;
   return `  ${entryKeyword}${visKeyword}fun ${name}${generics}(${parameters})${returnType} {\n    // TODO: implement\n  }`;
 }
 
@@ -121,37 +132,3 @@ export function downloadMoveCode(
   a.click();
   URL.revokeObjectURL(url);
 }
-\
-        return: any[];
-      };
-    }
-  >
-) => {
-  return Object.entries(functions)
-    .map(([name, fn]) => {
-      const f = fn.function;
-      const vis = f.visibility.toLowerCase();
-      const entry = f.isEntry ? "entry " : "";
-      const typeParams = f.typeParameters.length
-        ? `<${f.typeParameters.map((_, i) => `T${i}`).join(", ")}>`
-        : "";
-      const params = f.parameters
-        .map((_, i) => `arg${i}: ${formatType(_)}`)
-        .join(", ");
-      const returns =
-        f.return.length > 0
-          ? `: ${f.return.map((r) => formatType(r)).join(", ")}`
-          : "";
-      return `${vis} ${entry}fun ${name}${typeParams}(${params})${returns} {\n  // ...\n}`;
-    })
-    .join("\n\n");
-};
-
-const formatType = (type: any) => {
-  if (typeof type === "string") return type;
-  if ("Struct" in type) {
-    const s = type.Struct;
-    return `${s.address}::${s.module}::${s.name}`;
-  }
-  return "Unknown";
-};

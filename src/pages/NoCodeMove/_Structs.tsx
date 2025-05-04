@@ -20,13 +20,13 @@ interface Props {
 }
 
 export default function Structs({ structs, setStructs, imports }: Props) {
-  const addStruct = (name: string) => {
-    const newStruct = newEmptyStruct();
-    setStructs((prev) => ({
-      ...prev,
-      [name]: newStruct,
-    }));
-  };
+  // const addStruct = (name: string) => {
+  //   const newStruct = newEmptyStruct();
+  //   setStructs((prev) => ({
+  //     ...prev,
+  //     [name]: newStruct,
+  //   }));
+  // };
 
   return (
     <div>
