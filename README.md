@@ -1,54 +1,73 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# SuiMoveScratch
 
-Currently, two official plugins are available:
+**Visualize and Explore Move Smart Contracts Without Writing Code**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+SuiMoveScratch is a no-code developer tool that transforms Move smart contracts into intuitive, visual building blocks. Designed for developers, learners, and blockchain enthusiasts, this tool helps you explore the structure of Move modules deployed on the Sui blockchain without having to read the raw code.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Features
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+-  Parses structured Move code (in JSON format)
+-  Renders structs, functions, imports, and constants as block-style cards
+-  Helps beginners understand Move smart contracts visually
+-  Built with modern tech: React + Vite + TypeScript
+-  Extensible architecture for future versions (drag-and-drop, composable code generation, etc.)
+
+---
+
+## Installation & Quick Start
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/BlockBlockYonsei/SuiMoveScratch.git
+cd SuiMoveScratch
+
+# 2. Install dependencies
+npm install
+
+# 3. Start the development server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Then open [http://localhost:5173](http://localhost:5173) in your browser.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## How It Works
+
+1. You provide a `move_source_code.json` file in the `public/` directory  
+   (It should contain parsed Move code as structured JSON)
+2. The app parses the file and identifies:
+   - Modules
+   - Structs and their fields
+   - Functions and their parameters
+   - Type parameters and return values
+3. Each element is rendered as a UI "block" similar to Scratch cards
+4. You can visually browse the contract logic without looking at raw code
+
+---
+
+## License
+
+MIT License  
+Feel free to fork, remix, or contribute under the terms of the license.
+
+---
+
+## Authors
+
+Made by **BlockBlock Yonsei**  
+- 🧑‍🎓 Blockchain club at Yonsei University
+- 🌐 [BlokBlock Website](https://blockblock-website.onrender.com/)
+- 🔗 [BlockBlock Twitter](https://x.com/ysblockblock)
+
+---
+
+## Useful Links
+
+- 🔗 [SuiMoveScratch GitHub](https://github.com/BlockBlockYonsei/SuiMoveScratch)
+- 🔗 [SuiMoveScratch Twitter](https://x.com/suimovescratch)
+- 🧠 Learn more about Move language: [https://move-language.github.io](https://move-language.github.io)
+- 🌐 [Sui Official Docs](https://docs.sui.io)
