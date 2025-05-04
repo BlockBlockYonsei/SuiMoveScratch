@@ -22,6 +22,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { generateFunctionCode } from "@/pages/NoCodeMove/utils/generateCode";
 
 export default function AddFunctionDialog({
   imports,
@@ -39,7 +40,7 @@ export default function AddFunctionDialog({
   const [typeParameters, setTypeParameters] = useState<SuiMoveAbilitySet[]>([]);
   const [typeParameterNames, setTypeParameterNames] = useState<string[]>([]);
   const [parameters, setParameters] = useState<{ name: string; type: any }[]>(
-    []
+    [],
   );
   const [returns, setReturns] = useState<any[]>([]);
 
@@ -223,19 +224,15 @@ export default function AddFunctionDialog({
 
         {/* Preview */}
         <div className="bg-gray-100 p-4 text-sm rounded whitespace-pre-wrap mb-4">
-          {`fun ${functionName}${
-            typeParameterNames.length > 0
-              ? `<${typeParameterNames.join(", ")}>`
-              : ""
-          }(): ${
-            returns.length > 0
-              ? returns
-                  .map((r) =>
-                    typeof r === "string" ? r : r.Struct?.name || "Unknown"
-                  )
-                  .join(", ")
-              : "()"
-          } { ... }`}
+          {generateFunctionCode(functionName, {
+            function: {
+              visibility,
+              isEntry,
+              typeParameters,
+              parameters: parameters.map((p) => p.type),
+              return: returns,
+            },
+          })}
         </div>
 
         <Button onClick={handleComplete}>Complete</Button>
