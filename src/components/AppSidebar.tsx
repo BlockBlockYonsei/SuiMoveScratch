@@ -40,6 +40,7 @@ export function AppSidebar({
       }));
     }
   };
+  
 
   return (
     <Accordion
@@ -83,7 +84,14 @@ export function AppSidebar({
       <AccordionItem value="item-2">
         <AccordionTrigger>Structs</AccordionTrigger>
         <AccordionContent>
-          <StructListView structs={structs} />
+        <StructListView
+          structs={structs}
+          onDelete={(nameToDelete) => {
+            const newStructs = { ...structs };
+            delete newStructs[nameToDelete];
+            setStructs(newStructs);
+          }}
+        />
         </AccordionContent>
         <AccordionContent>
           <AddStructDialog
