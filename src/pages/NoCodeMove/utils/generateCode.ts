@@ -30,7 +30,11 @@ export function generateImportsCode(
     .join("\n");
 }
 
-export function generateStructCode(name: string, struct: any): string {
+export function generateStructCode(
+  name: string,
+  struct: any,
+  typeParameterNames?: string[]
+): string {
   const abilities = struct.abilities.abilities
     .map((a: string) => a.toLowerCase())
     .join(", ");
@@ -38,11 +42,13 @@ export function generateStructCode(name: string, struct: any): string {
   const typeParams = struct.typeParameters
     .map((tp: any, i: number) => {
       const phantom = tp.isPhantom ? "phantom " : "";
-      const name = struct.typeParameters.length === 1 ? "T" : `T${i}`;
+      const paramName =
+        typeParameterNames?.[i] ??
+        (struct.typeParameters.length === 1 ? "T" : `T${i}`);
       const abilities = tp.constraints?.abilities
         ?.map((a: string) => a.toLowerCase())
         .join(" + ");
-      return `${phantom}${name}${abilities ? `: ${abilities}` : ""}`;
+      return `${phantom}${paramName}${abilities ? `: ${abilities}` : ""}`;
     })
     .join(", ");
 

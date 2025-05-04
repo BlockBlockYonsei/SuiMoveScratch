@@ -15,6 +15,7 @@ import {
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
 import TypeSelect from "../pages/NoCodeMove/components/TypeSelect";
+import { generateStructCode } from "@/pages/NoCodeMove/utils/generateCode";
 
 export default function AddStructDialog({ imports, structs, setStructs }: any) {
   const [open, setOpen] = useState(false);
@@ -209,24 +210,15 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
 
         <div className="mt-4">
           <pre className="text-sm bg-gray-100 p-4 rounded whitespace-pre-wrap">
-            {`public struct ${structName}${
-              typeParameterNames.length > 0
-                ? `<${typeParameterNames.join(", ")}>`
-                : ""
-            } ${abilities.length > 0 ? `has ${abilities.join(", ")}` : ""} {
-${fields
-  .map(
-    (f) =>
-      `  ${f.name}: ${
-        typeof f.type === "string"
-          ? f.type
-          : "Struct" in f.type
-          ? f.type.Struct.name
-          : "Unknown"
-      }`,
-  )
-  .join("\n")}
-}`}
+            {generateStructCode(
+              structName,
+              {
+                abilities: { abilities },
+                typeParameters,
+                fields,
+              },
+              typeParameterNames,
+            )}
           </pre>
         </div>
 
