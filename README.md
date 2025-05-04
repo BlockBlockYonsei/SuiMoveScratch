@@ -9,10 +9,9 @@ SuiMoveScratch is a no-code developer tool that transforms Move smart contracts 
 
 ## Features
 
--  Parses structured Move code (in JSON format)
+-  Generates structured Move code 
 -  Renders structs, functions, imports, and constants as block-style cards
 -  Helps beginners understand Move smart contracts visually
--  Built with modern tech: React + Vite + TypeScript
 -  Extensible architecture for future versions (drag-and-drop, composable code generation, etc.)
 
 ---
