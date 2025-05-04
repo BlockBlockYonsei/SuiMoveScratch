@@ -45,6 +45,7 @@ export function AppSidebar({
       }));
     }
   };
+  
 
   return (
     <Accordion

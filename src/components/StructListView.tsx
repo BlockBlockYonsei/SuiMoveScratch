@@ -6,6 +6,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
+import { X } from "lucide-react";
 
 function StructCardView({
   structName,
@@ -16,10 +17,16 @@ function StructCardView({
   struct: SuiMoveNormalizedStruct;
   onEdit: () => void;
 }) {
-
   return (
-    <Card className="w-full max-w-xl mx-auto mb-6">
+    <Card className="w-full max-w-xl mx-auto mb-6 relative">
       <CardHeader>
+        <button
+          onClick={() => onDelete(structName)}
+          className="absolute top-3 right-3 text-gray-400 hover:text-black"
+        >
+          <X size={20} />
+        </button>
+
         <CardTitle className="text-xl font-bold text-emerald-600">
           {structName}
         </CardTitle>
@@ -85,7 +92,6 @@ function StructCardView({
             Edit
           </button>
         </div>
-
       </CardContent>
     </Card>
   );
