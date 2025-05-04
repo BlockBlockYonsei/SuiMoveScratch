@@ -15,6 +15,7 @@ import {
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
 import TypeSelect from "../pages/NoCodeMove/components/TypeSelect";
+import { generateStructCode } from "@/pages/NoCodeMove/utils/generateCode";
 
 export default function AddStructDialog({ imports, structs, setStructs }: any) {
   const [open, setOpen] = useState(false);
@@ -38,7 +39,7 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
     setNewTypeParamAbilities((prev) =>
       prev.includes(ability)
         ? prev.filter((a) => a !== ability)
-        : [...prev, ability]
+        : [...prev, ability],
     );
   };
 
@@ -65,7 +66,7 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
     setAbilities((prev) =>
       prev.includes(ability)
         ? prev.filter((a) => a !== ability)
-        : [...prev, ability]
+        : [...prev, ability],
     );
   };
 
@@ -77,10 +78,10 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
 
   const updateFieldType = (
     fieldName: string,
-    newType: SuiMoveNormalizedType
+    newType: SuiMoveNormalizedType,
   ) => {
     setFields((prev) =>
-      prev.map((f) => (f.name === fieldName ? { ...f, type: newType } : f))
+      prev.map((f) => (f.name === fieldName ? { ...f, type: newType } : f)),
     );
   };
 
@@ -93,6 +94,7 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
         abilities: { abilities },
         fields,
         typeParameters,
+        typeParameterNames,
       },
     }));
 
@@ -209,24 +211,15 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
 
         <div className="mt-4">
           <pre className="text-sm bg-gray-100 p-4 rounded whitespace-pre-wrap">
-            {`public struct ${structName}${
-              typeParameterNames.length > 0
-                ? `<${typeParameterNames.join(", ")}>`
-                : ""
-            } ${abilities.length > 0 ? `has ${abilities.join(", ")}` : ""} {
-${fields
-  .map(
-    (f) =>
-      `  ${f.name}: ${
-        typeof f.type === "string"
-          ? f.type
-          : "Struct" in f.type
-          ? f.type.Struct.name
-          : "Unknown"
-      }`
-  )
-  .join("\n")}
-}`}
+            {generateStructCode(
+              structName,
+              {
+                abilities: { abilities },
+                typeParameters,
+                fields,
+              },
+              typeParameterNames,
+            )}
           </pre>
         </div>
 

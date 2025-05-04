@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Imports from "./_Imports";
 import Structs from "./_Structs";
 import Functions, { SuiMoveFunction } from "./_Functions";
-import { generateImportsCode } from "./utils/generateCode";
+import { downloadMoveCode, generateImportsCode } from "./utils/generateCode";
 
 export default function Main() {
   const [imports, setImports] = useState<
@@ -76,10 +76,10 @@ export default function Main() {
       {/* 디버깅 용 실제 데이터 보여주는 상자 */}
       <div className="min-h-screen p-6 max-w-xl bg-gray-200">
         <button
-          onClick={downloadImportsCode}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          onClick={() => downloadMoveCode(imports, structs, functions)}
+          className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700"
         >
-          코드 다운로드
+          Move 코드 다운로드
         </button>
         <div className="text-3xl">Imports</div>
         <div className="min-h-24 border-2 border-black rounded-md">
