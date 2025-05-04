@@ -27,7 +27,7 @@ export function AppSidebar({
     data: SuiMoveNormalizedModules,
     pkgAddress: string,
     moduleName: string,
-    structName: string
+    structName: string,
   ) => {
     if (moduleName) {
       const key = pkgAddress + "::" + moduleName;

@@ -3,8 +3,8 @@ import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 import { useState } from "react";
 import {
   generateImportsCode,
-  renderFunctions,
-  renderStructs,
+  generateStructCode,
+  generateFunctionCode,
 } from "./NoCodeMove/utils/generateCode";
 
 export default function Final() {
@@ -37,9 +37,17 @@ export default function Final() {
           <pre className="bg-white p-4 rounded-md shadow whitespace-pre-wrap overflow-auto">
             <code>{generateImportsCode(imports)}</code>
             <br /> <br />
-            <code>{renderStructs(structs)}</code>
+            <code>
+              {Object.entries(structs)
+                .map(([name, s]) => generateStructCode(name, s))
+                .join("\n\n")}
+            </code>
             <br /> <br />
-            <code>{renderFunctions(functions)}</code>
+            <code>
+              {Object.entries(functions)
+                .map(([name, f]) => generateFunctionCode(name, f))
+                .join("\n\n")}
+            </code>
           </pre>
         </div>
       </div>

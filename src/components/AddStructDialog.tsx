@@ -38,7 +38,7 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
     setNewTypeParamAbilities((prev) =>
       prev.includes(ability)
         ? prev.filter((a) => a !== ability)
-        : [...prev, ability]
+        : [...prev, ability],
     );
   };
 
@@ -65,7 +65,7 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
     setAbilities((prev) =>
       prev.includes(ability)
         ? prev.filter((a) => a !== ability)
-        : [...prev, ability]
+        : [...prev, ability],
     );
   };
 
@@ -77,10 +77,10 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
 
   const updateFieldType = (
     fieldName: string,
-    newType: SuiMoveNormalizedType
+    newType: SuiMoveNormalizedType,
   ) => {
     setFields((prev) =>
-      prev.map((f) => (f.name === fieldName ? { ...f, type: newType } : f))
+      prev.map((f) => (f.name === fieldName ? { ...f, type: newType } : f)),
     );
   };
 
@@ -223,7 +223,7 @@ ${fields
           : "Struct" in f.type
           ? f.type.Struct.name
           : "Unknown"
-      }`
+      }`,
   )
   .join("\n")}
 }`}
