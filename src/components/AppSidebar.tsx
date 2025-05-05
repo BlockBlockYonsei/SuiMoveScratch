@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/accordion";
 import AddImportDialog from "./AddImportDialog";
 import AddStructDialog from "./AddStructDialog";
+import EditStructDialog from "./EditStructDialog";
 import AddFunctionDialog from "./AddFunctionDialog";
 import {
   SuiMoveNormalizedModules,
@@ -13,6 +14,7 @@ import {
 } from "@mysten/sui/client";
 import StructListView from "./StructListView";
 import FunctionListView from "./FunctionListView";
+import { useState } from "react";
 
 export function AppSidebar({
   packages,
@@ -23,6 +25,9 @@ export function AppSidebar({
   setStructs,
   setFunctions,
 }: any) {
+  const [structToEdit, setStructToEdit] = useState<any>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+
   const addImport = (
     data: SuiMoveNormalizedModules,
     pkgAddress: string,
@@ -83,7 +88,11 @@ export function AppSidebar({
       <AccordionItem value="item-2">
         <AccordionTrigger>Structs</AccordionTrigger>
         <AccordionContent>
-          <StructListView structs={structs} />
+          <StructListView
+            structs={structs}
+            setStructToEdit={setStructToEdit}
+            setEditDialogOpen={setEditDialogOpen}
+          />
         </AccordionContent>
         <AccordionContent>
           <AddStructDialog
@@ -106,6 +115,14 @@ export function AppSidebar({
           />
         </AccordionContent>
       </AccordionItem>
+      <EditStructDialog
+        open={editDialogOpen}
+        setOpen={setEditDialogOpen}
+        structToEdit={structToEdit}
+        imports={imports}
+        structs={structs}
+        setStructs={setStructs}
+      />
     </Accordion>
   );
 }
