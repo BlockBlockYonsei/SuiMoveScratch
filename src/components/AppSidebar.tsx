@@ -32,7 +32,7 @@ export function AppSidebar({
     data: SuiMoveNormalizedModules,
     pkgAddress: string,
     moduleName: string,
-    structName: string,
+    structName: string
   ) => {
     if (moduleName) {
       const key = pkgAddress + "::" + moduleName;
@@ -110,7 +110,12 @@ export function AppSidebar({
       <AccordionItem value="item-3">
         <AccordionTrigger>Functions</AccordionTrigger>
         <AccordionContent>
-          <FunctionListView functions={functions} />
+          <FunctionListView
+            imports={imports}
+            structs={structs}
+            setFunctions={setFunctions}
+            functions={functions}
+          />
         </AccordionContent>
         <AccordionContent>
           <AddFunctionDialog

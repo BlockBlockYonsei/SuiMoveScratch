@@ -50,6 +50,7 @@ export default function FunctionModal({
     >,
   );
 
+  console.log(imports);
   return (
     <div
       ref={containerRef}
