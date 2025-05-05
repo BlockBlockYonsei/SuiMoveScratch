@@ -11,4 +11,5 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {allowedHosts: ["5173-blockblocky-suimovescra-qhsfrjf8czp.ws-us118.gitpod.io"]}
 });
