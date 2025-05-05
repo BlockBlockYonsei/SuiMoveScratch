@@ -1,3 +1,5 @@
+import { SuiMoveFunction } from "@/pages/NoCodeMove/_Functions";
+
 const PACKAGE_ALIASES: Record<string, string> = {
   "0x0000000000000000000000000000000000000000000000000000000000000001": "std",
   "0x0000000000000000000000000000000000000000000000000000000000000002": "sui",
@@ -31,7 +33,7 @@ export function generateImportsCode(
 export function generateStructCode(
   name: string,
   struct: any,
-  typeParameterNames?: string[]
+  typeParameterNames?: string[],
 ): string {
   const abilities = struct.abilities.abilities
     .map((a: string) => a.toLowerCase())
@@ -59,7 +61,10 @@ export function generateStructCode(
   return `public struct ${name}${generics} has ${abilities} {\n${fields}\n}`;
 }
 
-export function generateFunctionCode(name: string, func: any): string {
+export function generateFunctionCode(
+  name: string,
+  func: SuiMoveFunction,
+): string {
   const visibility = func.function.visibility.toLowerCase();
   const isEntry = func.function.isEntry;
   const entryKeyword = isEntry ? "entry " : "";
