@@ -17,16 +17,15 @@ function StructCardView({
   struct: SuiMoveNormalizedStruct;
   onEdit: () => void;
 }) {
-
   return (
     <Card className="w-full max-w-xl mx-auto mb-6 relative">
       <CardHeader>
-      <button
-        onClick={() => onDelete(structName)}
-        className="absolute top-3 right-3 text-gray-400 hover:text-black"
-      >
-        <X size={20} />
-      </button>
+        <button
+          // onClick={() => onDelete(structName)}
+          className="absolute top-3 right-3 text-gray-400 hover:text-black"
+        >
+          <X size={20} />
+        </button>
 
         <CardTitle className="text-xl font-bold text-emerald-600">
           {structName}
@@ -93,7 +92,6 @@ function StructCardView({
             Edit
           </button>
         </div>
-
       </CardContent>
     </Card>
   );

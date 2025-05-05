@@ -45,7 +45,6 @@ export function AppSidebar({
       }));
     }
   };
-  
 
   return (
     <Accordion
@@ -93,11 +92,11 @@ export function AppSidebar({
             structs={structs}
             setStructToEdit={setStructToEdit}
             setEditDialogOpen={setEditDialogOpen}
-            onDelete={(nameToDelete) => {
-              const newStructs = { ...structs };
-              delete newStructs[nameToDelete];
-              setStructs(newStructs);
-            }}
+            // onDelete={(nameToDelete) => {
+            //   const newStructs = { ...structs };
+            //   delete newStructs[nameToDelete];
+            //   setStructs(newStructs);
+            // }}
           />
         </AccordionContent>
         <AccordionContent>
