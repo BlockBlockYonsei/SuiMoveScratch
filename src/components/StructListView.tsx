@@ -10,10 +10,13 @@ import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 function StructCardView({
   structName,
   struct,
+  onEdit,
 }: {
   structName: string;
   struct: SuiMoveNormalizedStruct;
+  onEdit: () => void;
 }) {
+
   return (
     <Card className="w-full max-w-xl mx-auto mb-6">
       <CardHeader>
@@ -72,6 +75,17 @@ function StructCardView({
             ))
           )}
         </div>
+
+        {/* Edit Button */}
+        <div className="mt-4">
+          <button
+            onClick={onEdit}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md"
+          >
+            Edit
+          </button>
+        </div>
+
       </CardContent>
     </Card>
   );
@@ -79,13 +93,25 @@ function StructCardView({
 
 export default function StructListView({
   structs,
+  setStructToEdit,
+  setEditDialogOpen,
 }: {
   structs: Record<string, SuiMoveNormalizedStruct>;
+  setStructToEdit: (s: any) => void;
+  setEditDialogOpen: (open: boolean) => void;
 }) {
   return (
     <div className="space-y-4">
       {Object.entries(structs).map(([name, struct]) => (
-        <StructCardView key={name} structName={name} struct={struct} />
+        <StructCardView
+          key={name}
+          structName={name}
+          struct={struct}
+          onEdit={() => {
+            setStructToEdit({ name, ...struct });
+            setEditDialogOpen(true);
+          }}
+        />
       ))}
     </div>
   );
