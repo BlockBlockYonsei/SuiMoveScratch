@@ -1,4 +1,7 @@
-import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
+import {
+  SuiMoveNormalizedFunction,
+  SuiMoveNormalizedStruct,
+} from "@mysten/sui/client";
 import { useEffect, useState } from "react";
 import Imports from "./_Imports";
 import Structs from "./_Structs";
