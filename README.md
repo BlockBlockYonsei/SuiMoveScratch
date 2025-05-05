@@ -1,18 +1,18 @@
-
 # SuiMoveScratch
 
-**Visualize and Explore Move Smart Contracts Without Writing Code**
+**No-Code Move Module Explorer & Editor for the Sui Blockchain**
 
-SuiMoveScratch is a no-code developer tool that transforms Move smart contracts into intuitive, visual building blocks. Designed for developers, learners, and blockchain enthusiasts, this tool helps you explore the structure of Move modules deployed on the Sui blockchain without having to read the raw code.
+SuiMoveScratch is a visual no-code tool that helps developers and learners explore, edit, and understand Move smart contracts deployed on the Sui blockchain. It transforms Move code into editable UI components — making the learning curve smoother and the development experience friendlier.
 
 ---
 
 ## Features
 
--  Generates structured Move code 
--  Renders structs, functions, imports, and constants as block-style cards
--  Helps beginners understand Move smart contracts visually
--  Extensible architecture for future versions (drag-and-drop, composable code generation, etc.)
+- 🔍 Visualizes Move modules using structured JSON
+- 🧱 Renders and edits **Structs**, **Functions**, and **Imports** as card-style blocks
+- 🧠 Add new elements via interactive dialogs (no code needed)
+- 🛠️ Real-time list views for functions and structs
+- 🧩 Built with React, TypeScript, Vite, and Tailwind
 
 ---
 
@@ -36,15 +36,12 @@ Then open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## How It Works
 
-1. You provide a `move_source_code.json` file in the `public/` directory  
-   (It should contain parsed Move code as structured JSON)
-2. The app parses the file and identifies:
-   - Modules
-   - Structs and their fields
-   - Functions and their parameters
-   - Type parameters and return values
-3. Each element is rendered as a UI "block" similar to Scratch cards
-4. You can visually browse the contract logic without looking at raw code
+1. The app loads a JSON file (`move_source_code.json`) representing a Move module
+2. It parses the JSON and renders UI blocks for each element
+3. Users can:
+   - View, understand, and interact with existing structs/functions
+   - Add new components using no-code dialogs
+   - Visualize all elements in a structured sidebar and list view
 
 ---
 
@@ -70,3 +67,6 @@ Made by **BlockBlock Yonsei**
 - 🔗 [SuiMoveScratch Twitter](https://x.com/suimovescratch)
 - 🧠 Learn more about Move language: [https://move-language.github.io](https://move-language.github.io)
 - 🌐 [Sui Official Docs](https://docs.sui.io)
+
+
+---
