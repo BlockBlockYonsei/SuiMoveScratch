@@ -44,18 +44,36 @@ export default function TypeSelect({
     >,
   );
 
+  const getDefaultValue = () => {
+    if (!defaultValue) return undefined;
+    if (typeof defaultValue === "string") {
+      return `primitive::${defaultValue}`;
+    }
+    if ("abilities" in defaultValue) {
+      return `typeParam::${defaultValue.abilities.join(" + ")}`;
+    }
+    if ("Struct" in defaultValue) {
+      const { address, module, name } = defaultValue.Struct;
+      if (address === "0x0" && module === "currentModule") {
+        return `local::${name}`;
+      }
+      return `external::${address}::${module}::${name}`;
+    }
+    return undefined;
+  };
+
   const handleSelect = (value: string) => {
     const [kind, ...rest] = value.split("::");
 
     if (kind === "primitive") {
       setType(rest[0] as SuiMoveNormalizedType);
     } else if (kind === "typeParam") {
-      const index = parseInt(rest[0]);
+      const abilities = rest[0].split(" + ");
       setType({
         Struct: {
           address: "0x0",
           module: "currentModule",
-          name: `T${index}`,
+          name: "T",
           typeArguments: [],
         },
       });
@@ -83,25 +101,11 @@ export default function TypeSelect({
   };
 
   return (
-    <Select onValueChange={handleSelect}>
+    <Select onValueChange={handleSelect} defaultValue={getDefaultValue()}>
       <SelectTrigger>
         <SelectValue placeholder="Select type..." />
       </SelectTrigger>
       <SelectContent className="max-h-80 overflow-y-auto">
-        <Label className="px-2 text-xs text-muted-foreground">
-          Primitive Types
-        </Label>
-        {PRIMITIVE_TYPES.map((type) => {
-          if (typeof type !== "string") return null; // skip non-string types safely
-
-          return (
-            <SelectItem key={type} value={`primitive::${type}`}>
-              {type}
-            </SelectItem>
-          );
-        })}
-
-        <Separator className="my-2" />
         <Label className="px-2 text-xs text-muted-foreground">
           Type Parameters
         </Label>
@@ -110,6 +114,19 @@ export default function TypeSelect({
             T{i}
           </SelectItem>
         ))}
+
+        <Separator className="my-2" />
+        <Label className="px-2 text-xs text-muted-foreground">
+          Primitive Types
+        </Label>
+        {PRIMITIVE_TYPES.map((type) => {
+          if (typeof type !== "string") return null;
+          return (
+            <SelectItem key={type} value={`primitive::${type}`}>
+              {type}
+            </SelectItem>
+          );
+        })}
 
         <Separator className="my-2" />
         <Label className="px-2 text-xs text-muted-foreground">

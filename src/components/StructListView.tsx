@@ -21,7 +21,7 @@ function StructCardView({
     <Card className="w-full max-w-xl mx-auto mb-6 relative">
       <CardHeader>
         <button
-          onClick={() => onDelete(structName)}
+          // onClick={() => onDelete(structName)}
           className="absolute top-3 right-3 text-gray-400 hover:text-black"
         >
           <X size={20} />

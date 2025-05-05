@@ -1,47 +1,74 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { SuiMoveAbility, SuiMoveNormalizedType, SuiMoveStructTypeParameter } from "@mysten/sui/client";
+import {
+  SuiMoveAbility,
+  SuiMoveNormalizedType,
+  SuiMoveStructTypeParameter,
+} from "@mysten/sui/client";
 import TypeSelect from "../pages/NoCodeMove/components/TypeSelect";
 
 export default function EditStructDialog({
-    open,
-    setOpen,
-    structToEdit,
-    imports,
-    structs,
-    setStructs,
+  open,
+  setOpen,
+  structToEdit,
+  imports,
+  structs,
+  setStructs,
 }: {
-    open: boolean;
-    setOpen: (open: boolean) => void;
-    structToEdit: any;
-    imports: any;
-    structs: any;
-    setStructs: any;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  structToEdit: any;
+  imports: any;
+  structs: any;
+  setStructs: any;
 }) {
   const [structName, setStructName] = useState("");
   const [abilities, setAbilities] = useState<SuiMoveAbility[]>([]);
-  const [typeParameters, setTypeParameters] = useState<SuiMoveStructTypeParameter[]>([]);
-  const [fields, setFields] = useState<{ name: string; type: SuiMoveNormalizedType }[]>([]);
+  const [typeParameters, setTypeParameters] = useState<
+    SuiMoveStructTypeParameter[]
+  >([]);
+  const [fields, setFields] = useState<
+    { name: string; type: SuiMoveNormalizedType }[]
+  >([]);
+  const [typeParameterNames, setTypeParameterNames] = useState<string[]>([]);
 
   useEffect(() => {
     console.log("Received structToEdit:", structToEdit);
     if (structToEdit) {
       // structToEdit가 있을 때 데이터를 초기화
       setStructName(structToEdit.name);
-      setAbilities(structToEdit.abilities || []);
+      setAbilities(structToEdit.abilities?.abilities || []);
       setFields(structToEdit.fields || []);
       setTypeParameters(structToEdit.typeParameters || []);
+      setTypeParameterNames(structToEdit.typeParameterNames || []);
       setOpen(true);
     }
   }, [structToEdit]);
 
   // 필드 업데이트 함수
-  const updateFieldType = (fieldName: string, newType: SuiMoveNormalizedType) => {
+  const updateFieldType = (
+    fieldName: string,
+    newType: SuiMoveNormalizedType,
+  ) => {
     setFields((prev) =>
-      prev.map((f) => (f.name === fieldName ? { ...f, type: newType } : f))
+      prev.map((f) => (f.name === fieldName ? { ...f, type: newType } : f)),
     );
+  };
+
+  const updateTypeParameterName = (index: number, newName: string) => {
+    setTypeParameterNames((prev) => {
+      const newNames = [...prev];
+      newNames[index] = newName;
+      return newNames;
+    });
   };
 
   // 수정한 내용을 저장하는 함수
@@ -51,9 +78,10 @@ export default function EditStructDialog({
     setStructs((prev: any) => ({
       ...prev,
       [structName]: {
-        abilities,
+        abilities: { abilities },
         fields,
         typeParameters,
+        typeParameterNames,
       },
     }));
 
@@ -65,7 +93,9 @@ export default function EditStructDialog({
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Struct</DialogTitle>
-          <DialogDescription>Edit the details of your struct.</DialogDescription>
+          <DialogDescription>
+            Edit the details of your struct.
+          </DialogDescription>
         </DialogHeader>
 
         {/* Struct 이름 */}
@@ -84,12 +114,16 @@ export default function EditStructDialog({
             {["copy", "drop", "store", "key"].map((a) => (
               <Button
                 key={a}
-                variant={abilities.includes(a as SuiMoveAbility) ? "default" : "outline"}
+                variant={
+                  abilities.includes(a as SuiMoveAbility)
+                    ? "default"
+                    : "outline"
+                }
                 onClick={() =>
                   setAbilities((prev) =>
                     prev.includes(a as SuiMoveAbility)
-                    ? prev.filter((ability) => ability !== a)
-                    : [...prev, a as SuiMoveAbility]
+                      ? prev.filter((ability) => ability !== a)
+                      : [...prev, a as SuiMoveAbility],
                   )
                 }
               >
@@ -105,12 +139,24 @@ export default function EditStructDialog({
           <div className="flex gap-2 mb-2">
             {typeParameters.map((param, index) => (
               <div key={index} className="flex items-center gap-2">
-                <span>{param.name}</span>
+                <Input
+                  value={typeParameterNames[index] || `T${index}`}
+                  onChange={(e) =>
+                    updateTypeParameterName(index, e.target.value)
+                  }
+                  className="w-20"
+                />
                 <TypeSelect
                   imports={imports}
                   structs={structs}
                   typeParameters={[]}
-                  setType={(type) => updateFieldType(param.name, type)}
+                  defaultValue={param.constraints}
+                  setType={(type) =>
+                    updateFieldType(
+                      typeParameterNames[index] || `T${index}`,
+                      type,
+                    )
+                  }
                 />
               </div>
             ))}
@@ -127,6 +173,7 @@ export default function EditStructDialog({
                 imports={imports}
                 structs={structs}
                 typeParameters={[]}
+                defaultValue={field.type}
                 setType={(type) => updateFieldType(field.name, type)}
               />
             </div>

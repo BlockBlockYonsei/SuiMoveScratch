@@ -36,11 +36,11 @@ export function generateStructCode(
   struct: any,
   typeParameterNames?: string[],
 ): string {
-  const abilities = struct.abilities.abilities
+  const abilities = (struct.abilities?.abilities || [])
     .map((a: string) => a.toLowerCase())
     .join(", ");
 
-  const typeParams = struct.typeParameters
+  const typeParams = (struct.typeParameters || [])
     .map((tp: any, i: number) => {
       const phantom = tp.isPhantom ? "phantom " : "";
       const paramName =
@@ -55,7 +55,7 @@ export function generateStructCode(
 
   const generics = typeParams ? `<${typeParams}>` : "";
 
-  const fields = struct.fields
+  const fields = (struct.fields || [])
     .map((f: any) => `  ${f.name}: ${formatType(f.type)},`)
     .join("\n");
 
