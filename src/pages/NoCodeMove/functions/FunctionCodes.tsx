@@ -4,7 +4,7 @@ import {
 import FunctionModal from "./FunctionModal";
 import { useState } from "react";
 import { parseSuiMoveNormalizedType } from "../../PackageViewer1/utils";
-import { FunctionCodesProps } from "@/types/functions";
+import { SuiMoveFunction } from "@/types/move";import { FunctionCodesProps } from "@/types/functions";
 
 export default function FunctionCodes({
   imports,
