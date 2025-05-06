@@ -28,7 +28,7 @@ import {
 import { generateFunctionCode } from "@/pages/NoCodeMove/utils/generateCode";
 import { SuiMoveFunction } from "@/pages/NoCodeMove/_Functions";
 
-export default function AddFunctionDialog({
+export default function ManageFunctionDetail({
   imports,
   structs,
   setFunctions,
@@ -49,15 +49,12 @@ export default function AddFunctionDialog({
   const [parameters, setParameters] = useState<SuiMoveNormalizedType[]>([]);
   const [returns, setReturns] = useState<SuiMoveNormalizedType[]>([]);
 
-  const [newParamType, setNewParamType] = useState<
-    SuiMoveNormalizedType | undefined
-  >();
+  const [newParamType, setNewParamType] =
+    useState<SuiMoveNormalizedType>("Bool");
   const [newTypeParamAbilities, setNewTypeParamAbilities] = useState<
     SuiMoveAbility[]
   >([]);
-  const [newReturnType, setNewReturnType] = useState<
-    SuiMoveNormalizedType | undefined
-  >();
+  const [newReturnType, setNewReturnType] = useState<SuiMoveNormalizedType>();
 
   const toggleTypeParamAbility = (ability: SuiMoveAbility) => {
     setNewTypeParamAbilities((prev) =>
@@ -93,25 +90,13 @@ export default function AddFunctionDialog({
     setNewReturnType("Bool");
   };
 
-  const resetFunction = () => {
-    setFunctionName("new_function");
-    setVisibility("Private");
-    setIsEntry(false);
-    setTypeParameters([]);
-    setParameters([]);
-    setReturns([]);
-    setNewParamType(undefined);
-    setNewTypeParamAbilities([]);
-    setNewReturnType(undefined);
-  };
-
   const handleComplete = () => {
     const newFunction: SuiMoveNormalizedFunction = {
       isEntry: isEntry,
       parameters: parameters,
       return: returns,
       typeParameters: typeParameters,
-      visibility: visibility,
+      visibility: "Private",
     };
     const newSuiMoveFunction: SuiMoveFunction = {
       function: newFunction,
@@ -122,8 +107,6 @@ export default function AddFunctionDialog({
       ...prev,
       [functionName]: newSuiMoveFunction,
     }));
-
-    resetFunction();
     setOpen(false);
     // Optionally reset all states
   };
@@ -131,7 +114,7 @@ export default function AddFunctionDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="mx-auto">Create New Functions</Button>
+        <Button className="mx-auto">Manage Function</Button>
       </DialogTrigger>
 
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">

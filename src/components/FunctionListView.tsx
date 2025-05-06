@@ -5,22 +5,22 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
+import { SuiMoveFunction } from "@/pages/NoCodeMove/_Functions";
+import ManageFunctionDetail from "./ManageFunctionDetail";
+import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 
 export default function FunctionListView({
+  imports,
+  structs,
+  setFunctions,
   functions,
 }: {
-  functions: Record<
-    string,
-    {
-      function: {
-        visibility: string;
-        isEntry: boolean;
-        typeParameters: { abilities: string[] }[];
-        parameters: string[];
-        return: string[];
-      };
-    }
+  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
+  structs: Record<string, SuiMoveNormalizedStruct>;
+  setFunctions: React.Dispatch<
+    React.SetStateAction<Record<string, SuiMoveFunction>>
   >;
+  functions: Record<string, SuiMoveFunction>;
 }) {
   return (
     <div className="space-y-4 max-w-xl mx-auto">
@@ -94,6 +94,11 @@ export default function FunctionListView({
                   </ul>
                 )}
               </div>
+              <ManageFunctionDetail
+                imports={imports}
+                structs={structs}
+                setFunctions={setFunctions}
+              ></ManageFunctionDetail>
             </CardContent>
           </Card>
         );
