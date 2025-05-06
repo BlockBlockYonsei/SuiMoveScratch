@@ -3,15 +3,14 @@ import {
   SuiClientProvider,
   WalletProvider,
 } from "@mysten/dapp-kit";
-// import { getFullnodeUrl } from "@mysten/sui/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Routers from "./Routers";
+import ErrorBoundary from "./pages/NoCodeMove/components/ErrorBoundary";
 
 const { networkConfig } = createNetworkConfig({
-  // localnet: { url: getFullnodeUrl("localnet") },
-  // mainnet: { url: getFullnodeUrl("mainnet") },
   testnet: { url: "https://rpc-testnet.suiscan.xyz:443" },
 });
+
 const queryClient = new QueryClient();
 
 function App() {
@@ -19,7 +18,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
         <WalletProvider>
-          <Routers />
+          <ErrorBoundary>
+            <Routers />
+          </ErrorBoundary>
         </WalletProvider>
       </SuiClientProvider>
     </QueryClientProvider>

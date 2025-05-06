@@ -3,8 +3,9 @@ import {
   SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
 } from "@mysten/sui/client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import TypeModal from "./TypeModal";
+import { preventDefault } from "../utils";
 
 interface Props {
   key?: React.Key | null | undefined;
@@ -27,56 +28,88 @@ export default function StructFieldCard({
   setStructs,
   field,
 }: Props) {
-  // const [isOpen, setIsOpen] = useState<{ [key: string]: boolean }>({});
   const [isOpen, setIsOpen] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
 
-  const setType = (type: SuiMoveNormalizedType) => {
-    const updatedFields = structData.fields.map((f) =>
-      f.name === field.name ? { name: field.name, type } : f
-    );
-    const newStructData = {
-      ...structData,
-      fields: updatedFields,
+  // Handle clicks outside the modal to close it
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    }
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-    setStructs((prev) => ({
-      ...prev,
-      [structName]: newStructData,
-    }));
-    setIsOpen((prev) => !prev);
+  }, [isOpen]);
+
+  // Function to update the field type
+  const setType = (type: SuiMoveNormalizedType) => {
+    try {
+      // Create a new fields array with the updated field
+      const updatedFields = structData.fields.map((f) =>
+        f.name === field.name ? { ...f, type } : f
+      );
+      // Create a new struct with the updated fields
+      const newStructData = {
+        ...structData,
+        fields: updatedFields,
+      };
+      // Update the structs state
+      setStructs((prev) => ({
+        ...prev,
+        [structName]: newStructData,
+      }));
+      // Close the type modal
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Error setting field type:", error);
+    }
+  };
+
+  // Helper function to display the type in a readable format
+  const displayType = (type: SuiMoveNormalizedType): string => {
+    if (typeof type === "string") {
+      return type;
+    } else if ("Struct" in type) {
+      return type.Struct.name;
+    } else {
+      return "Unknown Type";
+    }
   };
 
   return (
-    <div key={key}>
-      <div className="relative">
+    <div key={key} className="mb-2">
+      <div className="relative flex items-center">
         <span className="text-lg text-blue-500 font-semibold">
           {field.name}:{" "}
         </span>
         <button
-          onKeyDown={(e) => {
-            if (e.key === "Escape") setIsOpen(false);
+          onClick={(e) => {
+            preventDefault(e);
+            setIsOpen(!isOpen);
           }}
-          onClick={() => {
-            setIsOpen((prev) => !prev);
-          }}
-          className="border-2 border-black cursor-pointer rounded-md"
+          className="border-2 border-black cursor-pointer rounded-md px-2 py-1 ml-2 hover:bg-gray-100"
         >
-          {typeof field.type === "string"
-            ? field.type
-            : "Struct" in field.type
-            ? field.type.Struct.name
-            : "Unknown Type"}
+          {displayType(field.type)}
         </button>
-
-        {/* 클릭시 나오는 모달 */}
-        <div className={`${isOpen ? "" : "hidden"} `}>
-          <TypeModal
-            imports={imports}
-            structs={structs}
-            // typeParameters={[{ abilities: ["Copy"] }]}
-            typeParameters={[]}
-            setType={setType}
-          ></TypeModal>
-        </div>
+        {/* Type selection modal */}
+        {isOpen && (
+          <div ref={modalRef} className="z-50">
+            <TypeModal
+              imports={imports}
+              structs={structs}
+              typeParameters={structData.typeParameters}
+              setType={setType}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
