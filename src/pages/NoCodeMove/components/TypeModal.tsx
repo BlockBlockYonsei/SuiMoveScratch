@@ -15,7 +15,7 @@ interface Props {
     >
   >;
   structs: Record<string, SuiMoveNormalizedStruct>;
-  typeParameters: SuiMoveStructTypeParameter[] | SuiMoveAbilitySet[]; // strudt or function
+  typeParameters: SuiMoveStructTypeParameter[] | SuiMoveAbilitySet[]; // struct or function
   setType: (arg0: SuiMoveNormalizedType) => void;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }

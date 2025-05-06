@@ -6,17 +6,27 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
+import { X } from "lucide-react";
 
 function StructCardView({
   structName,
   struct,
+  onEdit,
 }: {
   structName: string;
   struct: SuiMoveNormalizedStruct;
+  onEdit: () => void;
 }) {
   return (
-    <Card className="w-full max-w-xl mx-auto mb-6">
+    <Card className="w-full max-w-xl mx-auto mb-6 relative">
       <CardHeader>
+        <button
+          // onClick={() => onDelete(structName)}
+          className="absolute top-3 right-3 text-gray-400 hover:text-black"
+        >
+          <X size={20} />
+        </button>
+
         <CardTitle className="text-xl font-bold text-emerald-600">
           {structName}
         </CardTitle>
@@ -72,6 +82,16 @@ function StructCardView({
             ))
           )}
         </div>
+
+        {/* Edit Button */}
+        <div className="mt-4">
+          <button
+            onClick={onEdit}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md"
+          >
+            Edit
+          </button>
+        </div>
       </CardContent>
     </Card>
   );
@@ -79,13 +99,25 @@ function StructCardView({
 
 export default function StructListView({
   structs,
+  setStructToEdit,
+  setEditDialogOpen,
 }: {
   structs: Record<string, SuiMoveNormalizedStruct>;
+  setStructToEdit: (s: any) => void;
+  setEditDialogOpen: (open: boolean) => void;
 }) {
   return (
     <div className="space-y-4">
       {Object.entries(structs).map(([name, struct]) => (
-        <StructCardView key={name} structName={name} struct={struct} />
+        <StructCardView
+          key={name}
+          structName={name}
+          struct={struct}
+          onEdit={() => {
+            setStructToEdit({ name, ...struct });
+            setEditDialogOpen(true);
+          }}
+        />
       ))}
     </div>
   );
