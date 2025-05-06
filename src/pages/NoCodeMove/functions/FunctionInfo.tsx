@@ -1,4 +1,3 @@
-import { SuiMoveFunction } from "@/types/move";
 import { SuiMoveVisibility } from "@mysten/sui/client";
 import { FunctionInfoProps } from "@/types/functions";
 

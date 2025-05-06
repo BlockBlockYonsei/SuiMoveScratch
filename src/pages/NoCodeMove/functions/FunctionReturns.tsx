@@ -1,4 +1,6 @@
-import { SuiMoveNormalizedType } from "@mysten/sui/client";
+import {
+  SuiMoveNormalizedType,
+} from "@mysten/sui/client";
 import TypeButton from "../components/TypeButton";
 import { FunctionReturnsProps } from "@/types/functions";
 
