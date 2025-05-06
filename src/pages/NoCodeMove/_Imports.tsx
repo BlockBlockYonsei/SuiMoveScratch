@@ -1,31 +1,7 @@
-import {
-  SuiMoveNormalizedFunction,
-  SuiMoveNormalizedStruct,
-} from "@mysten/sui/client";
 import ImportButton from "./imports/ImportButton";
+import { ImportsProps } from "@/pages/NoCodeMove/types";
 
-interface Props {
-  imports: Record<
-    string,
-    Record<
-      string,
-      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
-    >
-  >;
-  setImports: React.Dispatch<
-    React.SetStateAction<
-      Record<
-        string,
-        Record<
-          string,
-          SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
-        >
-      >
-    >
-  >;
-}
-
-export default function Imports({ imports, setImports }: Props) {
+export default function Imports({ imports, setImports }: ImportsProps) {
   const packages = [
     "0x0000000000000000000000000000000000000000000000000000000000000001",
     "0x0000000000000000000000000000000000000000000000000000000000000002",
@@ -39,7 +15,7 @@ export default function Imports({ imports, setImports }: Props) {
         <ImportButton packages={packages} setImports={setImports} />
       </div>
 
-      {/* imort 한 module 보여주는 코드 */}
+      {/* import 한 module 보여주는 코드 */}
       {Object.entries(imports)
         .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
         .map(([key, values]) => {

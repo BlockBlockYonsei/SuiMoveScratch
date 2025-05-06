@@ -1,36 +1,14 @@
-import {
-  SuiMoveNormalizedFunction,
-  SuiMoveNormalizedStruct,
-} from "@mysten/sui/client";
+import { SuiMoveNormalizedFunction } from "@mysten/sui/client";
 import FunctionCard from "./functions/FunctionCard";
 import AddButton from "./components/AddButton";
-
-export interface SuiMoveFunction {
-  function: SuiMoveNormalizedFunction;
-  insideCode: Record<string, SuiMoveNormalizedFunction>;
-}
-
-interface Props {
-  imports: Record<
-    string,
-    Record<
-      string,
-      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
-    >
-  >;
-  structs: Record<string, SuiMoveNormalizedStruct>;
-  functions: Record<string, SuiMoveFunction>;
-  setFunctions: React.Dispatch<
-    React.SetStateAction<Record<string, SuiMoveFunction>>
-  >;
-}
+import { FunctionsProps, SuiMoveFunction } from "@/pages/NoCodeMove/types";
 
 export default function Functions({
   imports,
   structs,
   functions,
   setFunctions,
-}: Props) {
+}: FunctionsProps) {
   // const addFunction = (name: string) => {
   //   const newFunction: SuiMoveNormalizedFunction = {
   //     isEntry: false,

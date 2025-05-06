@@ -1,25 +1,13 @@
-import {
-  SuiMoveNormalizedFunction,
-  SuiMoveNormalizedStruct,
-} from "@mysten/sui/client";
+import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 import StructCard from "./structs/StructCard";
 import AddButton from "./components/AddButton";
+import { StructsProps } from "@/pages/NoCodeMove/types";
 
-interface Props {
-  imports: Record<
-    string,
-    Record<
-      string,
-      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
-    >
-  >;
-  structs: Record<string, SuiMoveNormalizedStruct>;
-  setStructs: React.Dispatch<
-    React.SetStateAction<Record<string, SuiMoveNormalizedStruct>>
-  >;
-}
-
-export default function Structs({ structs, setStructs, imports }: Props) {
+export default function Structs({
+  structs,
+  setStructs,
+  imports,
+}: StructsProps) {
   // const addStruct = (name: string) => {
   //   const newStruct = newEmptyStruct();
   //   setStructs((prev) => ({
