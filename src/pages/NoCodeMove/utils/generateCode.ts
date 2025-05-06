@@ -1,4 +1,4 @@
-import { SuiMoveFunction } from "@/pages/NoCodeMove/_Functions";
+import { SuiMoveFunction } from "@/types/move";
 
 const PACKAGE_ALIASES: Record<string, string> = {
   "0x0000000000000000000000000000000000000000000000000000000000000001": "std",

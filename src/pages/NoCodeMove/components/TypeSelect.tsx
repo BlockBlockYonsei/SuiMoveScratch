@@ -75,7 +75,7 @@ export default function TypeSelect({
     if (kind === "primitive") {
       setType(rest[0] as SuiMoveNormalizedType);
     } else if (kind === "typeParam") {
-      const abilities = rest[0].split(" + ");
+      // const abilities = rest[0].split(" + ");
       setType({
         Struct: {
           address: "0x0",

@@ -2,7 +2,7 @@ import {
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
 } from "@mysten/sui/client";
-import { SuiMoveFunction } from "../_Functions";
+import { SuiMoveFunction } from "@/types/move";
 import FunctionParameters from "./FunctionParameters";
 import FunctionReturns from "./FunctionReturns";
 import FunctionInfo from "./FunctionInfo";

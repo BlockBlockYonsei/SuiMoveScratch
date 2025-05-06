@@ -2,7 +2,7 @@ import {
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
 } from "@mysten/sui/client";
-import { SuiMoveFunction } from "../_Functions";
+import { SuiMoveFunction } from "@/types/move";
 import FunctionModal from "./FunctionModal";
 import { useState } from "react";
 import { parseSuiMoveNormalizedType } from "../../PackageViewer1/utils";
@@ -26,7 +26,7 @@ interface Props {
 
 export default function FunctionCodes({
   imports,
-  structs,
+  // structs,
   functions,
   functionName,
   functionData,
@@ -56,7 +56,7 @@ export default function FunctionCodes({
             functions={functions}
             addCode={(
               funcName: string,
-              funcData: SuiMoveNormalizedFunction
+              funcData: SuiMoveNormalizedFunction,
             ) => {
               let newFunctionData = functionData;
               newFunctionData.insideCode[funcName] = funcData;

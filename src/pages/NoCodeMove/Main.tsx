@@ -5,8 +5,9 @@ import {
 import { useEffect, useState } from "react";
 import Imports from "./_Imports";
 import Structs from "./_Structs";
-import Functions, { SuiMoveFunction } from "./_Functions";
-import { downloadMoveCode, generateImportsCode } from "./utils/generateCode";
+import Functions from "./_Functions";
+import { SuiMoveFunction } from "@/types/move";
+import { downloadMoveCode } from "./utils/generateCode";
 
 export default function Main() {
   const [imports, setImports] = useState<
@@ -22,7 +23,7 @@ export default function Main() {
     Record<string, SuiMoveNormalizedStruct>
   >({});
   const [functions, setFunctions] = useState<Record<string, SuiMoveFunction>>(
-    {}
+    {},
   );
 
   // =================================================
@@ -40,17 +41,6 @@ export default function Main() {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
-
-  function downloadImportsCode() {
-    const code = generateImportsCode(imports);
-    const blob = new Blob([code], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "imports.move"; //사용자가 다운로드 받을 제목 설정
-    a.click();
-    URL.revokeObjectURL(url);
-  }
 
   return (
     <div className="grid grid-cols-2">

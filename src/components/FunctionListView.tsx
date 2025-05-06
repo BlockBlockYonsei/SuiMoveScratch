@@ -5,7 +5,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { SuiMoveFunction } from "@/pages/NoCodeMove/_Functions";
+import { SuiMoveFunction } from "@/types/move";
 import ManageFunctionDetail from "./ManageFunctionDetail";
 import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 
