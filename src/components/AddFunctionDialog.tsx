@@ -232,6 +232,7 @@ export default function AddFunctionDialog({
               parameters: parameters.map((p) => p.type),
               return: returns,
             },
+            insideCode: {},
           })}
         </div>
 

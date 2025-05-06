@@ -1,24 +1,10 @@
 import {
-  SuiMoveAbilitySet,
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
-  SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
 import { useEffect, useRef } from "react";
-interface Props {
-  imports: Record<
-    string,
-    Record<
-      string,
-      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
-    >
-  >;
-  structs: Record<string, SuiMoveNormalizedStruct>;
-  typeParameters: SuiMoveStructTypeParameter[] | SuiMoveAbilitySet[]; // strudt or function
-  setType: (arg0: SuiMoveNormalizedType) => void;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { TypeModalProps } from "@/pages/NoCodeMove/types/components";
 
 export default function TypeModal({
   imports,
@@ -26,7 +12,7 @@ export default function TypeModal({
   typeParameters,
   setType,
   setIsOpen,
-}: Props) {
+}: TypeModalProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // 바깥 클릭 감지 로직
@@ -76,7 +62,7 @@ export default function TypeModal({
           SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
         >
       >
-    >
+    >,
   );
 
   return (

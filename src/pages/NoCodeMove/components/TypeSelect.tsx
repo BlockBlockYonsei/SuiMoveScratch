@@ -10,20 +10,15 @@ import { Separator } from "@/components/ui/separator";
 import {
   SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
-  SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
+import { TypeSelectProps } from "@/pages/NoCodeMove/types/components";
 
 export default function TypeSelect({
   imports,
   structs,
   typeParameters,
   setType,
-}: {
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
-  structs: Record<string, SuiMoveNormalizedStruct>;
-  typeParameters: SuiMoveStructTypeParameter[];
-  setType: (type: SuiMoveNormalizedType) => void;
-}) {
+}: TypeSelectProps) {
   const PRIMITIVE_TYPES: SuiMoveNormalizedType[] = [
     "Bool",
     "U8",

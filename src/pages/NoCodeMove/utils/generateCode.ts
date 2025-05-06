@@ -1,5 +1,5 @@
-import { SuiMoveFunction } from "@/pages/NoCodeMove/types/move";
-import { DEFAULT_PACKAGES } from "@/pages/NoCodeMove/constants/move";
+import { SuiMoveFunction } from "@/types/move";
+import { DEFAULT_PACKAGES } from "@/constants/move";
 
 const PACKAGE_ALIASES: Record<string, string> = {
   [DEFAULT_PACKAGES[0]]: "std",

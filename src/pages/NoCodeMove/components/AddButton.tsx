@@ -1,19 +1,13 @@
 import { useEffect, useRef, useState } from "react";
+import { AddButtonProps } from "@/pages/NoCodeMove/types/components";
 
-interface Props {
-  buttonClass?: string;
-  inputClass?: string;
-  title: string;
-  placeholder: string;
-  callback: (name: string) => void;
-}
 export default function AddButton({
   buttonClass,
   inputClass,
   title,
   placeholder,
   callback,
-}: Props) {
+}: AddButtonProps) {
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState("");

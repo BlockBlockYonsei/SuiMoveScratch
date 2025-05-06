@@ -1,26 +1,6 @@
-import {
-  SuiMoveAbilitySet,
-  SuiMoveNormalizedFunction,
-  SuiMoveNormalizedStruct,
-  SuiMoveNormalizedType,
-  SuiMoveStructTypeParameter,
-} from "@mysten/sui/client";
 import { useState } from "react";
 import TypeModal from "./TypeModal";
-
-interface Props {
-  imports: Record<
-    string,
-    Record<
-      string,
-      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
-    >
-  >;
-  structs: Record<string, SuiMoveNormalizedStruct>;
-  typeParameters: SuiMoveStructTypeParameter[] | SuiMoveAbilitySet[]; // strudt or function
-  type: SuiMoveNormalizedType;
-  setType: (arg0: SuiMoveNormalizedType) => void;
-}
+import { TypeButtonProps } from "@/pages/NoCodeMove/types/components";
 
 export default function TypeButton({
   imports,
@@ -28,7 +8,7 @@ export default function TypeButton({
   typeParameters,
   type,
   setType,
-}: Props) {
+}: TypeButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="relative inline-block">

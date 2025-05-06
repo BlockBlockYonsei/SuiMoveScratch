@@ -1,6 +1,6 @@
 import ImportButton from "./imports/ImportButton";
-import { ImportsProps } from "@/pages/NoCodeMove/types/move";
-import { DEFAULT_PACKAGES } from "@/pages/NoCodeMove/constants/move";
+import { ImportsProps } from "@/types/move";
+import { DEFAULT_PACKAGES } from "@/constants/move";
 
 export default function Imports({ imports, setImports }: ImportsProps) {
   const packages = DEFAULT_PACKAGES;

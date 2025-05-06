@@ -1,21 +1,15 @@
 import { SuiMoveAbility, SuiMoveAbilitySet } from "@mysten/sui/client";
+import { AbilityCardProps } from "@/pages/NoCodeMove/types/components";
 
-interface Props {
-  abilitySet: SuiMoveAbilitySet;
-  updateAbilitySet: (
-    getNewAbilitySet: (
-      abilitySet: SuiMoveAbilitySet,
-      ability: SuiMoveAbility
-    ) => SuiMoveAbilitySet,
-    ...args: any[]
-  ) => any;
-}
-export default function AbilityCard({ abilitySet, updateAbilitySet }: Props) {
+export default function AbilityCard({
+  abilitySet,
+  updateAbilitySet,
+}: AbilityCardProps) {
   const ABILITIES = ["Copy", "Drop", "Store", "Key"] as const;
 
   const getNewAbilitySet = (
     abilitySet: SuiMoveAbilitySet,
-    ability: SuiMoveAbility
+    ability: SuiMoveAbility,
   ) => {
     const index = abilitySet.abilities.indexOf(ability);
     const newAbilitySet: SuiMoveAbilitySet = {
