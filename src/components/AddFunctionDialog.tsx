@@ -26,7 +26,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { generateFunctionCode } from "@/pages/NoCodeMove/utils/generateCode";
-import { SuiMoveFunction } from "@/pages/NoCodeMove/_Functions";
+import { SuiMoveFunction } from "@/types/move";
 
 export default function AddFunctionDialog({
   imports,
@@ -63,7 +63,7 @@ export default function AddFunctionDialog({
     setNewTypeParamAbilities((prev) =>
       prev.includes(ability)
         ? prev.filter((a) => a !== ability)
-        : [...prev, ability]
+        : [...prev, ability],
     );
   };
 

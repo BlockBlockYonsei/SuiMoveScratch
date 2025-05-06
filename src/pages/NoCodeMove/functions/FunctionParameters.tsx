@@ -3,7 +3,7 @@ import {
   SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
 } from "@mysten/sui/client";
-import { SuiMoveFunction } from "../_Functions";
+import { SuiMoveFunction } from "@/types/move";
 import AddButton from "../components/AddButton";
 import TypeButton from "../components/TypeButton";
 

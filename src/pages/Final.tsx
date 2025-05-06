@@ -7,7 +7,7 @@ import {
   generateFunctionCode,
   downloadMoveCode,
 } from "./NoCodeMove/utils/generateCode";
-import { SuiMoveFunction } from "./NoCodeMove/_Functions";
+import { SuiMoveFunction } from "@/types/move";
 
 export default function Final() {
   const packages = [
@@ -21,7 +21,7 @@ export default function Final() {
     Record<string, SuiMoveNormalizedStruct>
   >({});
   const [functions, setFunctions] = useState<Record<string, SuiMoveFunction>>(
-    {}
+    {},
   );
 
   return (
@@ -54,8 +54,8 @@ export default function Final() {
                   generateStructCode(
                     name,
                     s,
-                    (s as any).typeParameterNames || []
-                  )
+                    (s as any).typeParameterNames || [],
+                  ),
                 )
                 .join("\n\n")}
             </code>
