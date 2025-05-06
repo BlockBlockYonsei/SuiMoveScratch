@@ -73,7 +73,13 @@ export default function FunctionListView({
                 ) : (
                   <ul className="ml-4 list-disc">
                     {fn.parameters.map((p, idx) => (
-                      <li key={idx}>{p}</li>
+                      <li key={idx}>
+                        {typeof p === "string"
+                          ? p
+                          : "Struct" in p
+                          ? p.Struct.name
+                          : "Unknown"}
+                      </li>
                     ))}
                   </ul>
                 )}
@@ -89,7 +95,13 @@ export default function FunctionListView({
                 ) : (
                   <ul className="ml-4 list-disc">
                     {fn.return.map((r, idx) => (
-                      <li key={idx}>{r}</li>
+                      <li key={idx}>
+                        {typeof r === "string"
+                          ? r
+                          : "Struct" in r
+                          ? r.Struct.name
+                          : "Unknown"}
+                      </li>
                     ))}
                   </ul>
                 )}
