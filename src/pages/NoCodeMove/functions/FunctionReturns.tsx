@@ -1,6 +1,4 @@
-import {
-  SuiMoveNormalizedType,
-} from "@mysten/sui/client";
+import { SuiMoveNormalizedType } from "@mysten/sui/client";
 import TypeButton from "../components/TypeButton";
 import { FunctionReturnsProps } from "@/types/functions";
 
@@ -29,25 +27,27 @@ export default function FunctionReturns({
           ➕ 리턴 타입 추가
         </button>
       </div>
-      {functionData.function.return.map((type, index) => {
-        const setType = (type: SuiMoveNormalizedType) => {
-          let newFunctionData = functionData;
-          newFunctionData.function.return[index] = type;
-          setFunctions((prev) => ({
-            ...prev,
-            [functionName]: newFunctionData,
-          }));
-        };
-        return (
-          <TypeButton
-            imports={imports}
-            structs={structs}
-            typeParameters={functionData.function.typeParameters}
-            setType={setType}
-            type={type}
-          />
-        );
-      })}
+      {functionData.function.return.map(
+        (type: SuiMoveNormalizedType, index: number) => {
+          const setType = (type: SuiMoveNormalizedType) => {
+            let newFunctionData = functionData;
+            newFunctionData.function.return[index] = type;
+            setFunctions((prev) => ({
+              ...prev,
+              [functionName]: newFunctionData,
+            }));
+          };
+          return (
+            <TypeButton
+              imports={imports}
+              structs={structs}
+              typeParameters={functionData.function.typeParameters}
+              setType={setType}
+              type={type}
+            />
+          );
+        },
+      )}
     </div>
   );
 }

@@ -60,7 +60,7 @@ export default function FunctionCodes({
             <div className="">
               <span className="font-semibold">
                 <span className="text-blue-500">let </span>(
-                {codeLine.return.map((r) => {
+                {codeLine.return.map((r: SuiMoveNormalizedType) => {
                   const returnType = parseSuiMoveNormalizedType(r);
                   return (
                     <span>
@@ -81,15 +81,20 @@ export default function FunctionCodes({
                   );
                 })}
                 ) = <span className="text-pink-500">{funcName}</span>&lt;
-                {codeLine.typeParameters.map((tp, i) => {
-                  return (
-                    <span>
-                      T{i}: {tp.abilities.join(", ")},
-                    </span>
-                  );
-                })}
+                {codeLine.typeParameters.map(
+                  (
+                    tp: SuiMoveNormalizedFunction["typeParameters"][0],
+                    i: number,
+                  ) => {
+                    return (
+                      <span>
+                        T{i}: {tp.abilities.join(", ")},
+                      </span>
+                    );
+                  },
+                )}
                 &gt;(
-                {codeLine.parameters.map((p) => {
+                {codeLine.parameters.map((p: SuiMoveNormalizedType) => {
                   const parameterType = parseSuiMoveNormalizedType(p);
                   return (
                     <span>

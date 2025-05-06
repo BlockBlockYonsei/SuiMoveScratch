@@ -30,33 +30,35 @@ export default function FunctionParameters({
           setParameterNames((prev) => [...prev, name]);
         }}
       />
-      {functionData.function.parameters.map((type, i) => {
-        const setType = (type: SuiMoveNormalizedType) => {
-          let newFunctionData = functionData;
-          newFunctionData.function.parameters[i] = type;
-          setFunctions((prev) => ({
-            ...prev,
-            [functionName]: newFunctionData,
-          }));
-        };
+      {functionData.function.parameters.map(
+        (type: SuiMoveNormalizedType, i: number) => {
+          const setType = (type: SuiMoveNormalizedType) => {
+            let newFunctionData = functionData;
+            newFunctionData.function.parameters[i] = type;
+            setFunctions((prev) => ({
+              ...prev,
+              [functionName]: newFunctionData,
+            }));
+          };
 
-        return (
-          <div>
-            <span className="text-lg font-semibold">
-              {`P${i}`}(
-              <span className="text-blue-500 ">{`${parameterNames[i]}`}</span>
-              ):
-            </span>
-            <TypeButton
-              imports={imports}
-              structs={structs}
-              typeParameters={functionData.function.typeParameters}
-              setType={setType}
-              type={type}
-            />
-          </div>
-        );
-      })}
+          return (
+            <div>
+              <span className="text-lg font-semibold">
+                {`P${i}`}(
+                <span className="text-blue-500 ">{`${parameterNames[i]}`}</span>
+                ):
+              </span>
+              <TypeButton
+                imports={imports}
+                structs={structs}
+                typeParameters={functionData.function.typeParameters}
+                setType={setType}
+                type={type}
+              />
+            </div>
+          );
+        },
+      )}
     </div>
   );
 }

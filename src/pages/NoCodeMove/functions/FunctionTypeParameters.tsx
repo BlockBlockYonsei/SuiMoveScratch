@@ -43,45 +43,47 @@ export default function FunctionTypeParameters({
         }}
       />
 
-      {functionData.function.typeParameters.map((t, i) => {
-        const updateAbilitySet = (
-          getNewAbilitySet: (
-            abilitySet: SuiMoveAbilitySet,
+      {functionData.function.typeParameters.map(
+        (t: SuiMoveAbilitySet, i: number) => {
+          const updateAbilitySet = (
+            getNewAbilitySet: (
+              abilitySet: SuiMoveAbilitySet,
+              ability: SuiMoveAbility,
+            ) => SuiMoveAbilitySet,
             ability: SuiMoveAbility,
-          ) => SuiMoveAbilitySet,
-          ability: SuiMoveAbility,
-        ) => {
-          const newTypeParameter = getNewAbilitySet(t, ability);
+          ) => {
+            const newTypeParameter = getNewAbilitySet(t, ability);
 
-          const newTypeParameters = [
-            ...functionData.function.typeParameters.slice(0, i),
-            newTypeParameter,
-            ...functionData.function.typeParameters.slice(i + 1),
-          ];
-          const newNormalizedFunctionData: SuiMoveNormalizedFunction = {
-            ...functionData.function,
-            typeParameters: newTypeParameters,
+            const newTypeParameters = [
+              ...functionData.function.typeParameters.slice(0, i),
+              newTypeParameter,
+              ...functionData.function.typeParameters.slice(i + 1),
+            ];
+            const newNormalizedFunctionData: SuiMoveNormalizedFunction = {
+              ...functionData.function,
+              typeParameters: newTypeParameters,
+            };
+            const newData = {
+              ...functionData,
+              function: newNormalizedFunctionData,
+            };
+            setFunctions((prev) => ({
+              ...prev,
+              [functionName]: newData,
+            }));
           };
-          const newData = {
-            ...functionData,
-            function: newNormalizedFunctionData,
-          };
-          setFunctions((prev) => ({
-            ...prev,
-            [functionName]: newData,
-          }));
-        };
-        return (
-          <div key={i}>
-            <span className="text-lg font-semibold">
-              {`T${i}`}(
-              <span className="text-blue-500 ">{`${typeParameterNames[i]}`}</span>
-              ):
-            </span>
-            <AbilityCard updateAbilitySet={updateAbilitySet} abilitySet={t} />
-          </div>
-        );
-      })}
+          return (
+            <div key={i}>
+              <span className="text-lg font-semibold">
+                {`T${i}`}(
+                <span className="text-blue-500 ">{`${typeParameterNames[i]}`}</span>
+                ):
+              </span>
+              <AbilityCard updateAbilitySet={updateAbilitySet} abilitySet={t} />
+            </div>
+          );
+        },
+      )}
     </div>
   );
 }
