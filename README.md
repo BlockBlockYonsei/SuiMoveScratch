@@ -36,14 +36,14 @@ Then open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## How It Works
 
-1. The app loads a JSON file (`move_source_code.json`) representing a Move module
-2. It parses the JSON and renders UI blocks for each element
-3. Users can:
-   - View, understand, and interact with existing structs/functions
-   - Add new components using no-code dialogs
-   - Visualize all elements in a structured sidebar and list view
+With **SuiMoveScratch**, you don’t need to write code to build Move smart contracts.
+
+- Simply click to add Structs, Functions, and Imports
+- All logic is visually organized as interactive cards
+- Anyone can start building in Move with zero setup or code knowledge
 
 ---
+
 
 ## License
 
