@@ -57,7 +57,7 @@ export default function StructFields({
       {structData.fields.map((field, _) => {
         const setType = (type: SuiMoveNormalizedType) => {
           const updatedFields = structData.fields.map((f) =>
-            f.name === field.name ? { name: field.name, type } : f
+            f.name === field.name ? { name: field.name, type } : f,
           );
           const newStructData = {
             ...structData,

@@ -1,11 +1,9 @@
 import ImportButton from "./imports/ImportButton";
-import { ImportsProps } from "@/pages/NoCodeMove/types";
+import { ImportsProps } from "@/pages/NoCodeMove/types/move";
+import { DEFAULT_PACKAGES } from "@/pages/NoCodeMove/constants/move";
 
 export default function Imports({ imports, setImports }: ImportsProps) {
-  const packages = [
-    "0x0000000000000000000000000000000000000000000000000000000000000001",
-    "0x0000000000000000000000000000000000000000000000000000000000000002",
-  ];
+  const packages = DEFAULT_PACKAGES;
 
   return (
     <section className="bg-white p-4 rounded-xl border-2 border-black">

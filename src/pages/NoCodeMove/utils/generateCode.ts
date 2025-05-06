@@ -1,8 +1,9 @@
-import { SuiMoveFunction } from "@/pages/NoCodeMove/_Functions";
+import { SuiMoveFunction } from "@/pages/NoCodeMove/types/move";
+import { DEFAULT_PACKAGES } from "@/pages/NoCodeMove/constants/move";
 
 const PACKAGE_ALIASES: Record<string, string> = {
-  "0x0000000000000000000000000000000000000000000000000000000000000001": "std",
-  "0x0000000000000000000000000000000000000000000000000000000000000002": "sui",
+  [DEFAULT_PACKAGES[0]]: "std",
+  [DEFAULT_PACKAGES[1]]: "sui",
 };
 
 export function formatType(type: any): string {

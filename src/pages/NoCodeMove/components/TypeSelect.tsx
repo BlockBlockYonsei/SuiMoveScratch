@@ -46,7 +46,7 @@ export default function TypeSelect({
     {} as Record<
       string,
       Record<string, Record<string, SuiMoveNormalizedStruct>>
-    >
+    >,
   );
 
   const handleSelect = (value: string) => {
@@ -140,7 +140,7 @@ export default function TypeSelect({
                 >
                   {moduleName}::{typeName}
                 </SelectItem>
-              ))
+              )),
             )}
           </div>
         ))}
