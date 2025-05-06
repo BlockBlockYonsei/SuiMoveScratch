@@ -1,9 +1,6 @@
 import {
-  SuiMoveAbilitySet,
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
-  SuiMoveNormalizedType,
-  SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
 
 export type SuiMoveFunction = {
@@ -40,28 +37,4 @@ export interface FunctionsProps extends BaseProps {
 export interface ImportsProps {
   imports: ImportsType;
   setImports: React.Dispatch<React.SetStateAction<ImportsType>>;
-}
-
-// Component Props Types
-export interface AddButtonProps {
-  buttonClass?: string;
-  inputClass?: string;
-  title: string;
-  placeholder: string;
-  callback: (name: string) => void;
-}
-
-export interface TypeModalProps {
-  imports: ImportsType;
-  structs: StructsType;
-  typeParameters: SuiMoveStructTypeParameter[] | SuiMoveAbilitySet[];
-  setType: (type: SuiMoveNormalizedType) => void;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-export interface TypeSelectProps {
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
-  structs: StructsType;
-  typeParameters: SuiMoveStructTypeParameter[];
-  setType: (type: SuiMoveNormalizedType) => void;
 }

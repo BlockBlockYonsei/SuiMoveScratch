@@ -1,7 +1,7 @@
 import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 import StructCard from "./structs/StructCard";
 import AddButton from "./components/AddButton";
-import { StructsProps } from "@/pages/NoCodeMove/types";
+import { StructsProps } from "@/types/move";
 
 export default function Structs({
   structs,

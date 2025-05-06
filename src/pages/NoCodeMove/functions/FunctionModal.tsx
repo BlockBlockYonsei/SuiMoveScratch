@@ -2,8 +2,8 @@ import {
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
 } from "@mysten/sui/client";
-import { SuiMoveFunction } from "../_Functions";
 import { useEffect, useRef } from "react";
+import { SuiMoveFunction } from "@/types/move";
 interface Props {
   imports: Record<
     string,

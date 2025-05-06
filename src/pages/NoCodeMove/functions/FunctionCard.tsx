@@ -2,13 +2,13 @@ import {
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
 } from "@mysten/sui/client";
-import { SuiMoveFunction } from "../_Functions";
 import FunctionParameters from "./FunctionParameters";
 import FunctionReturns from "./FunctionReturns";
 import FunctionInfo from "./FunctionInfo";
 import FunctionCodes from "./FunctionCodes";
 import { useState } from "react";
 import FunctionTypeParameters from "./FunctionTypeParameters";
+import { SuiMoveFunction } from "@/types/move";
 
 interface Props {
   imports: Record<

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import TypeModal from "./TypeModal";
-import { TypeButtonProps } from "@/pages/NoCodeMove/types/components";
+import { TypeButtonProps } from "@/types/components";
 
 export default function TypeButton({
   imports,

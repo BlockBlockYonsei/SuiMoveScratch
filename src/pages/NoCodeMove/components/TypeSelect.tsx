@@ -11,7 +11,7 @@ import {
   SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
 } from "@mysten/sui/client";
-import { TypeSelectProps } from "@/pages/NoCodeMove/types/components";
+import { TypeSelectProps } from "@/types/components";
 
 export default function TypeSelect({
   imports,

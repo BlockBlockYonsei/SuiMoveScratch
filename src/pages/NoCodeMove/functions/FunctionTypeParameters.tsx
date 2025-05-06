@@ -4,8 +4,8 @@ import {
   SuiMoveNormalizedFunction,
 } from "@mysten/sui/client";
 import AbilityCard from "../components/AbilityCard";
-import { SuiMoveFunction } from "../_Functions";
 import AddButton from "../components/AddButton";
+import { SuiMoveFunction } from "@/types/move";
 
 interface Props {
   functionName: string;
@@ -56,9 +56,9 @@ export default function FunctionTypeParameters({
         const updateAbilitySet = (
           getNewAbilitySet: (
             abilitySet: SuiMoveAbilitySet,
-            ability: SuiMoveAbility
+            ability: SuiMoveAbility,
           ) => SuiMoveAbilitySet,
-          ability: SuiMoveAbility
+          ability: SuiMoveAbility,
         ) => {
           const newTypeParameter = getNewAbilitySet(t, ability);
 

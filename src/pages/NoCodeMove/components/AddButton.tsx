@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AddButtonProps } from "@/pages/NoCodeMove/types/components";
+import { AddButtonProps } from "@/types/components";
 
 export default function AddButton({
   buttonClass,

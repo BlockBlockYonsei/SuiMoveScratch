@@ -1,7 +1,7 @@
 import { SuiMoveNormalizedFunction } from "@mysten/sui/client";
 import FunctionCard from "./functions/FunctionCard";
 import AddButton from "./components/AddButton";
-import { FunctionsProps, SuiMoveFunction } from "@/pages/NoCodeMove/types";
+import { FunctionsProps, SuiMoveFunction } from "@/types/move";
 
 export default function Functions({
   imports,
@@ -9,25 +9,6 @@ export default function Functions({
   functions,
   setFunctions,
 }: FunctionsProps) {
-  // const addFunction = (name: string) => {
-  //   const newFunction: SuiMoveNormalizedFunction = {
-  //     isEntry: false,
-  //     parameters: [],
-  //     return: [],
-  //     typeParameters: [],
-  //     visibility: "Private",
-  //   };
-  //   const newSuiMoveFunction: SuiMoveFunction = {
-  //     function: newFunction,
-  //     insideCode: [],
-  //   };
-
-  //   setFunctions((prev) => ({
-  //     ...prev,
-  //     [name]: newSuiMoveFunction,
-  //   }));
-  // };
-
   return (
     <div>
       <div className="bg-white p-4 rounded-xl border-2 border-black">

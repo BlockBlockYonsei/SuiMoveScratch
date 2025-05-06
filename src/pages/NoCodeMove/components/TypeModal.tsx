@@ -4,7 +4,7 @@ import {
   SuiMoveNormalizedType,
 } from "@mysten/sui/client";
 import { useEffect, useRef } from "react";
-import { TypeModalProps } from "@/pages/NoCodeMove/types/components";
+import { TypeModalProps } from "@/types/components";
 
 export default function TypeModal({
   imports,

@@ -1,5 +1,5 @@
 import { SuiMoveAbility, SuiMoveAbilitySet } from "@mysten/sui/client";
-import { AbilityCardProps } from "@/pages/NoCodeMove/types/components";
+import { AbilityCardProps } from "@/types/components";
 
 export default function AbilityCard({
   abilitySet,

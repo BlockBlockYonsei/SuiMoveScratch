@@ -3,10 +3,9 @@ import {
   SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
 } from "@mysten/sui/client";
-import { SuiMoveFunction } from "../_Functions";
 import AddButton from "../components/AddButton";
 import TypeButton from "../components/TypeButton";
-
+import { SuiMoveFunction } from "@/types/move";
 interface Props {
   imports: Record<
     string,

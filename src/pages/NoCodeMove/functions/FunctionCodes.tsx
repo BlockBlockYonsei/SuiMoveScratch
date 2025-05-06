@@ -2,11 +2,10 @@ import {
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
 } from "@mysten/sui/client";
-import { SuiMoveFunction } from "../_Functions";
 import FunctionModal from "./FunctionModal";
 import { useState } from "react";
 import { parseSuiMoveNormalizedType } from "../../PackageViewer1/utils";
-
+import { SuiMoveFunction } from "@/types/move";
 interface Props {
   imports: Record<
     string,
@@ -26,7 +25,7 @@ interface Props {
 
 export default function FunctionCodes({
   imports,
-  structs,
+  // structs,
   functions,
   functionName,
   functionData,
