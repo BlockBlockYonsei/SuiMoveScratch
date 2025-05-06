@@ -1,27 +1,10 @@
 import {
   SuiMoveNormalizedFunction,
-  SuiMoveNormalizedStruct,
 } from "@mysten/sui/client";
 import FunctionModal from "./FunctionModal";
 import { useState } from "react";
 import { parseSuiMoveNormalizedType } from "../../PackageViewer1/utils";
-import { SuiMoveFunction } from "@/types/move";
-interface Props {
-  imports: Record<
-    string,
-    Record<
-      string,
-      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
-    >
-  >;
-  structs: Record<string, SuiMoveNormalizedStruct>;
-  functions: Record<string, SuiMoveFunction>;
-  functionName: string;
-  functionData: SuiMoveFunction;
-  setFunctions: React.Dispatch<
-    React.SetStateAction<Record<string, SuiMoveFunction>>
-  >;
-}
+import { FunctionCodesProps } from "@/types/functions";
 
 export default function FunctionCodes({
   imports,
@@ -30,7 +13,7 @@ export default function FunctionCodes({
   functionName,
   functionData,
   setFunctions,
-}: Props) {
+}: FunctionCodesProps) {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div>
@@ -55,7 +38,7 @@ export default function FunctionCodes({
             functions={functions}
             addCode={(
               funcName: string,
-              funcData: SuiMoveNormalizedFunction
+              funcData: SuiMoveNormalizedFunction,
             ) => {
               let newFunctionData = functionData;
               newFunctionData.insideCode[funcName] = funcData;

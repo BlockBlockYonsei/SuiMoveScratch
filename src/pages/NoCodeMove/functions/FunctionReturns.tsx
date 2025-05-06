@@ -1,31 +1,16 @@
 import {
-  SuiMoveNormalizedFunction,
-  SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
 } from "@mysten/sui/client";
 import TypeButton from "../components/TypeButton";
-import { SuiMoveFunction } from "@/types/move";
+import { FunctionReturnsProps } from "@/types/functions";
+
 export default function FunctionReturns({
   imports,
   functionName,
   functionData,
   structs,
   setFunctions,
-}: {
-  imports: Record<
-    string,
-    Record<
-      string,
-      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
-    >
-  >;
-  functionName: string;
-  functionData: SuiMoveFunction;
-  structs: Record<string, SuiMoveNormalizedStruct>;
-  setFunctions: React.Dispatch<
-    React.SetStateAction<Record<string, SuiMoveFunction>>
-  >;
-}) {
+}: FunctionReturnsProps) {
   return (
     <div>
       <div>

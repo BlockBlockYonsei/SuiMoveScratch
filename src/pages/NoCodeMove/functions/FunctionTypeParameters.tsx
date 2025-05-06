@@ -5,24 +5,15 @@ import {
 } from "@mysten/sui/client";
 import AbilityCard from "../components/AbilityCard";
 import AddButton from "../components/AddButton";
-import { SuiMoveFunction } from "@/types/move";
+import { FunctionTypeParametersProps } from "@/types/functions";
 
-interface Props {
-  functionName: string;
-  functionData: SuiMoveFunction;
-  setFunctions: React.Dispatch<
-    React.SetStateAction<Record<string, SuiMoveFunction>>
-  >;
-  typeParameterNames: string[];
-  setTypeParameterNames: React.Dispatch<React.SetStateAction<string[]>>;
-}
 export default function FunctionTypeParameters({
   functionName,
   functionData,
   setFunctions,
   typeParameterNames,
   setTypeParameterNames,
-}: Props) {
+}: FunctionTypeParametersProps) {
   return (
     <div>
       <AddButton

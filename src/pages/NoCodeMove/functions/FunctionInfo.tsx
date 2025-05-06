@@ -1,18 +1,11 @@
-import { SuiMoveFunction } from "@/types/move";
 import { SuiMoveVisibility } from "@mysten/sui/client";
+import { FunctionInfoProps } from "@/types/functions";
 
-interface Props {
-  functionName: string;
-  functionData: SuiMoveFunction;
-  setFunctions: React.Dispatch<
-    React.SetStateAction<Record<string, SuiMoveFunction>>
-  >;
-}
 export default function FunctionInfo({
   functionName,
   functionData,
   setFunctions,
-}: Props) {
+}: FunctionInfoProps) {
   return (
     <div className="flex gap-2 text-xl font-semibold">
       <div className="">

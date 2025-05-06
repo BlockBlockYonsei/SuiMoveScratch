@@ -1,31 +1,10 @@
-import {
-  SuiMoveNormalizedFunction,
-  SuiMoveNormalizedStruct,
-} from "@mysten/sui/client";
 import FunctionParameters from "./FunctionParameters";
 import FunctionReturns from "./FunctionReturns";
 import FunctionInfo from "./FunctionInfo";
 import FunctionCodes from "./FunctionCodes";
 import { useState } from "react";
 import FunctionTypeParameters from "./FunctionTypeParameters";
-import { SuiMoveFunction } from "@/types/move";
-
-interface Props {
-  imports: Record<
-    string,
-    Record<
-      string,
-      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
-    >
-  >;
-  structs: Record<string, SuiMoveNormalizedStruct>;
-  functions: Record<string, SuiMoveFunction>;
-  functionName: string;
-  functionData: SuiMoveFunction;
-  setFunctions: React.Dispatch<
-    React.SetStateAction<Record<string, SuiMoveFunction>>
-  >;
-}
+import { FunctionCardProps } from "@/types/functions";
 
 export default function FunctionCard({
   imports,
@@ -34,7 +13,7 @@ export default function FunctionCard({
   functionName,
   functionData,
   setFunctions,
-}: Props) {
+}: FunctionCardProps) {
   const [typeParameterNames, setTypeParameterNames] = useState<string[]>([]);
   const [parameterNames, setParameterNames] = useState<string[]>([]);
 

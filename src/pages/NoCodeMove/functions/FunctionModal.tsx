@@ -3,26 +3,14 @@ import {
   SuiMoveNormalizedStruct,
 } from "@mysten/sui/client";
 import { useEffect, useRef } from "react";
-import { SuiMoveFunction } from "@/types/move";
-interface Props {
-  imports: Record<
-    string,
-    Record<
-      string,
-      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
-    >
-  >;
-  functions: Record<string, SuiMoveFunction>;
-  addCode: (funcName: string, funcData: SuiMoveNormalizedFunction) => void;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { FunctionModalProps } from "@/types/functions";
 
 export default function FunctionModal({
   imports,
   functions,
   addCode,
   setIsOpen,
-}: Props) {
+}: FunctionModalProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // 바깥 클릭 감지 로직
@@ -59,7 +47,7 @@ export default function FunctionModal({
           SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
         >
       >
-    >
+    >,
   );
 
   return (
@@ -131,7 +119,7 @@ export default function FunctionModal({
                                 {functionName}
                               </li>
                             );
-                          }
+                          },
                         )}
                       </ul>
                     </div>

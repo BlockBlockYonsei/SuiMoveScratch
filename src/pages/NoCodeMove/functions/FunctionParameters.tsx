@@ -1,28 +1,10 @@
 import {
-  SuiMoveNormalizedFunction,
-  SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
 } from "@mysten/sui/client";
 import AddButton from "../components/AddButton";
 import TypeButton from "../components/TypeButton";
-import { SuiMoveFunction } from "@/types/move";
-interface Props {
-  imports: Record<
-    string,
-    Record<
-      string,
-      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
-    >
-  >;
-  structs: Record<string, SuiMoveNormalizedStruct>;
-  functionName: string;
-  functionData: SuiMoveFunction;
-  setFunctions: React.Dispatch<
-    React.SetStateAction<Record<string, SuiMoveFunction>>
-  >;
-  parameterNames: string[];
-  setParameterNames: React.Dispatch<React.SetStateAction<string[]>>;
-}
+import { FunctionParametersProps } from "@/types/functions";
+
 export default function FunctionParameters({
   imports,
   structs,
@@ -31,7 +13,7 @@ export default function FunctionParameters({
   setFunctions,
   parameterNames,
   setParameterNames,
-}: Props) {
+}: FunctionParametersProps) {
   return (
     <div>
       <AddButton
