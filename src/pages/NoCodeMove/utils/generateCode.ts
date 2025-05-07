@@ -18,7 +18,7 @@ export function formatType(type: any): string {
 }
 
 export function generateImportsCode(
-  imports: Record<string, Record<string, any>>,
+  imports: Record<string, Record<string, any>>
 ): string {
   return Object.entries(imports)
     .map(([fullModuleName, structs]) => {
@@ -33,7 +33,7 @@ export function generateImportsCode(
 export function generateStructCode(
   name: string,
   struct: any,
-  typeParameterNames?: string[],
+  typeParameterNames?: string[]
 ): string {
   const abilities = (struct.abilities?.abilities || [])
     .map((a: string) => a.toLowerCase())
@@ -63,7 +63,7 @@ export function generateStructCode(
 
 export function generateFunctionCode(
   name: string,
-  func: SuiMoveFunction,
+  func: SuiMoveFunction
 ): string {
   const visibility = func.function.visibility.toLowerCase();
   const isEntry = func.function.isEntry;
@@ -90,7 +90,26 @@ export function generateFunctionCode(
             ? formatType(func.function.return[0])
             : `(${func.function.return.map(formatType).join(", ")})`
         }`;
-  return `${entryKeyword}${visKeyword}fun ${name}${generics}(${parameters})${returnType} {\n  // TODO: implement\n}`;
+
+  const insideCodeString = func.insideCode
+    .map((code) => {
+      if (code.return.length > 0) {
+        return `  let ${
+          code.return.length === 1
+            ? `${code.parameters.map((p) => p).join(", ")}`
+            : `(${code.parameters.map((p) => p).join(", ")}`
+        }${code.return.length === 1 ? "" : ")"} = ${
+          code.functionName
+        }(${code.parameters.map((p) => p).join(", ")})`;
+      } else {
+        return `  ${code.functionName}(${code.parameters
+          .map((p) => p)
+          .join(", ")})`;
+      }
+    })
+    .join("\n");
+
+  return `${entryKeyword}${visKeyword}fun ${name}${generics}(${parameters})${returnType} {\n${insideCodeString}\n}`;
 }
 
 export function generateMoveCode({
@@ -130,7 +149,7 @@ export function generateMoveCode({
 export function downloadMoveCode(
   imports: Record<string, any>,
   structs: Record<string, any>,
-  functions: Record<string, any>,
+  functions: Record<string, any>
 ) {
   const code = generateMoveCode({ imports, structs, functions });
   const blob = new Blob([code], { type: "text/plain" });

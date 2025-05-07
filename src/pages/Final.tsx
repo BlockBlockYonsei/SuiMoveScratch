@@ -21,8 +21,10 @@ export default function Final() {
     Record<string, SuiMoveNormalizedStruct>
   >({});
   const [functions, setFunctions] = useState<Record<string, SuiMoveFunction>>(
-    {},
+    {}
   );
+
+  console.log(functions);
 
   return (
     <div className="w-5/6 min-h-screen m-auto bg-gray-200">
@@ -54,8 +56,8 @@ export default function Final() {
                   generateStructCode(
                     name,
                     s,
-                    (s as any).typeParameterNames || [],
-                  ),
+                    (s as any).typeParameterNames || []
+                  )
                 )
                 .join("\n\n")}
             </code>

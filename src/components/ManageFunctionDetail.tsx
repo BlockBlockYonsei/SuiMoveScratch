@@ -8,16 +8,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import {
-  SuiMoveAbility,
-  SuiMoveAbilitySet,
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
-  SuiMoveNormalizedType,
-  SuiMoveVisibility,
 } from "@mysten/sui/client";
-import TypeSelect from "../pages/NoCodeMove/components/TypeSelect";
 import {
   Select,
   SelectTrigger,
@@ -25,91 +19,110 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { generateFunctionCode } from "@/pages/NoCodeMove/utils/generateCode";
 import { SuiMoveFunction } from "@/types/move";
+import { Label } from "./ui/label";
+import FunctionParameterSelect from "./FunctionParameterSelect";
+
+interface InsideCode {
+  functionName: string;
+  parameters: string[];
+  return: string[];
+  typeParameters: string[];
+}
 
 export default function ManageFunctionDetail({
   imports,
   structs,
+  functions,
+  selectedFunction,
   setFunctions,
 }: {
   imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
   structs: Record<string, SuiMoveNormalizedStruct>;
+  selectedFunction: [string, SuiMoveFunction];
+  functions: Record<string, SuiMoveFunction>;
   setFunctions: React.Dispatch<
     React.SetStateAction<Record<string, SuiMoveFunction>>
   >;
 }) {
   const [open, setOpen] = useState(false);
+  const [insideCodes, setInsideCodes] = useState<InsideCode[]>([]);
+  const [currentInsideCode, setCurrentInsideCode] = useState<InsideCode | null>(
+    null
+  );
+  const [selectedParams, setSelectedParams] = useState<string[]>([]);
+  const [selectedReturns, setSelectedReturns] = useState<string[]>([]);
+  const [selectedTypeArgs, setSelectedTypeArgs] = useState<string[]>([]);
 
-  const [functionName, setFunctionName] = useState("new_function");
-  const [visibility, setVisibility] = useState<SuiMoveVisibility>("Private");
-  const [isEntry, setIsEntry] = useState(false);
-  const [typeParameters, setTypeParameters] = useState<SuiMoveAbilitySet[]>([]);
-
-  const [parameters, setParameters] = useState<SuiMoveNormalizedType[]>([]);
-  const [returns, setReturns] = useState<SuiMoveNormalizedType[]>([]);
-
-  const [newParamType, setNewParamType] =
-    useState<SuiMoveNormalizedType>("Bool");
-  const [newTypeParamAbilities, setNewTypeParamAbilities] = useState<
-    SuiMoveAbility[]
-  >([]);
-  const [newReturnType, setNewReturnType] = useState<SuiMoveNormalizedType>();
-
-  const toggleTypeParamAbility = (ability: SuiMoveAbility) => {
-    setNewTypeParamAbilities((prev) =>
-      prev.includes(ability)
-        ? prev.filter((a) => a !== ability)
-        : [...prev, ability],
-    );
+  const handleSelect = (functionName: string) => {
+    const selectedFn = functions[functionName];
+    if (!selectedFn) return;
+    setCurrentInsideCode({
+      functionName: functionName,
+      parameters: [],
+      return: [],
+      typeParameters: [],
+    });
   };
 
-  // 실제 추가 함수
-  const commitTypeParameter = () => {
-    if (!newTypeParamAbilities) return;
-
-    setTypeParameters([
-      ...typeParameters,
-      {
-        abilities: newTypeParamAbilities,
-      },
-    ]);
-    // 초기화
-    setNewTypeParamAbilities([]);
+  const handleParameterSelect = (value: string, index: number) => {
+    setSelectedParams((prev) => {
+      const newParams = [...prev];
+      newParams[index] = value;
+      return newParams;
+    });
   };
 
-  const handleAddParam = () => {
-    if (!newParamType) return;
-    setParameters((prev) => [...prev, newParamType]);
-    setNewParamType("Bool");
+  const handleReturnSelect = (value: string, index: number) => {
+    setSelectedReturns((prev) => {
+      const newReturns = [...prev];
+      newReturns[index] = value;
+      return newReturns;
+    });
   };
 
-  const handleAddReturn = () => {
-    if (!newReturnType) return;
-    setReturns((prev) => [...prev, newReturnType]);
-    setNewReturnType("Bool");
+  const handleTypeArgSelect = (value: string, index: number) => {
+    setSelectedTypeArgs((prev) => {
+      const newTypeArgs = [...prev];
+      newTypeArgs[index] = value;
+      return newTypeArgs;
+    });
+  };
+
+  const handleConfirm = () => {
+    if (!currentInsideCode) return;
+
+    const updatedInsideCode = {
+      ...currentInsideCode,
+      parameters: selectedParams,
+      return: selectedReturns,
+      typeParameters: selectedTypeArgs,
+    };
+
+    setInsideCodes((prev) => [...prev, updatedInsideCode]);
+    setCurrentInsideCode(null);
+    setSelectedParams([]);
+    setSelectedReturns([]);
+    setSelectedTypeArgs([]);
   };
 
   const handleComplete = () => {
-    const newFunction: SuiMoveNormalizedFunction = {
-      isEntry: isEntry,
-      parameters: parameters,
-      return: returns,
-      typeParameters: typeParameters,
-      visibility: "Private",
-    };
-    const newSuiMoveFunction: SuiMoveFunction = {
-      function: newFunction,
-      insideCode: {},
-    };
+    if (insideCodes.length === 0) return;
 
-    setFunctions((prev) => ({
-      ...prev,
-      [functionName]: newSuiMoveFunction,
-    }));
+    setFunctions((prev) => {
+      const updatedFunction = {
+        ...prev[selectedFunction[0]],
+        insideCode: insideCodes,
+      };
+      return {
+        ...prev,
+        [selectedFunction[0]]: updatedFunction,
+      };
+    });
     setOpen(false);
-    // Optionally reset all states
   };
+
+  console.log(functions);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -119,156 +132,91 @@ export default function ManageFunctionDetail({
 
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Create a New Function</DialogTitle>
+          <DialogTitle>Manage a New Function</DialogTitle>
           <DialogDescription>
-            Define function properties, type parameters, arguments and return
-            types.
+            You can add codelines in your function.
           </DialogDescription>
         </DialogHeader>
-
         {/* Name */}
         <div className="mb-2">
           <label className="block mb-1 text-sm font-semibold">
-            Function Name
+            Function Name : {selectedFunction[0]}
           </label>
-          <Input
-            value={functionName}
-            onChange={(e) => setFunctionName(e.target.value)}
-          />
         </div>
-
         {/* Entry + Visibility */}
         <div className="flex gap-4 mb-4">
-          <Select
-            onValueChange={(v) => setIsEntry(v === "true")}
-            value={String(isEntry)}
-          >
-            <SelectTrigger className="w-32">
-              <SelectValue placeholder="Entry" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="true">Entry</SelectItem>
-              <SelectItem value="false">Non-entry</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select
-            onValueChange={(v) => setVisibility(v as SuiMoveVisibility)}
-            value={visibility}
-          >
-            <SelectTrigger className="w-32">
-              <SelectValue placeholder="Visibility" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Private">Private</SelectItem>
-              <SelectItem value="Friend">Friend</SelectItem>
-              <SelectItem value="Public">Public</SelectItem>
-            </SelectContent>
-          </Select>
+          <p>Entry :{String(selectedFunction[1].function.isEntry)}</p>
+          <p>Visibility : {selectedFunction[1].function.visibility}</p>
         </div>
+        <Label>Add Functions</Label>
+        <Select onValueChange={handleSelect}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select type..." />
+          </SelectTrigger>
+          <SelectContent>
+            <Label className="px-2 text-xs text-muted-foreground">
+              Current Module Functions
+            </Label>
+            {Object.keys(functions).map((functionName, idx) => {
+              return (
+                <SelectItem key={`${functionName}${idx}`} value={functionName}>
+                  {functionName}
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
+        </Select>
 
-        {/* Type Parameters */}
-        <div className="mb-4">
-          <label className="block mb-1 text-sm font-semibold">
-            Type Parameters
-          </label>
-
-          <div className="flex place-content-between  gap-2 mb-2 flex-wrap">
-            <div className="flex gap-x-2 mb-2 flex-wrap">
-              {["copy", "drop", "store", "key"].map((a) => (
-                <Button
-                  key={a}
-                  variant={
-                    newTypeParamAbilities.includes(a as SuiMoveAbility)
-                      ? "default"
-                      : "outline"
+        <div className="mt-4 space-y-2">
+          <Label>Code Preview</Label>
+          <div className="bg-gray-100 p-4 rounded space-y-2">
+            {insideCodes.map((funcObj, idx) => (
+              <div key={idx} className="flex items-center gap-2">
+                <span className="text-gray-500">{idx + 1}.</span>
+                <FunctionParameterSelect
+                  function={functions[funcObj.functionName].function}
+                  functionName={funcObj.functionName}
+                  onParameterSelect={(value) =>
+                    handleParameterSelect(value, idx)
                   }
-                  onClick={() => toggleTypeParamAbility(a as SuiMoveAbility)}
-                  size="sm"
-                >
-                  {a}
-                </Button>
-              ))}
-            </div>
-            <Button onClick={commitTypeParameter}>Add</Button>
-          </div>
-
-          {typeParameters.map((typeParameter, index) => (
-            <li key={`T${index}`} className="flex gap-x-2">
-              <span>T{index}</span>
-              {typeParameter.abilities.map((type) => (
-                <div>
-                  <span>{type}</span>
-                </div>
-              ))}
-            </li>
-          ))}
-        </div>
-
-        {/* Parameters */}
-        <div className="mb-4">
-          <label className="block mb-1 text-sm font-semibold">Parameters</label>
-          <div className="flex gap-2 mb-2">
-            <TypeSelect
-              imports={imports}
-              structs={structs}
-              typeParameters={[]}
-              setType={setNewParamType}
-            />
-            <Button onClick={handleAddParam}>Add</Button>
-          </div>
-          {parameters.map((p, index) => (
-            <li key={`arg${index}`} className="flex justify-between">
-              {typeof p === "string"
-                ? p
-                : "Struct" in p
-                ? p.Struct.name
-                : "Unknown"}
-            </li>
-          ))}
-        </div>
-
-        {/* Returns */}
-        <div className="mb-4">
-          <label className="block mb-1 text-sm font-semibold">
-            Return Types
-          </label>
-          <div className="flex gap-2 mb-2">
-            <TypeSelect
-              imports={imports}
-              structs={structs}
-              typeParameters={[]}
-              setType={setNewReturnType}
-            />
-            <Button onClick={handleAddReturn}>Add</Button>
-          </div>
-          <ul className="text-sm space-y-1">
-            {returns.map((ret, idx) => (
-              <li key={idx} className="text-gray-700">
-                {typeof ret === "string"
-                  ? ret
-                  : "Struct" in ret
-                  ? ret.Struct.name
-                  : "Unknown"}
-              </li>
+                  onReturnSelect={(value) => handleReturnSelect(value, idx)}
+                  onTypeArgSelect={(value) => handleTypeArgSelect(value, idx)}
+                  selectedParams={funcObj.parameters}
+                  selectedReturns={funcObj.return}
+                  selectedTypeArgs={funcObj.typeParameters}
+                  args={selectedFunction[1].function.parameters.length}
+                  structs={structs}
+                />
+              </div>
             ))}
-          </ul>
+            {currentInsideCode && (
+              <div className="flex items-center gap-2">
+                <span className="text-gray-500">{insideCodes.length + 1}.</span>
+                <FunctionParameterSelect
+                  function={functions[currentInsideCode.functionName].function}
+                  functionName={currentInsideCode.functionName}
+                  onParameterSelect={(value) =>
+                    handleParameterSelect(value, selectedParams.length)
+                  }
+                  onReturnSelect={(value) =>
+                    handleReturnSelect(value, selectedReturns.length)
+                  }
+                  onTypeArgSelect={(value) =>
+                    handleTypeArgSelect(value, selectedTypeArgs.length)
+                  }
+                  selectedParams={selectedParams}
+                  selectedReturns={selectedReturns}
+                  selectedTypeArgs={selectedTypeArgs}
+                  args={selectedFunction[1].function.parameters.length}
+                  structs={structs}
+                />
+                <Button onClick={handleConfirm} size="sm">
+                  Confirm
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
-
-        {/* Preview */}
-        <div className="bg-gray-100 p-4 text-sm rounded whitespace-pre-wrap mb-4">
-          {generateFunctionCode(functionName, {
-            function: {
-              visibility,
-              isEntry,
-              typeParameters,
-              parameters: parameters,
-              return: returns,
-            },
-            insideCode: {},
-          })}
-        </div>
-
         <Button onClick={handleComplete}>Complete</Button>
       </DialogContent>
     </Dialog>

@@ -5,7 +5,12 @@ import {
 
 export type SuiMoveFunction = {
   function: SuiMoveNormalizedFunction;
-  insideCode: Record<string, SuiMoveNormalizedFunction>;
+  insideCode: {
+    functionName: string;
+    parameters: string[];
+    return: string[];
+    typeParameters: string[];
+  }[];
 };
 
 export type ImportsType = Record<

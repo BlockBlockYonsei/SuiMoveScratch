@@ -63,7 +63,7 @@ export default function AddFunctionDialog({
     setNewTypeParamAbilities((prev) =>
       prev.includes(ability)
         ? prev.filter((a) => a !== ability)
-        : [...prev, ability],
+        : [...prev, ability]
     );
   };
 
@@ -115,7 +115,7 @@ export default function AddFunctionDialog({
     };
     const newSuiMoveFunction: SuiMoveFunction = {
       function: newFunction,
-      insideCode: {},
+      insideCode: [],
     };
 
     setFunctions((prev) => ({
@@ -282,7 +282,7 @@ export default function AddFunctionDialog({
               parameters: parameters,
               return: returns,
             },
-            insideCode: {},
+            insideCode: [],
           })}
         </div>
 
