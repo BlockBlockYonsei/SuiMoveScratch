@@ -109,6 +109,8 @@ export default function FunctionListView({
               <ManageFunctionDetail
                 imports={imports}
                 structs={structs}
+                functions={functions}
+                selectedFunction={[name, data]}
                 setFunctions={setFunctions}
               ></ManageFunctionDetail>
             </CardContent>
