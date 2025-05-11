@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select";
 import { generateFunctionCode } from "@/pages/NoCodeMove/utils/generateCode";
 import { SuiMoveFunction } from "@/types/move";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 export default function AddFunctionDialog({
   imports,
@@ -39,8 +40,6 @@ export default function AddFunctionDialog({
     React.SetStateAction<Record<string, SuiMoveFunction>>
   >;
 }) {
-  const [open, setOpen] = useState(false);
-
   const [functionName, setFunctionName] = useState("new_function");
   const [visibility, setVisibility] = useState<SuiMoveVisibility>("Private");
   const [isEntry, setIsEntry] = useState(false);
@@ -124,14 +123,13 @@ export default function AddFunctionDialog({
     }));
 
     resetFunction();
-    setOpen(false);
     // Optionally reset all states
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog>
       <DialogTrigger asChild>
-        <Button className="mx-auto">Create New Functions</Button>
+        <Button className="cursor-pointer">Create New Functions</Button>
       </DialogTrigger>
 
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
@@ -207,7 +205,9 @@ export default function AddFunctionDialog({
                 </Button>
               ))}
             </div>
-            <Button onClick={commitTypeParameter}>Add</Button>
+            <Button className="cursor-pointer" onClick={commitTypeParameter}>
+              Add
+            </Button>
           </div>
 
           {typeParameters.map((typeParameter, index) => (
@@ -232,7 +232,9 @@ export default function AddFunctionDialog({
               typeParameters={[]}
               setType={setNewParamType}
             />
-            <Button onClick={handleAddParam}>Add</Button>
+            <Button className="cursor-pointer" onClick={handleAddParam}>
+              Add
+            </Button>
           </div>
           {parameters.map((p, index) => (
             <li key={`arg${index}`} className="flex justify-between">
@@ -257,7 +259,9 @@ export default function AddFunctionDialog({
               typeParameters={[]}
               setType={setNewReturnType}
             />
-            <Button onClick={handleAddReturn}>Add</Button>
+            <Button className="cursor-pointer" onClick={handleAddReturn}>
+              Add
+            </Button>
           </div>
           <ul className="text-sm space-y-1">
             {returns.map((ret, idx) => (
@@ -286,7 +290,11 @@ export default function AddFunctionDialog({
           })}
         </div>
 
-        <Button onClick={handleComplete}>Complete</Button>
+        <DialogClose>
+          <Button className="cursor-pointer" onClick={handleComplete}>
+            Complete
+          </Button>
+        </DialogClose>
       </DialogContent>
     </Dialog>
   );

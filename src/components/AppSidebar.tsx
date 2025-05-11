@@ -49,10 +49,12 @@ export function AppSidebar({
   return (
     <Accordion
       type="multiple"
-      className="w-[300px] bg-blue-50 min-h-screen p-5"
+      className="w-[350px] bg-blue-50 min-h-screen p-5"
     >
       <AccordionItem value="item-1">
-        <AccordionTrigger>Imports</AccordionTrigger>
+        <AccordionTrigger className="cursor-pointer text-xl">
+          Imports
+        </AccordionTrigger>
         <AccordionContent>
           {Object.entries(imports)
             .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
@@ -86,7 +88,9 @@ export function AppSidebar({
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-2">
-        <AccordionTrigger>Structs</AccordionTrigger>
+        <AccordionTrigger className="cursor-pointer text-xl">
+          Structs
+        </AccordionTrigger>
         <AccordionContent>
           <StructListView
             structs={structs}
@@ -108,7 +112,9 @@ export function AppSidebar({
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-3">
-        <AccordionTrigger>Functions</AccordionTrigger>
+        <AccordionTrigger className="cursor-pointer text-xl">
+          Functions
+        </AccordionTrigger>
         <AccordionContent>
           <FunctionListView
             imports={imports}

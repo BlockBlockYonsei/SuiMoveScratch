@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 export default function AddImportDialog({
   packages,
@@ -32,7 +33,6 @@ export default function AddImportDialog({
   ) => void;
 }) {
   const [selectedPkg, setSelectedPkg] = useState<string | null>(null);
-  const [open, setOpen] = useState(false);
 
   const { data, isPending, error } = useSuiClientQuery(
     "getNormalizedMoveModulesByPackage",
@@ -45,9 +45,9 @@ export default function AddImportDialog({
   );
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog>
       <DialogTrigger asChild>
-        <Button className="mx-auto">Create New Imports</Button>
+        <Button className="cursor-pointer">Create New Imports</Button>
       </DialogTrigger>
 
       <DialogContent>
@@ -90,30 +90,33 @@ export default function AddImportDialog({
                     </div>
 
                     <ul className="ml-4 mt-2 space-y-1">
-                      <li
-                        onClick={() => {
-                          addImport(data, selectedPkg, moduleName, "Self");
-                        }}
-                        className="px-4 py-1 text-emerald-600 hover:bg-blue-50 cursor-pointer rounded transition"
-                      >
-                        Self
-                      </li>
-                      {Object.keys(moduleData.structs).map((structName) => (
+                      <DialogClose>
                         <li
-                          key={structName}
                           onClick={() => {
-                            addImport(
-                              data,
-                              selectedPkg,
-                              moduleName,
-                              structName
-                            );
-                            setOpen(false);
+                            addImport(data, selectedPkg, moduleName, "Self");
                           }}
                           className="px-4 py-1 text-emerald-600 hover:bg-blue-50 cursor-pointer rounded transition"
                         >
-                          {structName}
+                          Self
                         </li>
+                      </DialogClose>
+                      {Object.keys(moduleData.structs).map((structName) => (
+                        <DialogClose>
+                          <li
+                            key={structName}
+                            onClick={() => {
+                              addImport(
+                                data,
+                                selectedPkg,
+                                moduleName,
+                                structName
+                              );
+                            }}
+                            className="px-4 py-1 text-emerald-600 hover:bg-blue-50 cursor-pointer rounded transition"
+                          >
+                            {structName}
+                          </li>
+                        </DialogClose>
                       ))}
                     </ul>
                   </div>

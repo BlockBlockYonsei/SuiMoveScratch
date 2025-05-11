@@ -16,9 +16,9 @@ import {
 } from "@mysten/sui/client";
 import TypeSelect from "../pages/NoCodeMove/components/TypeSelect";
 import { generateStructCode } from "@/pages/NoCodeMove/utils/generateCode";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 export default function AddStructDialog({ imports, structs, setStructs }: any) {
-  const [open, setOpen] = useState(false);
   const [structName, setStructName] = useState("MyStruct");
   const [abilities, setAbilities] = useState<SuiMoveAbility[]>([]);
   const [typeParameterNames, setTypeParameterNames] = useState<string[]>([]);
@@ -39,7 +39,7 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
     setNewTypeParamAbilities((prev) =>
       prev.includes(ability)
         ? prev.filter((a) => a !== ability)
-        : [...prev, ability],
+        : [...prev, ability]
     );
   };
 
@@ -66,7 +66,7 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
     setAbilities((prev) =>
       prev.includes(ability)
         ? prev.filter((a) => a !== ability)
-        : [...prev, ability],
+        : [...prev, ability]
     );
   };
 
@@ -78,10 +78,10 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
 
   const updateFieldType = (
     fieldName: string,
-    newType: SuiMoveNormalizedType,
+    newType: SuiMoveNormalizedType
   ) => {
     setFields((prev) =>
-      prev.map((f) => (f.name === fieldName ? { ...f, type: newType } : f)),
+      prev.map((f) => (f.name === fieldName ? { ...f, type: newType } : f))
     );
   };
 
@@ -99,7 +99,6 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
     }));
 
     // dialog 닫기
-    setOpen(false);
 
     // 초기화 (선택사항)
     setStructName("MyStruct");
@@ -110,9 +109,9 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog>
       <DialogTrigger asChild>
-        <Button className="mx-auto">Create New Structures</Button>
+        <Button className="cursor-pointer">Create New Structures</Button>
       </DialogTrigger>
 
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
@@ -160,7 +159,9 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
               value={newTypeParamName}
               onChange={(e) => setNewTypeParamName(e.target.value)}
             />
-            <Button onClick={commitTypeParameter}>Add</Button>
+            <Button className="cursor-pointer" onClick={commitTypeParameter}>
+              Add
+            </Button>
           </div>
 
           <div className="flex gap-2 mb-2 flex-wrap">
@@ -193,7 +194,9 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
                 if (e.key === "Enter") addField();
               }}
             />
-            <Button onClick={addField}>Add</Button>
+            <Button className="cursor-pointer" onClick={addField}>
+              Add
+            </Button>
           </div>
 
           {fields.map((field) => (
@@ -218,12 +221,16 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
                 typeParameters,
                 fields,
               },
-              typeParameterNames,
+              typeParameterNames
             )}
           </pre>
         </div>
 
-        <Button onClick={handleComplete}>Complete</Button>
+        <DialogClose>
+          <Button className="cursor-pointer" onClick={handleComplete}>
+            Complete
+          </Button>
+        </DialogClose>
       </DialogContent>
     </Dialog>
   );
