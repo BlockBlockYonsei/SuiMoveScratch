@@ -19,12 +19,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { SUI_PACKAGES } from "@/Constants";
 
 export default function AddImportDialog({
-  packages,
   addImport,
 }: {
-  packages: string[];
   addImport: (
     data: SuiMoveNormalizedModules,
     pkgAddress: string,
@@ -64,7 +63,7 @@ export default function AddImportDialog({
             <SelectValue placeholder="Select a package" />
           </SelectTrigger>
           <SelectContent>
-            {packages.map((pkg) => (
+            {SUI_PACKAGES.map((pkg) => (
               <SelectItem key={pkg} value={pkg}>
                 {pkg.slice(0, 8)}...{pkg.slice(-4)}
               </SelectItem>

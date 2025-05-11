@@ -15,9 +15,9 @@ import {
 import StructListView from "./StructListView";
 import FunctionListView from "./FunctionListView";
 import { useState } from "react";
+import { SUI_PACKAGES } from "@/Constants";
 
 export function AppSidebar({
-  packages,
   imports,
   structs,
   functions,
@@ -66,8 +66,8 @@ export function AppSidebar({
 
               const pkgName = () => {
                 const pkg = key.split("::")[0];
-                if (pkg === packages[0]) return "std";
-                else if (pkg === packages[1]) return "sui";
+                if (pkg === SUI_PACKAGES[0]) return "std";
+                else if (pkg === SUI_PACKAGES[1]) return "sui";
                 else return pkg;
               };
 
@@ -84,7 +84,7 @@ export function AppSidebar({
             })}{" "}
         </AccordionContent>
         <AccordionContent>
-          <AddImportDialog packages={packages} addImport={addImport} />
+          <AddImportDialog addImport={addImport} />
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-2">

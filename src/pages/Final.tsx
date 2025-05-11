@@ -10,10 +10,6 @@ import {
 import { SuiMoveFunction } from "@/types/move";
 
 export default function Final() {
-  const packages = [
-    "0x0000000000000000000000000000000000000000000000000000000000000001",
-    "0x0000000000000000000000000000000000000000000000000000000000000002",
-  ];
   const [imports, setImports] = useState<
     Record<string, Record<string, SuiMoveNormalizedStruct>>
   >({});
@@ -30,7 +26,6 @@ export default function Final() {
     <div className="w-5/6 min-h-screen m-auto bg-gray-200">
       <div className="flex">
         <AppSidebar
-          packages={packages}
           imports={imports}
           structs={structs}
           functions={functions}
