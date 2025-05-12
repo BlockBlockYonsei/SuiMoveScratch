@@ -6,15 +6,12 @@ import {
 } from "@/components/ui/accordion";
 import AddImportDialog from "./AddImportDialog";
 import AddStructDialog from "./AddStructDialog";
-import EditStructDialog from "./EditStructDialog";
 import AddFunctionDialog from "./AddFunctionDialog";
-import {
-  SuiMoveNormalizedModules,
-  SuiMoveNormalizedStruct,
-} from "@mysten/sui/client";
+import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 import StructListView from "./StructListView";
 import FunctionListView from "./FunctionListView";
-import { useState } from "react";
+import { generateImportsCode } from "@/pages/NoCodeMove/utils/generateCode";
+import { SuiMoveFunction } from "@/types/move";
 
 export function AppSidebar({
   packages,
@@ -24,28 +21,23 @@ export function AppSidebar({
   setImports,
   setStructs,
   setFunctions,
-}: any) {
-  const [structToEdit, setStructToEdit] = useState<any>(null);
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-
-  const addImport = (
-    data: SuiMoveNormalizedModules,
-    pkgAddress: string,
-    moduleName: string,
-    structName: string
-  ) => {
-    if (moduleName) {
-      const key = pkgAddress + "::" + moduleName;
-      setImports((prev: any) => ({
-        ...prev,
-        [key]: {
-          ...(prev[key] || {}),
-          [structName]: data[moduleName].structs[structName],
-        },
-      }));
-    }
-  };
-
+}: {
+  packages: string[];
+  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
+  structs: Record<string, SuiMoveNormalizedStruct>;
+  functions: Record<string, SuiMoveFunction>;
+  setImports: React.Dispatch<
+    React.SetStateAction<
+      Record<string, Record<string, SuiMoveNormalizedStruct>>
+    >
+  >;
+  setStructs: React.Dispatch<
+    React.SetStateAction<Record<string, SuiMoveNormalizedStruct>>
+  >;
+  setFunctions: React.Dispatch<
+    React.SetStateAction<Record<string, SuiMoveFunction>>
+  >;
+}) {
   return (
     <Accordion
       type="multiple"
@@ -53,54 +45,23 @@ export function AppSidebar({
     >
       <AccordionItem value="item-1">
         <AccordionTrigger>Imports</AccordionTrigger>
+        <AccordionContent>{generateImportsCode(imports)}</AccordionContent>
         <AccordionContent>
-          {Object.entries(imports)
-            .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
-            .map(([key, values]) => {
-              const typedValues = values as Record<
-                string,
-                SuiMoveNormalizedStruct
-              >;
-
-              const pkgName = () => {
-                const pkg = key.split("::")[0];
-                if (pkg === packages[0]) return "std";
-                else if (pkg === packages[1]) return "sui";
-                else return pkg;
-              };
-
-              return (
-                <div key={key}>
-                  <span className="text-blue-500">use </span>
-                  {pkgName()}::{key.split("::")[1]} &#123;{" "}
-                  <span className="text-emerald-500 font-semibold">
-                    {Object.keys(typedValues).join(", ")}
-                  </span>{" "}
-                  &#125;;
-                </div>
-              );
-            })}{" "}
-        </AccordionContent>
-        <AccordionContent>
-          <AddImportDialog packages={packages} addImport={addImport} />
+          <AddImportDialog
+            packages={packages}
+            imports={imports}
+            setImports={setImports}
+          />
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-2">
         <AccordionTrigger>Structs</AccordionTrigger>
         <AccordionContent>
-          <StructListView
-            structs={structs}
-            setStructToEdit={setStructToEdit}
-            setEditDialogOpen={setEditDialogOpen}
-            // onDelete={(nameToDelete) => {
-            //   const newStructs = { ...structs };
-            //   delete newStructs[nameToDelete];
-            //   setStructs(newStructs);
-            // }}
-          />
+          <StructListView structs={structs} setStructs={setStructs} />
         </AccordionContent>
         <AccordionContent>
           <AddStructDialog
+            create={true}
             imports={imports}
             structs={structs}
             setStructs={setStructs}
@@ -125,14 +86,6 @@ export function AppSidebar({
           />
         </AccordionContent>
       </AccordionItem>
-      <EditStructDialog
-        open={editDialogOpen}
-        setOpen={setEditDialogOpen}
-        structToEdit={structToEdit}
-        imports={imports}
-        structs={structs}
-        setStructs={setStructs}
-      />
     </Accordion>
   );
 }

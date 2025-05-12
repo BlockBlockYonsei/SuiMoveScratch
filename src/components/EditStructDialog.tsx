@@ -5,32 +5,31 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import {
   SuiMoveAbility,
+  SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
 import TypeSelect from "../pages/NoCodeMove/components/TypeSelect";
 
 export default function EditStructDialog({
-  open,
-  setOpen,
+  structName,
   structToEdit,
   imports,
   structs,
   setStructs,
 }: {
-  open: boolean;
-  setOpen: (open: boolean) => void;
+  structName: string;
   structToEdit: any;
   imports: any;
   structs: any;
   setStructs: any;
 }) {
-  const [structName, setStructName] = useState("");
   const [abilities, setAbilities] = useState<SuiMoveAbility[]>([]);
   const [typeParameters, setTypeParameters] = useState<
     SuiMoveStructTypeParameter[]
@@ -44,22 +43,20 @@ export default function EditStructDialog({
     console.log("Received structToEdit:", structToEdit);
     if (structToEdit) {
       // structToEdit가 있을 때 데이터를 초기화
-      setStructName(structToEdit.name);
       setAbilities(structToEdit.abilities?.abilities || []);
       setFields(structToEdit.fields || []);
       setTypeParameters(structToEdit.typeParameters || []);
       setTypeParameterNames(structToEdit.typeParameterNames || []);
-      setOpen(true);
     }
   }, [structToEdit]);
 
   // 필드 업데이트 함수
   const updateFieldType = (
     fieldName: string,
-    newType: SuiMoveNormalizedType,
+    newType: SuiMoveNormalizedType
   ) => {
     setFields((prev) =>
-      prev.map((f) => (f.name === fieldName ? { ...f, type: newType } : f)),
+      prev.map((f) => (f.name === fieldName ? { ...f, type: newType } : f))
     );
   };
 
@@ -85,11 +82,24 @@ export default function EditStructDialog({
       },
     }));
 
-    setOpen(false);
+    // setOpen(false);
+  };
+
+  console.log(structToEdit);
+
+  const toggleTypeParamAbility = (ability: SuiMoveAbility) => {
+    setTypeParameterNames((prev) =>
+      prev.includes(ability)
+        ? prev.filter((a) => a !== ability)
+        : [...prev, ability]
+    );
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button>Edit Struct</Button>
+      </DialogTrigger>
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Struct</DialogTitle>
@@ -101,10 +111,7 @@ export default function EditStructDialog({
         {/* Struct 이름 */}
         <div className="mb-4">
           <label className="block font-semibold mb-1">Struct Name</label>
-          <Input
-            value={structName}
-            onChange={(e) => setStructName(e.target.value)}
-          />
+          <p>{structName}</p>
         </div>
 
         {/* Abilities */}
@@ -123,7 +130,7 @@ export default function EditStructDialog({
                   setAbilities((prev) =>
                     prev.includes(a as SuiMoveAbility)
                       ? prev.filter((ability) => ability !== a)
-                      : [...prev, a as SuiMoveAbility],
+                      : [...prev, a as SuiMoveAbility]
                   )
                 }
               >
@@ -146,18 +153,26 @@ export default function EditStructDialog({
                   }
                   className="w-20"
                 />
-                <TypeSelect
-                  imports={imports}
-                  structs={structs}
-                  typeParameters={[]}
-                  defaultValue={param.constraints}
-                  setType={(type) =>
-                    updateFieldType(
-                      typeParameterNames[index] || `T${index}`,
-                      type,
-                    )
-                  }
-                />
+                <div className="flex gap-2 mb-2 flex-wrap">
+                  {["copy", "drop", "store", "key"].map((a) => (
+                    <Button
+                      key={a}
+                      variant={
+                        param.constraints.abilities.includes(
+                          a as SuiMoveAbility
+                        )
+                          ? "default"
+                          : "outline"
+                      }
+                      onClick={() =>
+                        toggleTypeParamAbility(a as SuiMoveAbility)
+                      }
+                      size="sm"
+                    >
+                      {a}
+                    </Button>
+                  ))}
+                </div>
               </div>
             ))}
           </div>

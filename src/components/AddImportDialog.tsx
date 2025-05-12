@@ -21,15 +21,12 @@ import {
 
 export default function AddImportDialog({
   packages,
-  addImport,
+  imports,
+  setImports,
 }: {
   packages: string[];
-  addImport: (
-    data: SuiMoveNormalizedModules,
-    pkgAddress: string,
-    moduleName: string,
-    structName: string
-  ) => void;
+  imports: any;
+  setImports: (imports: any) => void;
 }) {
   const [selectedPkg, setSelectedPkg] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
@@ -43,6 +40,42 @@ export default function AddImportDialog({
       enabled: !!selectedPkg, // only run when selectedPkg is truthy
     }
   );
+
+  const addImport = (
+    data: SuiMoveNormalizedModules,
+    pkgAddress: string,
+    moduleName: string,
+    structName?: string,
+    functions?: boolean
+  ) => {
+    if (moduleName) {
+      const key = pkgAddress + "::" + moduleName;
+      if (structName) {
+        setImports((prev: any) => ({
+          ...prev,
+          [key]: {
+            ...(prev[key] || {}),
+            structs: {
+              ...(prev[key]?.structs || {}),
+              [structName]: data[moduleName].structs[structName],
+            },
+          },
+        }));
+      }
+      if (functions) {
+        setImports((prev: any) => ({
+          ...prev,
+          [key]: {
+            ...(prev[key] || {}),
+            functions: {
+              ...(prev[key]?.functions || {}),
+              [moduleName]: data[moduleName].exposedFunctions,
+            },
+          },
+        }));
+      }
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -92,7 +125,14 @@ export default function AddImportDialog({
                     <ul className="ml-4 mt-2 space-y-1">
                       <li
                         onClick={() => {
-                          addImport(data, selectedPkg, moduleName, "Self");
+                          addImport(
+                            data,
+                            selectedPkg,
+                            moduleName,
+                            undefined,
+                            true
+                          );
+                          setOpen(false);
                         }}
                         className="px-4 py-1 text-emerald-600 hover:bg-blue-50 cursor-pointer rounded transition"
                       >
@@ -106,7 +146,8 @@ export default function AddImportDialog({
                               data,
                               selectedPkg,
                               moduleName,
-                              structName
+                              structName,
+                              false
                             );
                             setOpen(false);
                           }}

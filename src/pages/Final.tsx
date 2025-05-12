@@ -24,8 +24,6 @@ export default function Final() {
     {}
   );
 
-  console.log(functions);
-
   return (
     <div className="w-5/6 min-h-screen m-auto bg-gray-200">
       <div className="flex">

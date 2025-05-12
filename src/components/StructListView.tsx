@@ -7,21 +7,38 @@ import {
 } from "@/components/ui/card";
 import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 import { X } from "lucide-react";
+import EditStructDialog from "./EditStructDialog";
+import { useState } from "react";
+import AddStructDialog from "./AddStructDialog";
 
 function StructCardView({
   structName,
   struct,
-  onEdit,
+  structs,
+  setStructs,
 }: {
   structName: string;
   struct: SuiMoveNormalizedStruct;
-  onEdit: () => void;
+  structs: Record<string, SuiMoveNormalizedStruct>;
+  setStructs: React.Dispatch<
+    React.SetStateAction<Record<string, SuiMoveNormalizedStruct>>
+  >;
 }) {
+  const imports: string[] = [];
+
+  const onDelete = () => {
+    setStructs((prev: any) => {
+      const newStructs = { ...prev };
+      delete newStructs[structName];
+      return newStructs;
+    });
+  };
+
   return (
     <Card className="w-full max-w-xl mx-auto mb-6 relative">
       <CardHeader>
         <button
-          // onClick={() => onDelete(structName)}
+          onClick={onDelete}
           className="absolute top-3 right-3 text-gray-400 hover:text-black"
         >
           <X size={20} />
@@ -61,7 +78,6 @@ function StructCardView({
             ))
           )}
         </div>
-
         <div>
           <h4 className="font-semibold text-sm text-muted-foreground mb-1">
             Fields
@@ -82,16 +98,12 @@ function StructCardView({
             ))
           )}
         </div>
-
-        {/* Edit Button */}
-        <div className="mt-4">
-          <button
-            onClick={onEdit}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md"
-          >
-            Edit
-          </button>
-        </div>
+        <AddStructDialog
+          create={false}
+          imports={imports}
+          structs={structs}
+          setStructs={setStructs}
+        />
       </CardContent>
     </Card>
   );
@@ -99,12 +111,12 @@ function StructCardView({
 
 export default function StructListView({
   structs,
-  setStructToEdit,
-  setEditDialogOpen,
+  setStructs,
 }: {
   structs: Record<string, SuiMoveNormalizedStruct>;
-  setStructToEdit: (s: any) => void;
-  setEditDialogOpen: (open: boolean) => void;
+  setStructs: React.Dispatch<
+    React.SetStateAction<Record<string, SuiMoveNormalizedStruct>>
+  >;
 }) {
   return (
     <div className="space-y-4">
@@ -113,10 +125,8 @@ export default function StructListView({
           key={name}
           structName={name}
           struct={struct}
-          onEdit={() => {
-            setStructToEdit({ name, ...struct });
-            setEditDialogOpen(true);
-          }}
+          structs={structs}
+          setStructs={setStructs}
         />
       ))}
     </div>
