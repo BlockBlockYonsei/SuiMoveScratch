@@ -47,7 +47,10 @@ export default function AddImportDialog({ setImports }: Props) {
       </DialogHeader>
 
       {/* 패키지 선택 */}
-      <Select onValueChange={(value: any) => setSelectedPkg(value)}>
+      <Select
+        onValueChange={(value: string) => setSelectedPkg(value)}
+        defaultValue={selectedPkg ? selectedPkg : ""}
+      >
         <SelectTrigger className="w-full">
           <SelectValue placeholder="Select a package" />
         </SelectTrigger>
