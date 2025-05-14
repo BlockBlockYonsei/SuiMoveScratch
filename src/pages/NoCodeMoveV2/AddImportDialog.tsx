@@ -19,19 +19,10 @@ import {
 } from "@/components/ui/select";
 import { SUI_PACKAGES } from "@/Constants";
 import ImportPackageModule from "./ImportPackageModule";
+import { ImportsType } from "@/types/move";
 
 interface Props {
-  setImports: React.Dispatch<
-    React.SetStateAction<
-      Record<
-        string,
-        Record<
-          string,
-          SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
-        >
-      >
-    >
-  >;
+  setImports: React.Dispatch<React.SetStateAction<ImportsType>>;
 }
 
 export default function AddImportDialog({ setImports }: Props) {

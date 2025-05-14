@@ -1,3 +1,4 @@
+import { ImportsType } from "@/types/move";
 import { useSuiClientQuery } from "@mysten/dapp-kit";
 import {
   SuiMoveNormalizedFunction,
@@ -9,17 +10,7 @@ import * as React from "react";
 
 interface Props extends React.ComponentProps<"div"> {
   packageId: string;
-  setImports: React.Dispatch<
-    React.SetStateAction<
-      Record<
-        string,
-        Record<
-          string,
-          SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
-        >
-      >
-    >
-  >;
+  setImports: React.Dispatch<React.SetStateAction<ImportsType>>;
 }
 
 export default function ImportPackageModule({
