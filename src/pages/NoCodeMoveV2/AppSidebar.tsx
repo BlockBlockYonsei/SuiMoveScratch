@@ -10,12 +10,11 @@ import { Button } from "@/components/ui/button";
 
 import AddImportDialog from "./AddImportDialog";
 import AddStructDialog from "./AddStructDialog";
-import EditStructDialog from "./EditStructDialog";
 import AddFunctionDialog from "./AddFunctionDialog";
-import StructListView from "./StructListView";
 import FunctionListView from "./FunctionListView";
 
 import ImportedModuleLines from "./ImportedModuleLines";
+import StructCardView from "./StructCardView";
 
 export function AppSidebar({
   imports,
@@ -25,9 +24,6 @@ export function AppSidebar({
   setStructs,
   setFunctions,
 }: any) {
-  const [structToEdit, setStructToEdit] = useState<any>(null);
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-
   return (
     <Accordion
       type="multiple"
@@ -63,16 +59,22 @@ export function AppSidebar({
               setStructs={setStructs}
             />
           </Dialog>
-          <StructListView
-            structs={structs}
-            setStructToEdit={setStructToEdit}
-            setEditDialogOpen={setEditDialogOpen}
-            // onDelete={(nameToDelete) => {
-            //   const newStructs = { ...structs };
-            //   delete newStructs[nameToDelete];
-            //   setStructs(newStructs);
-            // }}
-          />
+          <div className="pt-4">
+            {Object.entries(structs).map(([name, struct]) => {
+              if (!struct) return;
+              return (
+                <StructCardView
+                  key={name}
+                  structName={name}
+                  structValue={struct}
+                  onEdit={() => {
+                    // setStructToEdit({ name, ...struct });
+                    // setEditDialogOpen(true);
+                  }}
+                />
+              );
+            })}
+          </div>
         </AccordionContent>
         <AccordionContent></AccordionContent>
       </AccordionItem>
@@ -100,15 +102,6 @@ export function AppSidebar({
           />
         </AccordionContent>
       </AccordionItem>
-
-      <EditStructDialog
-        open={editDialogOpen}
-        setOpen={setEditDialogOpen}
-        structToEdit={structToEdit}
-        imports={imports}
-        structs={structs}
-        setStructs={setStructs}
-      />
     </Accordion>
   );
 }
