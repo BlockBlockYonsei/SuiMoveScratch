@@ -9,6 +9,7 @@ import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import EditStructDialog from "./EditStructDialog";
+import AddStructDialog from "./AddStructDialog";
 
 export default function StructCardView({
   structName,
@@ -94,13 +95,12 @@ export default function StructCardView({
               Edit
             </button>
           </DialogTrigger>
-          <EditStructDialog
-            // open={editDialogOpen}
-            // setOpen={setEditDialogOpen}
-            // structToEdit={structToEdit}
+          <AddStructDialog
             imports={imports}
             structs={structs}
             setStructs={setStructs}
+            defaultStructName={structName}
+            defaultStruct={structValue}
           />
         </Dialog>
       </CardContent>

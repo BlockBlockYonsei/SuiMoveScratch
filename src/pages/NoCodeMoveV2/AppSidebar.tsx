@@ -57,6 +57,8 @@ export function AppSidebar({
               imports={imports}
               structs={structs}
               setStructs={setStructs}
+              defaultStructName={null}
+              defaultStruct={null}
             />
           </Dialog>
           <div className="pt-4">
@@ -67,10 +69,9 @@ export function AppSidebar({
                   key={name}
                   structName={name}
                   structValue={struct}
-                  onEdit={() => {
-                    // setStructToEdit({ name, ...struct });
-                    // setEditDialogOpen(true);
-                  }}
+                  imports={imports}
+                  structs={structs}
+                  setStructs={setStructs}
                 />
               );
             })}

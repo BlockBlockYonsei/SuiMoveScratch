@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DialogContent,
   DialogDescription,
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"; // 추가된 input이 있다면
 import {
   SuiMoveAbility,
+  SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
@@ -16,7 +17,19 @@ import TypeSelect from "@/pages/NoCodeMove/components/TypeSelect";
 import { generateStructCode } from "@/pages/NoCodeMove/utils/generateCode";
 import { DialogClose } from "@radix-ui/react-dialog";
 
-export default function AddStructDialog({ imports, structs, setStructs }: any) {
+export default function AddStructDialog({
+  imports,
+  structs,
+  setStructs,
+  defaultStructName,
+  defaultStruct,
+}: {
+  imports: any;
+  structs: any;
+  setStructs: any;
+  defaultStructName: string | null;
+  defaultStruct: SuiMoveNormalizedStruct | null;
+}) {
   const [structName, setStructName] = useState("MyStruct");
   const [abilities, setAbilities] = useState<SuiMoveAbility[]>([]);
   const [typeParameterNames, setTypeParameterNames] = useState<string[]>([]);
@@ -31,6 +44,17 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
   const [newTypeParamAbilities, setNewTypeParamAbilities] = useState<
     SuiMoveAbility[]
   >([]);
+
+  useEffect(() => {
+    if (defaultStruct && defaultStructName) {
+      setStructName(defaultStructName);
+      setAbilities(defaultStruct.abilities.abilities);
+      setTypeParameters(defaultStruct.typeParameters);
+      // 추후 수정
+      setTypeParameterNames(defaultStruct.typeParameterNames);
+      setFields(defaultStruct.fields);
+    }
+  }, []);
 
   // toggle 함수
   const toggleTypeParamAbility = (ability: SuiMoveAbility) => {
@@ -86,30 +110,49 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
   const handleComplete = () => {
     if (!structName) return;
 
-    setStructs((prev: any) => ({
-      ...prev,
-      [structName]: {
-        abilities: { abilities },
-        fields,
-        typeParameters,
-        typeParameterNames,
-      },
-    }));
+    if (defaultStruct && defaultStructName) {
+      setStructs((prev: Record<string, SuiMoveNormalizedStruct>) => {
+        const { [defaultStructName]: _, ...rest } = prev;
+        return rest;
+      });
 
-    // dialog 닫기
+      setStructs((prev: Record<string, SuiMoveNormalizedStruct>) => ({
+        ...prev,
+        [structName]: {
+          abilities: { abilities },
+          fields,
+          typeParameters,
+          typeParameterNames,
+        },
+      }));
+    }
 
-    // 초기화 (선택사항)
-    setStructName("MyStruct");
-    setAbilities([]);
-    setFields([]);
-    setTypeParameterNames([]);
-    setTypeParameters([]);
+    // 초기화 (Create 시에만)
+    if (!defaultStruct || !structName) {
+      setStructs((prev: any) => ({
+        ...prev,
+        [structName]: {
+          abilities: { abilities },
+          fields,
+          typeParameters,
+          typeParameterNames,
+        },
+      }));
+
+      setStructName("MyStruct");
+      setAbilities([]);
+      setFields([]);
+      setTypeParameterNames([]);
+      setTypeParameters([]);
+    }
   };
 
   return (
     <DialogContent className="max-h-[80vh] overflow-y-auto">
       <DialogHeader>
-        <DialogTitle>Create a New Struct</DialogTitle>
+        <DialogTitle>
+          {defaultStruct ? "Update Struct" : "Create a New Struct"}
+        </DialogTitle>
         <DialogDescription>
           Add abilities, type parameters, and fields for your struct.
         </DialogDescription>
