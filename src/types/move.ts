@@ -25,21 +25,21 @@ export type StructsType = Record<string, SuiMoveNormalizedStruct>;
 
 export type FunctionsType = Record<string, SuiMoveFunction>;
 
-export interface BaseProps {
-  imports: ImportsType;
-  structs: StructsType;
-}
+// export interface BaseProps {
+//   imports: ImportsType;
+//   structs: StructsType;
+// }
 
-export interface StructsProps extends BaseProps {
-  setStructs: React.Dispatch<React.SetStateAction<StructsType>>;
-}
+// export interface StructsProps extends BaseProps {
+//   setStructs: React.Dispatch<React.SetStateAction<StructsType>>;
+// }
 
-export interface FunctionsProps extends BaseProps {
-  functions: FunctionsType;
-  setFunctions: React.Dispatch<React.SetStateAction<FunctionsType>>;
-}
+// export interface FunctionsProps extends BaseProps {
+//   functions: FunctionsType;
+//   setFunctions: React.Dispatch<React.SetStateAction<FunctionsType>>;
+// }
 
-export interface ImportsProps {
-  imports: ImportsType;
-  setImports: React.Dispatch<React.SetStateAction<ImportsType>>;
-}
+// export interface ImportsProps {
+//   imports: ImportsType;
+//   setImports: React.Dispatch<React.SetStateAction<ImportsType>>;
+// }
