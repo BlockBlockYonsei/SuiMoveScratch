@@ -17,7 +17,12 @@ import {
 import TypeSelect from "../pages/NoCodeMove/components/TypeSelect";
 import { generateStructCode } from "@/pages/NoCodeMove/utils/generateCode";
 
-export default function AddStructDialog({ imports, structs, setStructs }: any) {
+export default function AddStructDialog({
+  create,
+  imports,
+  structs,
+  setStructs,
+}: any) {
   const [open, setOpen] = useState(false);
   const [structName, setStructName] = useState("MyStruct");
   const [abilities, setAbilities] = useState<SuiMoveAbility[]>([]);
@@ -39,7 +44,7 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
     setNewTypeParamAbilities((prev) =>
       prev.includes(ability)
         ? prev.filter((a) => a !== ability)
-        : [...prev, ability],
+        : [...prev, ability]
     );
   };
 
@@ -66,7 +71,7 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
     setAbilities((prev) =>
       prev.includes(ability)
         ? prev.filter((a) => a !== ability)
-        : [...prev, ability],
+        : [...prev, ability]
     );
   };
 
@@ -78,10 +83,10 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
 
   const updateFieldType = (
     fieldName: string,
-    newType: SuiMoveNormalizedType,
+    newType: SuiMoveNormalizedType
   ) => {
     setFields((prev) =>
-      prev.map((f) => (f.name === fieldName ? { ...f, type: newType } : f)),
+      prev.map((f) => (f.name === fieldName ? { ...f, type: newType } : f))
     );
   };
 
@@ -100,36 +105,39 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
 
     // dialog 닫기
     setOpen(false);
-
-    // 초기화 (선택사항)
-    setStructName("MyStruct");
-    setAbilities([]);
-    setFields([]);
-    setTypeParameterNames([]);
-    setTypeParameters([]);
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="mx-auto">Create New Structures</Button>
+        <Button className="mx-auto">
+          {create ? "Create New Struct" : "Edit Struct"}
+        </Button>
       </DialogTrigger>
 
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Create a New Struct</DialogTitle>
+          <DialogTitle>
+            {create ? "Create a New Struct" : "Edit Struct"}
+          </DialogTitle>
           <DialogDescription>
-            Add abilities, type parameters, and fields for your struct.
+            {create
+              ? "Add abilities, type parameters, and fields for your struct."
+              : "Edit the details of your struct."}
           </DialogDescription>
         </DialogHeader>
 
         {/* Struct 이름 */}
         <div className="mb-4">
           <label className="block font-semibold mb-1">Struct Name</label>
-          <Input
-            value={structName}
-            onChange={(e) => setStructName(e.target.value)}
-          />
+          {create ? (
+            <Input
+              value={structName}
+              onChange={(e) => setStructName(e.target.value)}
+            />
+          ) : (
+            <p>{structName}</p>
+          )}
         </div>
 
         {/* Abilities */}
@@ -218,7 +226,7 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
                 typeParameters,
                 fields,
               },
-              typeParameterNames,
+              typeParameterNames
             )}
           </pre>
         </div>
