@@ -53,6 +53,16 @@ export function AppSidebar({
           Structs
         </AccordionTrigger>
         <AccordionContent>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="cursor-pointer">Create New Structures</Button>
+            </DialogTrigger>
+            <AddStructDialog
+              imports={imports}
+              structs={structs}
+              setStructs={setStructs}
+            />
+          </Dialog>
           <StructListView
             structs={structs}
             setStructToEdit={setStructToEdit}
@@ -64,13 +74,7 @@ export function AppSidebar({
             // }}
           />
         </AccordionContent>
-        <AccordionContent>
-          <AddStructDialog
-            imports={imports}
-            structs={structs}
-            setStructs={setStructs}
-          />
-        </AccordionContent>
+        <AccordionContent></AccordionContent>
       </AccordionItem>
 
       <AccordionItem value="item-3">

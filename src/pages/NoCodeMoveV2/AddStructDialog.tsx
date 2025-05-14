@@ -1,11 +1,9 @@
 import { useState } from "react";
 import {
-  Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"; // 추가된 input이 있다면
@@ -109,129 +107,121 @@ export default function AddStructDialog({ imports, structs, setStructs }: any) {
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button className="cursor-pointer">Create New Structures</Button>
-      </DialogTrigger>
+    <DialogContent className="max-h-[80vh] overflow-y-auto">
+      <DialogHeader>
+        <DialogTitle>Create a New Struct</DialogTitle>
+        <DialogDescription>
+          Add abilities, type parameters, and fields for your struct.
+        </DialogDescription>
+      </DialogHeader>
 
-      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Create a New Struct</DialogTitle>
-          <DialogDescription>
-            Add abilities, type parameters, and fields for your struct.
-          </DialogDescription>
-        </DialogHeader>
+      {/* Struct 이름 */}
+      <div className="mb-4">
+        <label className="block font-semibold mb-1">Struct Name</label>
+        <Input
+          value={structName}
+          onChange={(e) => setStructName(e.target.value)}
+        />
+      </div>
 
-        {/* Struct 이름 */}
-        <div className="mb-4">
-          <label className="block font-semibold mb-1">Struct Name</label>
-          <Input
-            value={structName}
-            onChange={(e) => setStructName(e.target.value)}
-          />
-        </div>
-
-        {/* Abilities */}
-        <div className="mb-4">
-          <label className="block font-semibold mb-1">Abilities</label>
-          <div className="flex gap-2 flex-wrap">
-            {["copy", "drop", "store", "key"].map((a) => (
-              <Button
-                key={a}
-                variant={
-                  abilities.includes(a as SuiMoveAbility)
-                    ? "default"
-                    : "outline"
-                }
-                onClick={() => toggleAbility(a as SuiMoveAbility)}
-              >
-                {a}
-              </Button>
-            ))}
-          </div>
-        </div>
-
-        {/* Type Parameters */}
-        <div className="mb-4">
-          <div className="flex gap-2 mb-2">
-            <Input
-              placeholder="Type parameter name"
-              value={newTypeParamName}
-              onChange={(e) => setNewTypeParamName(e.target.value)}
-            />
-            <Button className="cursor-pointer" onClick={commitTypeParameter}>
-              Add
+      {/* Abilities */}
+      <div className="mb-4">
+        <label className="block font-semibold mb-1">Abilities</label>
+        <div className="flex gap-2 flex-wrap">
+          {["copy", "drop", "store", "key"].map((a) => (
+            <Button
+              key={a}
+              variant={
+                abilities.includes(a as SuiMoveAbility) ? "default" : "outline"
+              }
+              onClick={() => toggleAbility(a as SuiMoveAbility)}
+            >
+              {a}
             </Button>
-          </div>
-
-          <div className="flex gap-2 mb-2 flex-wrap">
-            {["copy", "drop", "store", "key"].map((a) => (
-              <Button
-                key={a}
-                variant={
-                  newTypeParamAbilities.includes(a as SuiMoveAbility)
-                    ? "default"
-                    : "outline"
-                }
-                onClick={() => toggleTypeParamAbility(a as SuiMoveAbility)}
-                size="sm"
-              >
-                {a}
-              </Button>
-            ))}
-          </div>
-        </div>
-
-        {/* Fields */}
-        <div className="mb-4">
-          <label className="block font-semibold mb-1">Fields</label>
-          <div className="flex gap-2 mb-2">
-            <Input
-              value={newFieldName}
-              placeholder="Field name"
-              onChange={(e) => setNewFieldName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") addField();
-              }}
-            />
-            <Button className="cursor-pointer" onClick={addField}>
-              Add
-            </Button>
-          </div>
-
-          {fields.map((field) => (
-            <div key={field.name} className="flex items-center gap-2 mb-2">
-              <span className="text-blue-600 font-semibold">{field.name}</span>
-              <TypeSelect
-                imports={imports}
-                structs={structs}
-                typeParameters={[]}
-                setType={(type) => updateFieldType(field.name, type)}
-              />
-            </div>
           ))}
         </div>
+      </div>
 
-        <div className="mt-4">
-          <pre className="text-sm bg-gray-100 p-4 rounded whitespace-pre-wrap">
-            {generateStructCode(
-              structName,
-              {
-                abilities: { abilities },
-                typeParameters,
-                fields,
-              },
-              typeParameterNames
-            )}
-          </pre>
+      {/* Type Parameters */}
+      <div className="mb-4">
+        <div className="flex gap-2 mb-2">
+          <Input
+            placeholder="Type parameter name"
+            value={newTypeParamName}
+            onChange={(e) => setNewTypeParamName(e.target.value)}
+          />
+          <Button className="cursor-pointer" onClick={commitTypeParameter}>
+            Add
+          </Button>
         </div>
 
-        <DialogClose>
-          <Button className="cursor-pointer" onClick={handleComplete}>
-            Complete
+        <div className="flex gap-2 mb-2 flex-wrap">
+          {["copy", "drop", "store", "key"].map((a) => (
+            <Button
+              key={a}
+              variant={
+                newTypeParamAbilities.includes(a as SuiMoveAbility)
+                  ? "default"
+                  : "outline"
+              }
+              onClick={() => toggleTypeParamAbility(a as SuiMoveAbility)}
+              size="sm"
+            >
+              {a}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {/* Fields */}
+      <div className="mb-4">
+        <label className="block font-semibold mb-1">Fields</label>
+        <div className="flex gap-2 mb-2">
+          <Input
+            value={newFieldName}
+            placeholder="Field name"
+            onChange={(e) => setNewFieldName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") addField();
+            }}
+          />
+          <Button className="cursor-pointer" onClick={addField}>
+            Add
           </Button>
-        </DialogClose>
-      </DialogContent>
-    </Dialog>
+        </div>
+
+        {fields.map((field) => (
+          <div key={field.name} className="flex items-center gap-2 mb-2">
+            <span className="text-blue-600 font-semibold">{field.name}</span>
+            <TypeSelect
+              imports={imports}
+              structs={structs}
+              typeParameters={[]}
+              setType={(type) => updateFieldType(field.name, type)}
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-4">
+        <pre className="text-sm bg-gray-100 p-4 rounded whitespace-pre-wrap">
+          {generateStructCode(
+            structName,
+            {
+              abilities: { abilities },
+              typeParameters,
+              fields,
+            },
+            typeParameterNames
+          )}
+        </pre>
+      </div>
+
+      <DialogClose>
+        <Button className="cursor-pointer" onClick={handleComplete}>
+          Complete
+        </Button>
+      </DialogClose>
+    </DialogContent>
   );
 }

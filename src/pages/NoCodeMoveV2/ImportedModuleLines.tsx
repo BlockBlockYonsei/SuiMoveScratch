@@ -6,7 +6,7 @@ interface Props {
 }
 export default function ImportedModuleLines({ imports }: Props) {
   return (
-    <div className="py-4">
+    <div className="pt-4">
       {Object.entries(imports)
         .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
         .map(([key, values]) => {
