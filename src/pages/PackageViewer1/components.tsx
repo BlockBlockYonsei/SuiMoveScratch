@@ -21,12 +21,12 @@ export const StructCard = ({
           <span className="inline-flex whitespace-nowrap">
             {"<"}
             {structData.typeParameters.map((tp, index) => (
-              <span>
+              <span key={index}>
                 <span className="text-pink-600">
                   {tp.isPhantom && "phantom "}
                 </span>
                 <span>
-                  T{index}:{tp.constraints.abilities.join("+ ")}
+                  T{index}:{tp.constraints.abilities.join(" + ")}
                 </span>
               </span>
             ))}
@@ -69,15 +69,13 @@ export const FunctionCard = ({
           <span className="text-pink-500">{"entry"} </span>
         )}
         <span className="text-pink-500">
-          {functionData.visibility.toLocaleLowerCase()}
+          {functionData.visibility.toLowerCase()}
         </span>
         <span className="text-blue-700">fun</span>
         <span className="">{functionName}</span>
         <span className="font-semibold text-emerald-500">
           {functionData.typeParameters.map(
-            (t, index) =>
-              `<TypeParam${index}:
-              ${t.abilities.join("+ ")}>`
+            (t, index) => `<TypeParam${index}: ${t.abilities.join(" + ")}>`
           )}
         </span>
       </h2>
@@ -87,7 +85,7 @@ export const FunctionCard = ({
         <div className="flex flex-wrap gap-4">
           {functionData.parameters.length > 0 ? (
             functionData.parameters.map((param, index) => {
-              const formatted = parseSuiMoveNormalizedType(param); // ⬅ 아래 함수 참고
+              const formatted = parseSuiMoveNormalizedType(param);
               return (
                 <div
                   key={index}
@@ -124,7 +122,7 @@ export const FunctionCard = ({
         <div className="flex flex-wrap gap-4">
           {functionData.return.length > 0 ? (
             functionData.return.map((param, index) => {
-              const formatted = parseSuiMoveNormalizedType(param); // ⬅ 아래 함수 참고
+              const formatted = parseSuiMoveNormalizedType(param);
               return (
                 <div
                   key={index}

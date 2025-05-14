@@ -6,14 +6,14 @@ import { useState } from "react";
 import { SuiMoveFunction } from "../_Functions";
 import TypeModal from "./TypeModal";
 import ErrorBoundary from "./ErrorBoundary";
-import { SYNTAX_COLORS } from "../utils";
+import { SYNTAX_COLORS } from "../utils/utils";
 
 interface Props {
   functionName: string;
   functionData: SuiMoveFunction;
   imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
   structs: Record<string, SuiMoveNormalizedStruct>;
-  setFunctions: React.Dispatch<
+  setFunctions: React.Dispatch
     React.SetStateAction<Record<string, SuiMoveFunction>>
   >;
 }
@@ -26,7 +26,7 @@ export default function FunctionParameters({
   setFunctions,
 }: Props) {
   const [activeParamIndex, setActiveParamIndex] = useState<number | null>(null);
-
+  
   // Add a new parameter with default U64 type
   const addParameter = () => {
     try {
@@ -55,7 +55,7 @@ export default function FunctionParameters({
       console.error("Error updating parameter type:", error);
     }
   };
-
+  
   // Helper function to display type in readable format
   const displayType = (type: SuiMoveNormalizedType): string => {
     if (typeof type === "string") {
@@ -66,7 +66,7 @@ export default function FunctionParameters({
       return "Unknown Type";
     }
   };
-
+  
   return (
     <ErrorBoundary>
       <div>
@@ -76,7 +76,6 @@ export default function FunctionParameters({
         >
           ➕ 파라미터 추가
         </button>
-
         <div className="mt-2 space-y-2">
           {functionData.function.parameters.map((param, index) => (
             <div key={index} className="flex items-center">
@@ -85,11 +84,7 @@ export default function FunctionParameters({
               </span>
               <div className="relative">
                 <button
-                  onClick={() =>
-                    setActiveParamIndex(
-                      index === activeParamIndex ? null : index
-                    )
-                  }
+                  onClick={() => setActiveParamIndex(index === activeParamIndex ? null : index)}
                   className="border-2 border-black cursor-pointer rounded-md px-2 py-1 hover:bg-gray-100"
                 >
                   {displayType(param)}

@@ -108,7 +108,6 @@ export default function Structs({
     } else {
       setStructName(template.name);
       setAbilities(template.abilities);
-
       // Convert template fields to the correct format
       const templateFields: StructField[] = template.fields.map((field) => {
         const fieldType =
@@ -117,7 +116,6 @@ export default function Structs({
             : { Struct: { name: field.type } };
         return { name: field.name, type: fieldType };
       });
-
       setFields(templateFields);
     }
   };
@@ -145,11 +143,9 @@ export default function Structs({
   // Handle adding a field to the struct
   const handleAddField = () => {
     const actualFieldType = isCustomFieldType ? customFieldType : fieldType;
-
     if (fieldName && actualFieldType) {
       // Determine field type format
       let parsedType: string | { Struct: { name: string } } = actualFieldType;
-
       // Check if field type refers to an imported struct
       Object.entries(imports).forEach(([pkgModulePath, moduleStructs]) => {
         Object.keys(moduleStructs).forEach((importedStructName) => {
@@ -162,7 +158,6 @@ export default function Structs({
           }
         });
       });
-
       // Check if field type refers to a local struct
       Object.keys(structs).forEach((existingStructName) => {
         if (actualFieldType === existingStructName) {
@@ -173,7 +168,6 @@ export default function Structs({
           };
         }
       });
-
       // Add the new field
       setFields([...fields, { name: fieldName, type: parsedType }]);
       setFieldName("");
@@ -286,7 +280,6 @@ export default function Structs({
                   ))}
                 </select>
               </div>
-
               <div>
                 <label className="text-sm text-gray-300">Struct Name</label>
                 <input
@@ -298,7 +291,6 @@ export default function Structs({
                   required
                 />
               </div>
-
               <div>
                 <label className="text-sm text-gray-300">Abilities</label>
                 <div className="flex flex-wrap gap-2 mt-1">
@@ -322,10 +314,8 @@ export default function Structs({
                   ))}
                 </div>
               </div>
-
               <div>
                 <label className="text-sm text-gray-300">Fields</label>
-
                 {fields.length > 0 && (
                   <div className="mt-2 mb-3 space-y-2">
                     {fields.map((field, idx) => (
@@ -352,7 +342,6 @@ export default function Structs({
                     ))}
                   </div>
                 )}
-
                 <div className="flex gap-2 mt-2">
                   <input
                     type="text"
@@ -361,7 +350,6 @@ export default function Structs({
                     className="flex-1 bg-gray-800 border border-gray-600 rounded-md px-3 py-2 text-white"
                     placeholder="Field name"
                   />
-
                   {isCustomFieldType ? (
                     <input
                       type="text"
@@ -408,7 +396,6 @@ export default function Structs({
                       <option value="custom">Custom type...</option>
                     </select>
                   )}
-
                   <button
                     type="button"
                     onClick={handleAddField}
@@ -418,7 +405,6 @@ export default function Structs({
                   </button>
                 </div>
               </div>
-
               <div className="flex gap-2 pt-2">
                 <button
                   type="submit"

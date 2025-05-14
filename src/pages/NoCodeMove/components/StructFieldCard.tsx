@@ -5,7 +5,7 @@ import {
 } from "@mysten/sui/client";
 import { useState, useRef, useEffect } from "react";
 import TypeModal from "./TypeModal";
-import { preventDefault } from "../utils";
+import { preventDefault } from "../utils/utils";
 
 interface Props {
   key?: React.Key | null | undefined;
@@ -13,7 +13,7 @@ interface Props {
   structs: Record<string, SuiMoveNormalizedStruct>;
   structName: string;
   structData: SuiMoveNormalizedStruct;
-  setStructs: React.Dispatch<
+  setStructs: React.Dispatch
     React.SetStateAction<Record<string, SuiMoveNormalizedStruct>>
   >;
   field: SuiMoveNormalizedField;
@@ -30,7 +30,7 @@ export default function StructFieldCard({
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
-
+  
   // Handle clicks outside the modal to close it
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -41,6 +41,7 @@ export default function StructFieldCard({
         setIsOpen(false);
       }
     }
+    
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
@@ -48,7 +49,7 @@ export default function StructFieldCard({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
-
+  
   // Function to update the field type
   const setType = (type: SuiMoveNormalizedType) => {
     try {
@@ -72,7 +73,7 @@ export default function StructFieldCard({
       console.error("Error setting field type:", error);
     }
   };
-
+  
   // Helper function to display the type in a readable format
   const displayType = (type: SuiMoveNormalizedType): string => {
     if (typeof type === "string") {
@@ -83,7 +84,7 @@ export default function StructFieldCard({
       return "Unknown Type";
     }
   };
-
+  
   return (
     <div key={key} className="mb-2">
       <div className="relative flex items-center">

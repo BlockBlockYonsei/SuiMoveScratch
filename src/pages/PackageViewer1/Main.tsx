@@ -7,9 +7,9 @@ import {
 import { useState } from "react";
 
 export default function Main() {
-  // const package = "0xb84460fd33aaf7f7b7f80856f27c51db6334922f79e326641fb90d40cc698175"
   const PACKAGE =
     "0x31323c09dee186fae0b38e0dace096140f5765713e64d10d95f2537b4b699ab4";
+
   const { data, isPending, error } = useSuiClientQuery(
     "getNormalizedMoveModulesByPackage",
     {
@@ -17,26 +17,23 @@ export default function Main() {
     },
     {
       enabled: true,
-    },
+    }
   );
 
   const [isStructsOpen, setIsStructsOpen] = useState<{
     [key: string]: boolean;
   }>({});
+
   const [isExposedFunctionsOpen, setIsExposedFunctionsOpen] = useState<{
     [key: string]: boolean;
   }>({});
 
   if (isPending) return <div>Loading...</div>;
-
   if (error) return <div>Error: {error?.message || "error"}</div>;
-
-  // console.log(data);
 
   return (
     <div>
       <div className="text-2xl">여기다 작업해주시면 됩니다.</div>
-
       {Object.entries(data).map(
         ([moduleName, moduleData]: [string, SuiMoveNormalizedModule]) => {
           return (
@@ -78,14 +75,14 @@ export default function Main() {
                     {Object.entries(moduleData.structs).map(
                       ([structName, structData]: [
                         string,
-                        SuiMoveNormalizedStruct,
+                        SuiMoveNormalizedStruct
                       ]) => (
                         <StructCard
                           key={structName}
                           structName={structName}
                           structData={structData}
                         />
-                      ),
+                      )
                     )}
                   </div>
                 )}
@@ -112,17 +109,18 @@ export default function Main() {
                   Object.entries(moduleData.exposedFunctions).map(
                     ([funcName, funcData]) => (
                       <FunctionCard
+                        key={funcName}
                         functionName={funcName}
                         functionData={funcData}
                       />
-                    ),
+                    )
                   )}
-                <h2 className="my-5  text-2xl">enums</h2>
+                <h2 className="my-5 text-2xl">Enums</h2>
                 <div>{JSON.stringify(moduleData.enums)}</div>
               </div>
             </div>
           );
-        },
+        }
       )}
     </div>
   );

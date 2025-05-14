@@ -7,7 +7,14 @@ export interface SuiMoveFunction {
     isEntry: boolean;
     parameters: (string | { Struct: { name: string } })[];
     return: (string | { Struct: { name: string } })[];
+    typeParameters: { abilities: string[] }[];
   };
+  insideCode?: Array<{
+    functionName: string;
+    parameters: any[];
+    return: any[];
+    typeParameters: any[];
+  }>;
 }
 
 // Define the props interface
@@ -126,21 +133,17 @@ export default function Functions({
       setFunctionName(template.name);
       setVisibility(template.visibility);
       setIsEntry(template.isEntry);
-
       // Convert template parameters to the correct format
       const templateParams: (string | { Struct: { name: string } })[] =
         template.parameters.map((param) => {
           return param;
         });
-
       setParameters(templateParams);
-
       // Convert template return types to the correct format
       const templateReturns: (string | { Struct: { name: string } })[] =
         template.returns.map((ret) => {
           return ret;
         });
-
       setReturnTypes(templateReturns);
     }
   };
@@ -157,6 +160,7 @@ export default function Functions({
           isEntry,
           parameters: [...parameters],
           return: [...returnTypes],
+          typeParameters: [],
         },
       };
       setFunctions(newFunctions);
@@ -173,11 +177,9 @@ export default function Functions({
   // Handle adding a parameter to the function
   const handleAddParameter = () => {
     const actualParamType = isCustomParamType ? customParamType : paramType;
-
     if (actualParamType) {
       // Determine parameter type format
       let parsedType: string | { Struct: { name: string } } = actualParamType;
-
       // Check if parameter type refers to an imported struct
       Object.entries(imports).forEach(([pkgModulePath, moduleStructs]) => {
         Object.keys(moduleStructs).forEach((importedStructName) => {
@@ -190,7 +192,6 @@ export default function Functions({
           }
         });
       });
-
       // Check if parameter type refers to a local struct
       Object.keys(structs).forEach((existingStructName) => {
         if (actualParamType === existingStructName) {
@@ -201,7 +202,6 @@ export default function Functions({
           };
         }
       });
-
       // Add the new parameter
       setParameters([...parameters, parsedType]);
       setParamType("");
@@ -213,11 +213,9 @@ export default function Functions({
   // Handle adding a return type to the function
   const handleAddReturnType = () => {
     const actualReturnType = isCustomReturnType ? customReturnType : returnType;
-
     if (actualReturnType) {
       // Determine return type format
       let parsedType: string | { Struct: { name: string } } = actualReturnType;
-
       // Check if return type refers to an imported struct
       Object.entries(imports).forEach(([pkgModulePath, moduleStructs]) => {
         Object.keys(moduleStructs).forEach((importedStructName) => {
@@ -230,7 +228,6 @@ export default function Functions({
           }
         });
       });
-
       // Check if return type refers to a local struct
       Object.keys(structs).forEach((existingStructName) => {
         if (actualReturnType === existingStructName) {
@@ -241,7 +238,6 @@ export default function Functions({
           };
         }
       });
-
       // Add the new return type
       setReturnTypes([...returnTypes, parsedType]);
       setReturnType("");
@@ -370,7 +366,6 @@ export default function Functions({
                   ))}
                 </select>
               </div>
-
               <div>
                 <label className="text-sm text-gray-300">Function Name</label>
                 <input
@@ -382,7 +377,6 @@ export default function Functions({
                   required
                 />
               </div>
-
               <div className="flex gap-3">
                 <div className="flex-1">
                   <label className="text-sm text-gray-300">Visibility</label>
@@ -410,10 +404,8 @@ export default function Functions({
                   </label>
                 </div>
               </div>
-
               <div>
                 <label className="text-sm text-gray-300">Parameters</label>
-
                 {parameters.length > 0 && (
                   <div className="mt-2 mb-3 space-y-2">
                     {parameters.map((param, idx) => (
@@ -440,7 +432,6 @@ export default function Functions({
                     ))}
                   </div>
                 )}
-
                 <div className="flex gap-2 mt-2">
                   {isCustomParamType ? (
                     <input
@@ -488,7 +479,6 @@ export default function Functions({
                       <option value="custom">Custom type...</option>
                     </select>
                   )}
-
                   <button
                     type="button"
                     onClick={handleAddParameter}
@@ -498,10 +488,8 @@ export default function Functions({
                   </button>
                 </div>
               </div>
-
               <div>
                 <label className="text-sm text-gray-300">Return Types</label>
-
                 {returnTypes.length > 0 && (
                   <div className="mt-2 mb-3 space-y-2">
                     {returnTypes.map((ret, idx) => (
@@ -527,7 +515,6 @@ export default function Functions({
                     ))}
                   </div>
                 )}
-
                 <div className="flex gap-2 mt-2">
                   {isCustomReturnType ? (
                     <input
@@ -575,7 +562,6 @@ export default function Functions({
                       <option value="custom">Custom type...</option>
                     </select>
                   )}
-
                   <button
                     type="button"
                     onClick={handleAddReturnType}
@@ -585,7 +571,6 @@ export default function Functions({
                   </button>
                 </div>
               </div>
-
               <div className="flex gap-2 pt-2">
                 <button
                   type="submit"

@@ -226,7 +226,6 @@ export default function Imports({ imports, setImports }: ImportsProps) {
                   ))}
                 </select>
               </div>
-
               {isCustomPackage ? (
                 <div>
                   <label className="text-sm text-gray-300">
@@ -242,7 +241,6 @@ export default function Imports({ imports, setImports }: ImportsProps) {
                   />
                 </div>
               ) : null}
-
               <div>
                 <label className="text-sm text-gray-300">Module</label>
                 {!isCustomPackage && availableModules.length > 0 ? (
@@ -269,7 +267,6 @@ export default function Imports({ imports, setImports }: ImportsProps) {
                   />
                 )}
               </div>
-
               <div>
                 <label className="text-sm text-gray-300">Struct</label>
                 {!isCustomPackage && availableStructs.length > 0 ? (
@@ -296,7 +293,6 @@ export default function Imports({ imports, setImports }: ImportsProps) {
                   />
                 )}
               </div>
-
               <div className="flex gap-2 pt-2">
                 <button
                   type="submit"

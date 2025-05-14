@@ -36,7 +36,6 @@ function ModuleViewer({ name, code }: { name: string; code: string }) {
     code.match(
       /(\s)*(public|entry)?(\(friend\))?\s*fun\s+\w+[^()]*\([^)]*\)\s*[:]?[^}]*\{[^}]*\}/g
     ) || [];
-
   const imports = (
     code.match(/0x[a-fA-F0-9]+::[a-zA-Z_][\w]*::[a-zA-Z_][\w]*/g) || []
   )
@@ -49,10 +48,8 @@ function ModuleViewer({ name, code }: { name: string; code: string }) {
         /(0x[0-9a-fA-F]+::[a-zA-Z_][\w]*)::([a-zA-Z_][\w]*)/
       );
       if (!match) return acc;
-
-      const [_, key, value] = match;
+      const [, key, value] = match;
       if (!acc[key]) acc[key] = [];
-
       acc[key].push(value);
       return acc;
     }, {} as Record<string, string[]>);
@@ -60,12 +57,14 @@ function ModuleViewer({ name, code }: { name: string; code: string }) {
   return (
     <div className="border rounded p-3 mb-6 shadow">
       <h2 className="text-xl font-semibold mb-2">📦 module: {name}</h2>
+
+      {/* Imports Section */}
       <div className="pl-4 mb-2">
         <h3 className="text-lg font-bold">📂 Import</h3>
         {Object.entries(imports).map(([key, values]) => {
           const match = key.match(/(0x[0-9a-fA-F]+)::([a-zA-Z_][\w]*)/);
           if (!match) return null;
-          const [_, pack, module] = match;
+          const [, pack, module] = match;
           return (
             <pre key={key} className="text-sm bg-gray-100 p-2 rounded my-1">
               <span className="text-pink-500">{pack}</span>::
@@ -77,6 +76,8 @@ function ModuleViewer({ name, code }: { name: string; code: string }) {
           );
         })}
       </div>
+
+      {/* Structs Section */}
       <div className="pl-4 mb-2">
         <h3 className="text-lg font-bold">📂 Structs</h3>
         {structs.length > 0 ? (
@@ -85,10 +86,8 @@ function ModuleViewer({ name, code }: { name: string; code: string }) {
               /(struct)\s+(\w+)\s+(has)([^{]+)(\{)([^}]+)(\})/
             );
             if (!match) return null;
-            const [_, strct, name, has, abilities, open, fields, close] = match;
-
+            const [, strct, name, has, abilities, open, fields, close] = match;
             const fieldMatch = fields.match(/([a-zA-Z_][\w]*)\s*:\s*([^,]+)/g);
-
             return (
               <pre key={i} className="text-sm bg-gray-100 p-2 rounded my-1">
                 <span className="text-emerald-500">{strct}</span>{" "}
@@ -96,20 +95,18 @@ function ModuleViewer({ name, code }: { name: string; code: string }) {
                 <span className="text-pink-500">{has}</span>
                 <span className="text-emerald-500">{abilities}</span>
                 <span className="font-semibold">{open}</span>
-                {/* <span>{fields}</span> */}
                 {fieldMatch &&
                   fieldMatch.map((f) => {
                     const matchField = f.match(
                       /([a-zA-Z_][\w]*)\s*:\s*([^,]+)/
                     );
                     if (!matchField) return null;
-                    const [_, name, type] = matchField;
+                    const [, name, type] = matchField;
                     return (
                       <div key={f}>
-                        <span>{"    "}</span>
+                        <span> </span>
                         <span className="font-medium">{name}</span>:{" "}
                         <span className="text-blue-500">{type}</span>
-                        {/* {f} */}
                       </div>
                     );
                   })}
@@ -121,6 +118,8 @@ function ModuleViewer({ name, code }: { name: string; code: string }) {
           <p className="text-gray-500">No structs found</p>
         )}
       </div>
+
+      {/* Functions Section */}
       <div className="pl-4">
         <h3 className="text-lg font-bold">⚙️ Functions</h3>
         {functions.length > 0 ? (
@@ -128,27 +127,20 @@ function ModuleViewer({ name, code }: { name: string; code: string }) {
             const match = f.match(
               /(public|entry)?(\(friend\))?\s*(fun)\s+(\w+)([^(]*)(\([^)]*\))\s*[:]?([^{]*)\{[^}]*\}/
             );
-
             if (!match) return null;
-
-            const [_, pub_ent, frnd, fun, name, ta, params, returns] = match;
-
+            const [, pub_ent, frnd, fun, name, ta, params, returns] = match;
             return (
               <pre
                 key={f + i.toString()}
                 className="text-sm bg-gray-100 p-2 rounded my-1"
               >
-                {/* {match.map((m, i) => {
-                  if (i === 0 || !m) return null;
-                  return <span className="font-semibold"> {m}</span>;
-                })} */}
                 <span className="font-semibold">{pub_ent} </span>
                 <span>{frnd} </span>
-                <span className="text-pink-500 font-semibold">{fun} </span>
+                <span className="text-pink-500 font-semibold">{fun}</span>
                 <span className="font-semibold"> {name} </span>
-                <span className="text-emerald-500 font-semibold">{ta} </span>
+                <span className="text-emerald-500 font-semibold">{ta}</span>
                 <span className="font-semibold">{params} </span>
-                <span className="text-blue-500 font-semibold">{returns} </span>
+                <span className="text-blue-500 font-semibold">{returns}</span>
               </pre>
             );
           })

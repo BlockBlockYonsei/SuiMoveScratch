@@ -11,7 +11,7 @@ interface Props {
   structs: Record<string, SuiMoveNormalizedStruct>;
   structName: string;
   structData: SuiMoveNormalizedStruct;
-  setStructs: React.Dispatch<
+  setStructs: React.Dispatch
     React.SetStateAction<Record<string, SuiMoveNormalizedStruct>>
   >;
 }
@@ -26,38 +26,34 @@ export default function StructFields({
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-
+  
   // Focus the input when entering edit mode
   useEffect(() => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
     }
   }, [isEditing]);
-
+  
   // Add a new field
   const addField = () => {
     try {
       const trimmed = inputValue.trim();
       if (!trimmed) return;
-
       // Check for duplicate field names
       if (structData.fields.some((field) => field.name === trimmed)) {
         console.warn("Field name already exists");
         return;
       }
-
       // Create a new field with default type U64
       const newField: SuiMoveNormalizedField = {
         name: trimmed,
         type: "U64",
       };
-
       // Update the struct data with the new field
       const newStructData = {
         ...structData,
         fields: [...structData.fields, newField],
       };
-
       // Set the updated struct data
       setStructs((prev) => ({
         ...prev,
@@ -70,7 +66,7 @@ export default function StructFields({
       setIsEditing(false);
     }
   };
-
+  
   return (
     <ErrorBoundary>
       <div>
@@ -81,7 +77,6 @@ export default function StructFields({
         >
           ➕ 필드 추가
         </button>
-
         {/* Display existing fields */}
         <div className="mt-2">
           {structData.fields.map((field) => (
@@ -96,7 +91,6 @@ export default function StructFields({
             />
           ))}
         </div>
-
         {/* Input field for adding a new field */}
         <input
           className={`${

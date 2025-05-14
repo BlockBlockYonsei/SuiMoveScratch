@@ -20,7 +20,7 @@ export default function TypeModal({
   setType,
 }: TypeModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
-
+  
   // Close modal when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -45,13 +45,13 @@ export default function TypeModal({
         }
       }
     }
-
+    
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [setType, typeParameters]);
-
+  
   // Define primitive types for selection
   const PRIMITIVE_TYPES: SuiMoveNormalizedType[] = [
     "Bool",
@@ -64,7 +64,7 @@ export default function TypeModal({
     "Address",
     "Signer",
   ];
-
+  
   // Group imports by package for easier navigation
   const groupedByPackage = Object.entries(imports).reduce(
     (acc, [fullModuleName, importedStruct]) => {
@@ -73,12 +73,12 @@ export default function TypeModal({
       acc[packageAddress][moduleName] = importedStruct;
       return acc;
     },
-    {} as Record<
+    {} as Record
       string,
       Record<string, Record<string, SuiMoveNormalizedStruct>>
     >
   );
-
+  
   const handleTypeSelect = (
     e: React.MouseEvent,
     type: SuiMoveNormalizedType
@@ -91,7 +91,7 @@ export default function TypeModal({
       console.error("Error setting type:", error);
     }
   };
-
+  
   return (
     <div
       ref={modalRef}
@@ -115,7 +115,7 @@ export default function TypeModal({
           ))}
         </ul>
       </div>
-
+      
       {/* Type Parameters Section */}
       {typeParameters.length > 0 && (
         <div className="w-48 bg-white border rounded-xl shadow-lg z-10 relative group mt-2">
@@ -147,7 +147,7 @@ export default function TypeModal({
           </ul>
         </div>
       )}
-
+      
       {/* Current Module Structs Section */}
       {Object.keys(structs).length > 0 && (
         <div className="w-48 bg-white border rounded-xl shadow-lg z-10 relative group mt-2">
@@ -179,7 +179,7 @@ export default function TypeModal({
           </ul>
         </div>
       )}
-
+      
       {/* Imported Modules Section */}
       {Object.entries(groupedByPackage).map(([packageAddress, modules]) => {
         return (
@@ -211,10 +211,7 @@ export default function TypeModal({
                             };
                             setType(type);
                           } catch (error) {
-                            console.error(
-                              "Error setting imported type:",
-                              error
-                            );
+                            console.error("Error setting imported type:", error);
                           }
                         }}
                         className="px-4 py-2 text-emerald-500 hover:bg-blue-50 cursor-pointer transition"

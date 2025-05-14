@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { SuiMoveFunction } from "../_Functions";
 import ErrorBoundary from "./ErrorBoundary";
-import { SYNTAX_COLORS } from "../utils";
+import { SYNTAX_COLORS } from "../utils/utils";
 
 interface Props {
   functionName: string;
@@ -23,6 +23,13 @@ export default function FunctionTypeParameters({
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const [selectedAbilities, setSelectedAbilities] = useState<{
+    [key: number]: string[];
+  }>({});
+  const [showAbilityDropdown, setShowAbilityDropdown] = useState<{
+    [key: number]: boolean;
+  }>({});
+
   const ABILITIES = ["Copy", "Drop", "Store", "Key"] as const;
 
   // Focus the input when entering edit mode
@@ -32,6 +39,15 @@ export default function FunctionTypeParameters({
     }
   }, [isEditing]);
 
+  // Initialize ability tracking for existing type parameters
+  useEffect(() => {
+    const newSelectedAbilities: { [key: number]: string[] } = {};
+    functionData.function.typeParameters.forEach((tp, index) => {
+      newSelectedAbilities[index] = tp.abilities || [];
+    });
+    setSelectedAbilities(newSelectedAbilities);
+  }, [functionData.function.typeParameters]);
+
   // Add a new type parameter
   const addTypeParameter = () => {
     try {
@@ -40,12 +56,10 @@ export default function FunctionTypeParameters({
 
       let newFunctionData = { ...functionData };
       newFunctionData.function.typeParameters.push({ abilities: [] });
-
       setFunctions((prev) => ({
         ...prev,
         [functionName]: newFunctionData,
       }));
-
       setTypeParameterNames((prev) => [...prev, trimmed]);
       setInputValue("");
       setIsEditing(false);
@@ -64,7 +78,6 @@ export default function FunctionTypeParameters({
 
       // Check if ability is already in the list
       const abilityIndex = currentAbilities.indexOf(ability);
-
       if (abilityIndex >= 0) {
         // Remove ability if it exists
         currentAbilities.splice(abilityIndex, 1);
@@ -75,13 +88,52 @@ export default function FunctionTypeParameters({
 
       newFunctionData.function.typeParameters[paramIndex].abilities =
         currentAbilities;
+      setFunctions((prev) => ({
+        ...prev,
+        [functionName]: newFunctionData,
+      }));
+
+      // Update local state
+      setSelectedAbilities((prev) => ({
+        ...prev,
+        [paramIndex]: currentAbilities,
+      }));
+    } catch (error) {
+      console.error("Error toggling ability:", error);
+    }
+  };
+
+  // Remove a type parameter
+  const removeTypeParameter = (paramIndex: number) => {
+    try {
+      let newFunctionData = { ...functionData };
+      newFunctionData.function.typeParameters.splice(paramIndex, 1);
 
       setFunctions((prev) => ({
         ...prev,
         [functionName]: newFunctionData,
       }));
+
+      setTypeParameterNames((prev) =>
+        prev.filter((_, index) => index !== paramIndex)
+      );
+
+      // Update local state
+      const newSelectedAbilities = { ...selectedAbilities };
+      delete newSelectedAbilities[paramIndex];
+      // Re-index remaining items
+      const reindexed: { [key: number]: string[] } = {};
+      Object.entries(newSelectedAbilities).forEach(([key, value]) => {
+        const index = parseInt(key);
+        if (index > paramIndex) {
+          reindexed[index - 1] = value;
+        } else if (index < paramIndex) {
+          reindexed[index] = value;
+        }
+      });
+      setSelectedAbilities(reindexed);
     } catch (error) {
-      console.error("Error toggling ability:", error);
+      console.error("Error removing type parameter:", error);
     }
   };
 
@@ -89,6 +141,8 @@ export default function FunctionTypeParameters({
     <ErrorBoundary>
       <div className="mb-2">
         <span className="font-bold">Type Parameters:</span>
+
+        {/* Add button */}
         {!isEditing && (
           <span>
             <button
@@ -102,25 +156,92 @@ export default function FunctionTypeParameters({
 
         {/* Display existing type parameters */}
         {functionData.function.typeParameters.map((t, i) => (
-          <div key={i} className="font-semibold mt-2">
-            <span className={SYNTAX_COLORS.TYPE}>{`T${i}(${
-              typeParameterNames[i] || `param${i}`
-            }): `}</span>
-            {
-              <span>
-                {ABILITIES.map((a) => (
-                  <button
-                    key={a}
-                    onClick={() => toggleAbility(i, a)}
-                    className={`border-2 border-black px-1 rounded-md cursor-pointer ${
-                      t.abilities.includes(a) ? "bg-emerald-300" : ""
-                    }`}
-                  >
-                    {a}
-                  </button>
-                ))}{" "}
+          <div
+            key={i}
+            className="font-semibold mt-2 border border-gray-300 p-3 rounded-md bg-gray-50"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className={`${SYNTAX_COLORS.TYPE} text-lg`}>
+                {`T${i}(${typeParameterNames[i] || `param${i}`})`}
               </span>
-            }
+              <button
+                onClick={() => removeTypeParameter(i)}
+                className="text-red-500 hover:text-red-700 px-2 py-1 rounded-md hover:bg-red-50"
+                title="Remove type parameter"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Abilities dropdown */}
+            <div className="relative">
+              <button
+                onClick={() =>
+                  setShowAbilityDropdown((prev) => ({
+                    ...prev,
+                    [i]: !prev[i],
+                  }))
+                }
+                className="flex items-center px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                <span>
+                  Select Abilities ({selectedAbilities[i]?.length || 0})
+                </span>
+                <svg
+                  className="ml-2 h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+
+              {/* Dropdown menu */}
+              {showAbilityDropdown[i] && (
+                <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  {ABILITIES.map((ability) => (
+                    <div
+                      key={ability}
+                      className="relative cursor-pointer select-none py-2 px-3 hover:bg-gray-100"
+                      onClick={() => toggleAbility(i, ability)}
+                    >
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={
+                            selectedAbilities[i]?.includes(ability) || false
+                          }
+                          onChange={() => {}} // Handled by onClick
+                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                        />
+                        <label className="ml-2 block text-sm text-gray-900">
+                          {ability}
+                        </label>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Display selected abilities */}
+            {selectedAbilities[i] && selectedAbilities[i].length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {selectedAbilities[i].map((ability) => (
+                  <span
+                    key={ability}
+                    className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                  >
+                    {ability}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         ))}
 
@@ -140,8 +261,12 @@ export default function FunctionTypeParameters({
                 if (e.key === "Enter") {
                   addTypeParameter();
                 }
+                if (e.key === "Escape") {
+                  setInputValue("");
+                  setIsEditing(false);
+                }
               }}
-              className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none"
+              className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
         )}

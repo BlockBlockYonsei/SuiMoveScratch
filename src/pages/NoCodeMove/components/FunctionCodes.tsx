@@ -1,4 +1,7 @@
-import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
+import {
+  SuiMoveNormalizedStruct,
+  SuiMoveNormalizedType,
+} from "@mysten/sui/client";
 
 // Create a new empty struct
 export function newEmptyStruct(): SuiMoveNormalizedStruct {
@@ -75,3 +78,40 @@ export const SYNTAX_COLORS = {
   OPERATOR: "text-gray-400",
   COMMENT: "text-gray-400 italic",
 };
+
+// Parse SuiMoveNormalizedType to display format
+export function parseSuiMoveNormalizedType(type: SuiMoveNormalizedType) {
+  // Default return structure
+  const result = {
+    prefix: "",
+    core: type,
+  };
+
+  if (typeof type === "string") {
+    // Simple type like "u64", "bool", etc.
+    return result;
+  }
+
+  // Handle reference types and other complex types
+  if (typeof type === "object") {
+    if ("Reference" in type) {
+      result.prefix = "&";
+      result.core = type.Reference;
+      return result;
+    }
+
+    if ("MutableReference" in type) {
+      result.prefix = "&mut ";
+      result.core = type.MutableReference;
+      return result;
+    }
+
+    if ("Vector" in type) {
+      result.prefix = "vector<";
+      result.core = type.Vector;
+      return result;
+    }
+  }
+
+  return result;
+}

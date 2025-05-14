@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SuiMoveNormalizedType } from "@mysten/sui/client";
 
 export function parseSuiMoveNormalizedType(type: SuiMoveNormalizedType): {
@@ -54,7 +53,6 @@ export function parseSuiMoveNormalizedType(type: SuiMoveNormalizedType): {
 
   if ("Struct" in type) {
     const { address, module, name, typeArguments } = type.Struct;
-
     const typeArgs =
       typeArguments.length > 0
         ? `<${typeArguments
@@ -68,12 +66,11 @@ export function parseSuiMoveNormalizedType(type: SuiMoveNormalizedType): {
             })
             .join(", ")}>`
         : "";
-
     return {
       prefix: "value",
       core: type,
       result: {
-        address: `${shortAddress(address)}`,
+        address: shortAddress(address),
         module,
         name,
         typeArgs,
@@ -97,6 +94,7 @@ export const shortAddress = (addr: string) => {
 
 export const formatType = (type: any): string => {
   if (typeof type === "string") return type;
+
   if (type.Struct) {
     const {
       address,
@@ -105,8 +103,10 @@ export const formatType = (type: any): string => {
     }: { address: string; module: string; name: string } = type.Struct;
     return `${shortAddress(address)}::${module}::${name}`;
   }
+
   if (type.Vector) {
     return formatType(type.Vector);
   }
+
   return JSON.stringify(type);
 };

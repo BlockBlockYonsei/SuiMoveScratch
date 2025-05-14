@@ -7,14 +7,14 @@ import { useState } from "react";
 import { SuiMoveFunction } from "../_Functions";
 import TypeModal from "./TypeModal";
 import ErrorBoundary from "./ErrorBoundary";
-import { SYNTAX_COLORS } from "../utils";
+import { SYNTAX_COLORS } from "../utils/utils";
 
 interface Props {
   functionName: string;
   functionData: SuiMoveFunction;
   imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
   structs: Record<string, SuiMoveNormalizedStruct>;
-  setFunctions: React.Dispatch<
+  setFunctions: React.Dispatch
     React.SetStateAction<Record<string, SuiMoveFunction>>
   >;
 }
@@ -86,12 +86,12 @@ export function FunctionReturnCard({
   structs: Record<string, SuiMoveNormalizedStruct>;
   functionName: string;
   functionData: SuiMoveFunction;
-  setFunctions: React.Dispatch<
+  setFunctions: React.Dispatch
     React.SetStateAction<Record<string, SuiMoveFunction>>
   >;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-
+  
   // Function to update return type
   const setType = (type: SuiMoveNormalizedType) => {
     try {
@@ -106,7 +106,7 @@ export function FunctionReturnCard({
       console.error("Error updating return type:", error);
     }
   };
-
+  
   // Helper function to display type in readable format
   const displayType = (type: SuiMoveNormalizedType): string => {
     if (typeof type === "string") {
@@ -117,7 +117,7 @@ export function FunctionReturnCard({
       return "Unknown Type";
     }
   };
-
+  
   return (
     <div key={key}>
       <div className="relative mt-2">
