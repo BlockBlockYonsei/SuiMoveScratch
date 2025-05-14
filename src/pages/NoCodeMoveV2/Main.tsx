@@ -7,7 +7,7 @@ import { useState } from "react";
 import { SuiMoveFunction } from "@/types/move";
 import CodePreview from "./CodePreview";
 
-export default function Final() {
+export default function Main() {
   const [imports, setImports] = useState<
     Record<
       string,
