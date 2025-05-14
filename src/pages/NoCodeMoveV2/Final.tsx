@@ -6,7 +6,7 @@ import {
   generateStructCode,
   generateFunctionCode,
   downloadMoveCode,
-} from "./NoCodeMove/utils/generateCode";
+} from "../NoCodeMove/utils/generateCode";
 import { SuiMoveFunction } from "@/types/move";
 
 export default function Final() {
