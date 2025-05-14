@@ -8,17 +8,23 @@ import {
 import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
-import EditStructDialog from "./EditStructDialog";
 import AddStructDialog from "./AddStructDialog";
+import { ImportsType, StructsType } from "@/types/move";
 
+interface Props {
+  structName: string;
+  structValue: SuiMoveNormalizedStruct;
+  imports: ImportsType;
+  structs: StructsType;
+  setStructs: React.Dispatch<React.SetStateAction<StructsType>>;
+}
 export default function StructCardView({
   structName,
   structValue,
-  // onEdit,
-  structs,
   imports,
+  structs,
   setStructs,
-}: any) {
+}: Props) {
   return (
     <Card className="w-full max-w-xl mx-auto mb-6 relative">
       <CardHeader>

@@ -24,7 +24,12 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { generateFunctionCode } from "@/pages/NoCodeMove/utils/generateCode";
-import { SuiMoveFunction } from "@/types/move";
+import {
+  FunctionsType,
+  ImportsType,
+  StructsType,
+  SuiMoveFunction,
+} from "@/types/move";
 import { DialogClose } from "@radix-ui/react-dialog";
 
 export default function AddFunctionDialog({
@@ -32,11 +37,9 @@ export default function AddFunctionDialog({
   structs,
   setFunctions,
 }: {
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
-  structs: Record<string, SuiMoveNormalizedStruct>;
-  setFunctions: React.Dispatch<
-    React.SetStateAction<Record<string, SuiMoveFunction>>
-  >;
+  imports: ImportsType;
+  structs: StructsType;
+  setFunctions: React.Dispatch<React.SetStateAction<FunctionsType>>;
 }) {
   const [functionName, setFunctionName] = useState("new_function");
   const [visibility, setVisibility] = useState<SuiMoveVisibility>("Private");

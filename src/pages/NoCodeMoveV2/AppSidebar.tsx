@@ -15,6 +15,16 @@ import FunctionListView from "./FunctionListView";
 
 import ImportedModuleLines from "./ImportedModuleLines";
 import StructCardView from "./StructCardView";
+import { FunctionsType, ImportsType, StructsType } from "@/types/move";
+
+interface Props {
+  imports: ImportsType;
+  structs: StructsType;
+  functions: FunctionsType;
+  setImports: React.Dispatch<React.SetStateAction<ImportsType>>;
+  setStructs: React.Dispatch<React.SetStateAction<StructsType>>;
+  setFunctions: React.Dispatch<React.SetStateAction<FunctionsType>>;
+}
 
 export function AppSidebar({
   imports,
@@ -23,7 +33,7 @@ export function AppSidebar({
   setImports,
   setStructs,
   setFunctions,
-}: any) {
+}: Props) {
   return (
     <Accordion
       type="multiple"

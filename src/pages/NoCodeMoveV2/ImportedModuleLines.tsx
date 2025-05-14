@@ -1,8 +1,9 @@
 import { SUI_PACKAGES } from "@/Constants";
+import { ImportsType } from "@/types/move";
 import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 
 interface Props {
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
+  imports: ImportsType;
 }
 export default function ImportedModuleLines({ imports }: Props) {
   return (

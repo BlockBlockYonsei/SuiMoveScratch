@@ -1,12 +1,21 @@
 import { AppSidebar } from "./AppSidebar";
-import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
+import {
+  SuiMoveNormalizedFunction,
+  SuiMoveNormalizedStruct,
+} from "@mysten/sui/client";
 import { useState } from "react";
 import { SuiMoveFunction } from "@/types/move";
 import CodePreview from "./CodePreview";
 
 export default function Final() {
   const [imports, setImports] = useState<
-    Record<string, Record<string, SuiMoveNormalizedStruct>>
+    Record<
+      string,
+      Record<
+        string,
+        SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
+      >
+    >
   >({});
   const [structs, setStructs] = useState<
     Record<string, SuiMoveNormalizedStruct>

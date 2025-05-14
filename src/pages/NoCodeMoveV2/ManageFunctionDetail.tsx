@@ -19,7 +19,12 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { SuiMoveFunction } from "@/types/move";
+import {
+  FunctionsType,
+  ImportsType,
+  StructsType,
+  SuiMoveFunction,
+} from "@/types/move";
 import { Label } from "@/components/ui/label";
 import FunctionParameterSelect from "./FunctionParameterSelect";
 
@@ -37,13 +42,11 @@ export default function ManageFunctionDetail({
   selectedFunction,
   setFunctions,
 }: {
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
-  structs: Record<string, SuiMoveNormalizedStruct>;
   selectedFunction: [string, SuiMoveFunction];
-  functions: Record<string, SuiMoveFunction>;
-  setFunctions: React.Dispatch<
-    React.SetStateAction<Record<string, SuiMoveFunction>>
-  >;
+  imports: ImportsType;
+  structs: StructsType;
+  functions: FunctionsType;
+  setFunctions: React.Dispatch<React.SetStateAction<FunctionsType>>;
 }) {
   const [open, setOpen] = useState(false);
   const [insideCodes, setInsideCodes] = useState<InsideCode[]>([]);

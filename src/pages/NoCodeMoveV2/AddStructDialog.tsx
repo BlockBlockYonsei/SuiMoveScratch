@@ -16,19 +16,20 @@ import {
 import TypeSelect from "@/pages/NoCodeMove/components/TypeSelect";
 import { generateStructCode } from "@/pages/NoCodeMove/utils/generateCode";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { ImportsType, StructsType } from "@/types/move";
 
 export default function AddStructDialog({
+  defaultStructName,
+  defaultStruct,
   imports,
   structs,
   setStructs,
-  defaultStructName,
-  defaultStruct,
 }: {
-  imports: any;
-  structs: any;
-  setStructs: any;
   defaultStructName: string | null;
   defaultStruct: SuiMoveNormalizedStruct | null;
+  imports: ImportsType;
+  structs: StructsType;
+  setStructs: React.Dispatch<React.SetStateAction<StructsType>>;
 }) {
   const [structName, setStructName] = useState("MyStruct");
   const [abilities, setAbilities] = useState<SuiMoveAbility[]>([]);
