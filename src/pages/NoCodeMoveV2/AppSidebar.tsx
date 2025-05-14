@@ -1,23 +1,25 @@
+import { useState } from "react";
+import {
+  SuiMoveNormalizedModules,
+  SuiMoveNormalizedStruct,
+} from "@mysten/sui/client";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+
 import AddImportDialog from "./AddImportDialog";
 import AddStructDialog from "./AddStructDialog";
 import EditStructDialog from "./EditStructDialog";
 import AddFunctionDialog from "./AddFunctionDialog";
-import {
-  SuiMoveNormalizedModules,
-  SuiMoveNormalizedStruct,
-} from "@mysten/sui/client";
 import StructListView from "./StructListView";
 import FunctionListView from "./FunctionListView";
-import { useState } from "react";
+
 import { SUI_PACKAGES } from "@/Constants";
-import { Dialog, DialogTrigger } from "./ui/dialog";
-import { Button } from "./ui/button";
 
 export function AppSidebar({
   imports,

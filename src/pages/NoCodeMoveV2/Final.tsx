@@ -1,4 +1,4 @@
-import { AppSidebar } from "@/components/AppSidebar";
+import { AppSidebar } from "./AppSidebar";
 import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 import { useState } from "react";
 import {

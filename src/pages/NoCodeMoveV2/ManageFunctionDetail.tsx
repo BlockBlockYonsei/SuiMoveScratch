@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import {
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
@@ -20,7 +20,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { SuiMoveFunction } from "@/types/move";
-import { Label } from "./ui/label";
+import { Label } from "@/components/ui/label";
 import FunctionParameterSelect from "./FunctionParameterSelect";
 
 interface InsideCode {

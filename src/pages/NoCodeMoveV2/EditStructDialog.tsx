@@ -6,14 +6,14 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   SuiMoveAbility,
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
-import TypeSelect from "../pages/NoCodeMove/components/TypeSelect";
+import TypeSelect from "@/pages/NoCodeMove/components/TypeSelect";
 
 export default function EditStructDialog({
   open,
@@ -56,10 +56,10 @@ export default function EditStructDialog({
   // 필드 업데이트 함수
   const updateFieldType = (
     fieldName: string,
-    newType: SuiMoveNormalizedType,
+    newType: SuiMoveNormalizedType
   ) => {
     setFields((prev) =>
-      prev.map((f) => (f.name === fieldName ? { ...f, type: newType } : f)),
+      prev.map((f) => (f.name === fieldName ? { ...f, type: newType } : f))
     );
   };
 
@@ -123,7 +123,7 @@ export default function EditStructDialog({
                   setAbilities((prev) =>
                     prev.includes(a as SuiMoveAbility)
                       ? prev.filter((ability) => ability !== a)
-                      : [...prev, a as SuiMoveAbility],
+                      : [...prev, a as SuiMoveAbility]
                   )
                 }
               >
@@ -154,7 +154,7 @@ export default function EditStructDialog({
                   setType={(type) =>
                     updateFieldType(
                       typeParameterNames[index] || `T${index}`,
-                      type,
+                      type
                     )
                   }
                 />

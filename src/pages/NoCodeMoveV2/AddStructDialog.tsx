@@ -7,14 +7,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input"; // 추가된 input이 있다면
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input"; // 추가된 input이 있다면
 import {
   SuiMoveAbility,
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
-import TypeSelect from "../pages/NoCodeMove/components/TypeSelect";
+import TypeSelect from "@/pages/NoCodeMove/components/TypeSelect";
 import { generateStructCode } from "@/pages/NoCodeMove/utils/generateCode";
 import { DialogClose } from "@radix-ui/react-dialog";
 
