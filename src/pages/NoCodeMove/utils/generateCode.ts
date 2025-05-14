@@ -1,4 +1,4 @@
-import { SuiMoveFunction } from "@/types/move";
+import { ImportsType, SuiMoveFunction } from "@/types/move";
 
 const PACKAGE_ALIASES: Record<string, string> = {
   "0x0000000000000000000000000000000000000000000000000000000000000001": "std",
@@ -18,24 +18,14 @@ export function formatType(type: any): string {
   return "Unknown";
 }
 
-export function generateImportsCode(
-  imports: Record<string, Record<string, any>>
-): string {
+export function generateImportsCode(imports: ImportsType): string {
   return Object.entries(imports)
     .map(([fullModuleName, data]) => {
       const [pkg, module] = fullModuleName.split("::");
       const alias = PACKAGE_ALIASES[pkg] || pkg;
 
-      const structs = data.structs ? Object.keys(data.structs).join(", ") : "";
-      const functions = data.functions
-        ? Object.keys(data.functions).join(", ")
-        : "";
-
-      if (structs || functions) {
-        const imports = [structs, functions].filter(Boolean).join(", ");
-        return `use ${alias}::${module}::{ ${imports} };`;
-      }
-      return "";
+      const imports = Object.keys(data).join(", ");
+      return `use ${alias}::${module}::{ ${imports} };`;
     })
     .join("\n");
 }
