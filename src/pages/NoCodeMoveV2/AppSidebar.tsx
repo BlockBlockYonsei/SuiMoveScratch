@@ -82,18 +82,21 @@ export function AppSidebar({
           Functions
         </AccordionTrigger>
         <AccordionContent>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="cursor-pointer">Create New Functions</Button>
+            </DialogTrigger>
+            <AddFunctionDialog
+              imports={imports}
+              structs={structs}
+              setFunctions={setFunctions}
+            />
+          </Dialog>
           <FunctionListView
             imports={imports}
             structs={structs}
             setFunctions={setFunctions}
             functions={functions}
-          />
-        </AccordionContent>
-        <AccordionContent>
-          <AddFunctionDialog
-            imports={imports}
-            structs={structs}
-            setFunctions={setFunctions}
           />
         </AccordionContent>
       </AccordionItem>

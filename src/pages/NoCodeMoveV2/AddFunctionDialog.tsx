@@ -1,11 +1,9 @@
 import { useState } from "react";
 import {
-  Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -127,175 +125,167 @@ export default function AddFunctionDialog({
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button className="cursor-pointer">Create New Functions</Button>
-      </DialogTrigger>
+    <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+      <DialogHeader>
+        <DialogTitle>Create a New Function</DialogTitle>
+        <DialogDescription>
+          Define function properties, type parameters, arguments and return
+          types.
+        </DialogDescription>
+      </DialogHeader>
 
-      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Create a New Function</DialogTitle>
-          <DialogDescription>
-            Define function properties, type parameters, arguments and return
-            types.
-          </DialogDescription>
-        </DialogHeader>
+      {/* Name */}
+      <div className="mb-2">
+        <label className="block mb-1 text-sm font-semibold">
+          Function Name
+        </label>
+        <Input
+          value={functionName}
+          onChange={(e) => setFunctionName(e.target.value)}
+        />
+      </div>
 
-        {/* Name */}
-        <div className="mb-2">
-          <label className="block mb-1 text-sm font-semibold">
-            Function Name
-          </label>
-          <Input
-            value={functionName}
-            onChange={(e) => setFunctionName(e.target.value)}
+      {/* Entry + Visibility */}
+      <div className="flex gap-4 mb-4">
+        <Select
+          onValueChange={(v) => setIsEntry(v === "true")}
+          value={String(isEntry)}
+        >
+          <SelectTrigger className="w-32">
+            <SelectValue placeholder="Entry" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="true">Entry</SelectItem>
+            <SelectItem value="false">Non-entry</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select
+          onValueChange={(v) => setVisibility(v as SuiMoveVisibility)}
+          value={visibility}
+        >
+          <SelectTrigger className="w-32">
+            <SelectValue placeholder="Visibility" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Private">Private</SelectItem>
+            <SelectItem value="Friend">Friend</SelectItem>
+            <SelectItem value="Public">Public</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Type Parameters */}
+      <div className="mb-4">
+        <label className="block mb-1 text-sm font-semibold">
+          Type Parameters
+        </label>
+
+        <div className="flex place-content-between  gap-2 mb-2 flex-wrap">
+          <div className="flex gap-x-2 mb-2 flex-wrap">
+            {["copy", "drop", "store", "key"].map((a) => (
+              <Button
+                key={a}
+                variant={
+                  newTypeParamAbilities.includes(a as SuiMoveAbility)
+                    ? "default"
+                    : "outline"
+                }
+                onClick={() => toggleTypeParamAbility(a as SuiMoveAbility)}
+                size="sm"
+              >
+                {a}
+              </Button>
+            ))}
+          </div>
+          <Button className="cursor-pointer" onClick={commitTypeParameter}>
+            Add
+          </Button>
+        </div>
+
+        {typeParameters.map((typeParameter, index) => (
+          <li key={`T${index}`} className="flex gap-x-2">
+            <span>T{index}</span>
+            {typeParameter.abilities.map((type) => (
+              <div>
+                <span>{type}</span>
+              </div>
+            ))}
+          </li>
+        ))}
+      </div>
+
+      {/* Parameters */}
+      <div className="mb-4">
+        <label className="block mb-1 text-sm font-semibold">Parameters</label>
+        <div className="flex gap-2 mb-2">
+          <TypeSelect
+            imports={imports}
+            structs={structs}
+            typeParameters={[]}
+            setType={setNewParamType}
           />
+          <Button className="cursor-pointer" onClick={handleAddParam}>
+            Add
+          </Button>
         </div>
+        {parameters.map((p, index) => (
+          <li key={`arg${index}`} className="flex justify-between">
+            {typeof p === "string"
+              ? p
+              : "Struct" in p
+              ? p.Struct.name
+              : "Unknown"}
+          </li>
+        ))}
+      </div>
 
-        {/* Entry + Visibility */}
-        <div className="flex gap-4 mb-4">
-          <Select
-            onValueChange={(v) => setIsEntry(v === "true")}
-            value={String(isEntry)}
-          >
-            <SelectTrigger className="w-32">
-              <SelectValue placeholder="Entry" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="true">Entry</SelectItem>
-              <SelectItem value="false">Non-entry</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select
-            onValueChange={(v) => setVisibility(v as SuiMoveVisibility)}
-            value={visibility}
-          >
-            <SelectTrigger className="w-32">
-              <SelectValue placeholder="Visibility" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Private">Private</SelectItem>
-              <SelectItem value="Friend">Friend</SelectItem>
-              <SelectItem value="Public">Public</SelectItem>
-            </SelectContent>
-          </Select>
+      {/* Returns */}
+      <div className="mb-4">
+        <label className="block mb-1 text-sm font-semibold">Return Types</label>
+        <div className="flex gap-2 mb-2">
+          <TypeSelect
+            imports={imports}
+            structs={structs}
+            typeParameters={[]}
+            setType={setNewReturnType}
+          />
+          <Button className="cursor-pointer" onClick={handleAddReturn}>
+            Add
+          </Button>
         </div>
-
-        {/* Type Parameters */}
-        <div className="mb-4">
-          <label className="block mb-1 text-sm font-semibold">
-            Type Parameters
-          </label>
-
-          <div className="flex place-content-between  gap-2 mb-2 flex-wrap">
-            <div className="flex gap-x-2 mb-2 flex-wrap">
-              {["copy", "drop", "store", "key"].map((a) => (
-                <Button
-                  key={a}
-                  variant={
-                    newTypeParamAbilities.includes(a as SuiMoveAbility)
-                      ? "default"
-                      : "outline"
-                  }
-                  onClick={() => toggleTypeParamAbility(a as SuiMoveAbility)}
-                  size="sm"
-                >
-                  {a}
-                </Button>
-              ))}
-            </div>
-            <Button className="cursor-pointer" onClick={commitTypeParameter}>
-              Add
-            </Button>
-          </div>
-
-          {typeParameters.map((typeParameter, index) => (
-            <li key={`T${index}`} className="flex gap-x-2">
-              <span>T{index}</span>
-              {typeParameter.abilities.map((type) => (
-                <div>
-                  <span>{type}</span>
-                </div>
-              ))}
-            </li>
-          ))}
-        </div>
-
-        {/* Parameters */}
-        <div className="mb-4">
-          <label className="block mb-1 text-sm font-semibold">Parameters</label>
-          <div className="flex gap-2 mb-2">
-            <TypeSelect
-              imports={imports}
-              structs={structs}
-              typeParameters={[]}
-              setType={setNewParamType}
-            />
-            <Button className="cursor-pointer" onClick={handleAddParam}>
-              Add
-            </Button>
-          </div>
-          {parameters.map((p, index) => (
-            <li key={`arg${index}`} className="flex justify-between">
-              {typeof p === "string"
-                ? p
-                : "Struct" in p
-                ? p.Struct.name
+        <ul className="text-sm space-y-1">
+          {returns.map((ret, idx) => (
+            <li key={idx} className="text-gray-700">
+              {typeof ret === "string"
+                ? ret
+                : "Struct" in ret
+                ? ret.Struct.name
                 : "Unknown"}
             </li>
           ))}
-        </div>
+        </ul>
+      </div>
 
-        {/* Returns */}
-        <div className="mb-4">
-          <label className="block mb-1 text-sm font-semibold">
-            Return Types
-          </label>
-          <div className="flex gap-2 mb-2">
-            <TypeSelect
-              imports={imports}
-              structs={structs}
-              typeParameters={[]}
-              setType={setNewReturnType}
-            />
-            <Button className="cursor-pointer" onClick={handleAddReturn}>
-              Add
-            </Button>
-          </div>
-          <ul className="text-sm space-y-1">
-            {returns.map((ret, idx) => (
-              <li key={idx} className="text-gray-700">
-                {typeof ret === "string"
-                  ? ret
-                  : "Struct" in ret
-                  ? ret.Struct.name
-                  : "Unknown"}
-              </li>
-            ))}
-          </ul>
-        </div>
+      {/* Preview */}
+      <div className="bg-gray-100 p-4 text-sm rounded whitespace-pre-wrap mb-4">
+        {generateFunctionCode(functionName, {
+          function: {
+            visibility,
+            isEntry,
+            typeParameters,
+            parameters: parameters,
+            return: returns,
+          },
+          insideCode: [],
+        })}
+      </div>
 
-        {/* Preview */}
-        <div className="bg-gray-100 p-4 text-sm rounded whitespace-pre-wrap mb-4">
-          {generateFunctionCode(functionName, {
-            function: {
-              visibility,
-              isEntry,
-              typeParameters,
-              parameters: parameters,
-              return: returns,
-            },
-            insideCode: [],
-          })}
-        </div>
-
-        <DialogClose>
-          <Button className="cursor-pointer" onClick={handleComplete}>
-            Complete
-          </Button>
-        </DialogClose>
-      </DialogContent>
-    </Dialog>
+      <DialogClose>
+        <Button className="cursor-pointer" onClick={handleComplete}>
+          Complete
+        </Button>
+      </DialogClose>
+    </DialogContent>
   );
 }
