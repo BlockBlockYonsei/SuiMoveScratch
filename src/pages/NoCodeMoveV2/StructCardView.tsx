@@ -69,7 +69,6 @@ export default function StructCardView({
             ))
           )}
         </div>
-
         <div>
           <h4 className="font-semibold text-sm text-muted-foreground mb-1">
             Fields

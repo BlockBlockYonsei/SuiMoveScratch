@@ -6,6 +6,7 @@ const PACKAGE_ALIASES: Record<string, string> = {
 };
 
 export function formatType(type: any): string {
+  console.log(type);
   if (typeof type === "string") return type;
   if ("Struct" in type) {
     const { address, module, name, typeArguments } = type.Struct;
@@ -21,11 +22,20 @@ export function generateImportsCode(
   imports: Record<string, Record<string, any>>
 ): string {
   return Object.entries(imports)
-    .map(([fullModuleName, structs]) => {
+    .map(([fullModuleName, data]) => {
       const [pkg, module] = fullModuleName.split("::");
       const alias = PACKAGE_ALIASES[pkg] || pkg;
-      const names = Object.keys(structs).join(", ");
-      return `use ${alias}::${module}::{ ${names} };`;
+
+      const structs = data.structs ? Object.keys(data.structs).join(", ") : "";
+      const functions = data.functions
+        ? Object.keys(data.functions).join(", ")
+        : "";
+
+      if (structs || functions) {
+        const imports = [structs, functions].filter(Boolean).join(", ");
+        return `use ${alias}::${module}::{ ${imports} };`;
+      }
+      return "";
     })
     .join("\n");
 }
@@ -82,6 +92,7 @@ export function generateFunctionCode(
   const parameters = func.function.parameters
     .map((p: any, i: number) => `arg${i}: ${formatType(p)}`)
     .join(", ");
+
   const returnType =
     func.function.return.length === 0
       ? ""

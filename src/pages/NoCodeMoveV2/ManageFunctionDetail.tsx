@@ -53,12 +53,25 @@ export default function ManageFunctionDetail({
   const [currentInsideCode, setCurrentInsideCode] = useState<InsideCode | null>(
     null
   );
+  const [selectedImportFn, setSelectedImportFn] = useState<
+    SuiMoveNormalizedFunction | SuiMoveFunction | null
+  >(null);
   const [selectedParams, setSelectedParams] = useState<string[]>([]);
   const [selectedReturns, setSelectedReturns] = useState<string[]>([]);
   const [selectedTypeArgs, setSelectedTypeArgs] = useState<string[]>([]);
 
   const handleSelect = (functionName: string) => {
-    const selectedFn = functions[functionName];
+    let selectedFn;
+    if (functionName.includes("::")) {
+      const [importName, moduleName, fnName] = functionName.split("::");
+      console.log(importName, moduleName, fnName);
+      selectedFn =
+        imports[`${importName}::${moduleName}`].functions[moduleName][fnName];
+    } else {
+      selectedFn = functions[functionName];
+    }
+    setSelectedImportFn(selectedFn);
+
     if (!selectedFn) return;
     setCurrentInsideCode({
       functionName: functionName,
@@ -125,8 +138,6 @@ export default function ManageFunctionDetail({
     setOpen(false);
   };
 
-  console.log(functions);
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -167,6 +178,31 @@ export default function ManageFunctionDetail({
                 </SelectItem>
               );
             })}
+
+            {Object.entries(imports).map(([importName, moduleContent]) => {
+              const functionModule = moduleContent.functions;
+              return (
+                <div key={importName}>
+                  <Label className="px-2 text-xs text-muted-foreground">
+                    {importName.split("::")[1]}
+                  </Label>
+                  {Object.keys(functionModule).map((moduleName) => {
+                    return Object.keys(functionModule[moduleName]).map(
+                      (functionName) => {
+                        return (
+                          <SelectItem
+                            key={`${functionName}`}
+                            value={`${importName}::${functionName}`}
+                          >
+                            {functionName}
+                          </SelectItem>
+                        );
+                      }
+                    );
+                  })}
+                </div>
+              );
+            })}
           </SelectContent>
         </Select>
 
@@ -177,7 +213,10 @@ export default function ManageFunctionDetail({
               <div key={idx} className="flex items-center gap-2">
                 <span className="text-gray-500">{idx + 1}.</span>
                 <FunctionParameterSelect
-                  function={functions[funcObj.functionName].function}
+                  function={
+                    functions[funcObj.functionName]?.function ??
+                    selectedImportFn
+                  }
                   functionName={funcObj.functionName}
                   onParameterSelect={(value) =>
                     handleParameterSelect(value, idx)
@@ -196,7 +235,10 @@ export default function ManageFunctionDetail({
               <div className="flex items-center gap-2">
                 <span className="text-gray-500">{insideCodes.length + 1}.</span>
                 <FunctionParameterSelect
-                  function={functions[currentInsideCode.functionName].function}
+                  function={
+                    functions[currentInsideCode.functionName]?.function ??
+                    selectedImportFn
+                  }
                   functionName={currentInsideCode.functionName}
                   onParameterSelect={(value) =>
                     handleParameterSelect(value, selectedParams.length)
