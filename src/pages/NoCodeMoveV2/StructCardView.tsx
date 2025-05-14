@@ -24,7 +24,7 @@ export default function StructCardView({
       <CardHeader>
         <button
           // onClick={() => onDelete(structName)}
-          className="absolute top-3 right-3 text-gray-400 hover:text-black"
+          className="absolute cursor-pointer top-3 right-3 text-gray-400 hover:text-black"
         >
           <X size={20} />
         </button>
@@ -90,7 +90,7 @@ export default function StructCardView({
           <DialogTrigger>
             <button
               // onClick={onEdit}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md"
+              className="px-4 py-2 cursor-pointer bg-blue-600 text-white rounded-md"
             >
               Edit
             </button>

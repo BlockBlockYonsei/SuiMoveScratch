@@ -174,6 +174,7 @@ export default function AddStructDialog({
           {["copy", "drop", "store", "key"].map((a) => (
             <Button
               key={a}
+              className="cursor-pointer"
               variant={
                 abilities.includes(a as SuiMoveAbility) ? "default" : "outline"
               }
@@ -202,6 +203,7 @@ export default function AddStructDialog({
           {["copy", "drop", "store", "key"].map((a) => (
             <Button
               key={a}
+              className="cursor-pointer"
               variant={
                 newTypeParamAbilities.includes(a as SuiMoveAbility)
                   ? "default"
