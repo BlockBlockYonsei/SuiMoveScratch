@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import {
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
@@ -19,8 +19,13 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { SuiMoveFunction } from "@/types/move";
-import { Label } from "./ui/label";
+import {
+  FunctionsType,
+  ImportsType,
+  StructsType,
+  SuiMoveFunction,
+} from "@/types/move";
+import { Label } from "@/components/ui/label";
 import FunctionParameterSelect from "./FunctionParameterSelect";
 
 interface InsideCode {
@@ -37,19 +42,11 @@ export default function ManageFunctionDetail({
   selectedFunction,
   setFunctions,
 }: {
-  imports: Record<
-    string,
-    {
-      functions: Record<string, Record<string, SuiMoveNormalizedFunction>>;
-      structs: Record<string, SuiMoveNormalizedStruct>;
-    }
-  >;
-  structs: Record<string, SuiMoveNormalizedStruct>;
   selectedFunction: [string, SuiMoveFunction];
-  functions: Record<string, SuiMoveFunction>;
-  setFunctions: React.Dispatch<
-    React.SetStateAction<Record<string, SuiMoveFunction>>
-  >;
+  imports: ImportsType;
+  structs: StructsType;
+  functions: FunctionsType;
+  setFunctions: React.Dispatch<React.SetStateAction<FunctionsType>>;
 }) {
   const [open, setOpen] = useState(false);
   const [insideCodes, setInsideCodes] = useState<InsideCode[]>([]);

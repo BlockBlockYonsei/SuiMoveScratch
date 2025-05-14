@@ -5,9 +5,13 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { SuiMoveFunction } from "@/types/move";
+import {
+  FunctionsType,
+  ImportsType,
+  StructsType,
+  SuiMoveFunction,
+} from "@/types/move";
 import ManageFunctionDetail from "./ManageFunctionDetail";
-import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 
 export default function FunctionListView({
   imports,
@@ -15,12 +19,10 @@ export default function FunctionListView({
   setFunctions,
   functions,
 }: {
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
-  structs: Record<string, SuiMoveNormalizedStruct>;
-  setFunctions: React.Dispatch<
-    React.SetStateAction<Record<string, SuiMoveFunction>>
-  >;
-  functions: Record<string, SuiMoveFunction>;
+  imports: ImportsType;
+  structs: StructsType;
+  functions: FunctionsType;
+  setFunctions: React.Dispatch<React.SetStateAction<FunctionsType>>;
 }) {
   return (
     <div className="space-y-4 max-w-xl mx-auto">

@@ -12,6 +12,7 @@ import {
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
+import { ImportsType } from "@/types/move";
 
 export default function TypeSelect({
   imports,
@@ -20,7 +21,7 @@ export default function TypeSelect({
   setType,
   defaultValue,
 }: {
-  imports: Record<string, Record<string, SuiMoveNormalizedStruct>>;
+  imports: ImportsType;
   structs: Record<string, SuiMoveNormalizedStruct>;
   typeParameters: SuiMoveStructTypeParameter[];
   setType: (type: SuiMoveNormalizedType) => void;
@@ -42,13 +43,13 @@ export default function TypeSelect({
     (acc, [fullModuleName, importedStruct]) => {
       const [packageAddress, moduleName] = fullModuleName.split("::");
       if (!acc[packageAddress]) acc[packageAddress] = {};
-      acc[packageAddress][moduleName] = importedStruct;
+      // acc[packageAddress][moduleName] = importedStruct;
       return acc;
     },
     {} as Record<
       string,
       Record<string, Record<string, SuiMoveNormalizedStruct>>
-    >,
+    >
   );
 
   const getDefaultValue = () => {
@@ -159,7 +160,7 @@ export default function TypeSelect({
                 >
                   {moduleName}::{typeName}
                 </SelectItem>
-              )),
+              ))
             )}
           </div>
         ))}
