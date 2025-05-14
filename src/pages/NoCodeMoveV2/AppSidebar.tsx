@@ -20,6 +20,7 @@ import StructListView from "./StructListView";
 import FunctionListView from "./FunctionListView";
 
 import { SUI_PACKAGES } from "@/Constants";
+import ImportedModuleLines from "./ImportedModuleLines";
 
 export function AppSidebar({
   imports,
@@ -64,34 +65,9 @@ export function AppSidebar({
             <DialogTrigger asChild>
               <Button className="cursor-pointer">Create New Imports</Button>
             </DialogTrigger>
-            {Object.entries(imports)
-              .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
-              .map(([key, values]) => {
-                const typedValues = values as Record<
-                  string,
-                  SuiMoveNormalizedStruct
-                >;
-
-                const pkgName = () => {
-                  const pkg = key.split("::")[0];
-                  if (pkg === SUI_PACKAGES[0]) return "std";
-                  else if (pkg === SUI_PACKAGES[1]) return "sui";
-                  else return pkg;
-                };
-
-                return (
-                  <div key={key}>
-                    <span className="text-blue-500">use </span>
-                    {pkgName()}::{key.split("::")[1]} &#123;{" "}
-                    <span className="text-emerald-500 font-semibold">
-                      {Object.keys(typedValues).join(", ")}
-                    </span>{" "}
-                    &#125;;
-                  </div>
-                );
-              })}{" "}
             <AddImportDialog addImport={addImport} />
           </Dialog>
+          <ImportedModuleLines imports={imports} />
         </AccordionContent>
       </AccordionItem>
 
