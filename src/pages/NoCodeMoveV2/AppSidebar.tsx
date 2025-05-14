@@ -1,9 +1,5 @@
 import { useState } from "react";
 import {
-  SuiMoveNormalizedModules,
-  SuiMoveNormalizedStruct,
-} from "@mysten/sui/client";
-import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -19,7 +15,6 @@ import AddFunctionDialog from "./AddFunctionDialog";
 import StructListView from "./StructListView";
 import FunctionListView from "./FunctionListView";
 
-import { SUI_PACKAGES } from "@/Constants";
 import ImportedModuleLines from "./ImportedModuleLines";
 
 export function AppSidebar({
@@ -32,24 +27,6 @@ export function AppSidebar({
 }: any) {
   const [structToEdit, setStructToEdit] = useState<any>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-
-  const addImport = (
-    data: SuiMoveNormalizedModules,
-    pkgAddress: string,
-    moduleName: string,
-    structName: string
-  ) => {
-    if (moduleName) {
-      const key = pkgAddress + "::" + moduleName;
-      setImports((prev: any) => ({
-        ...prev,
-        [key]: {
-          ...(prev[key] || {}),
-          [structName]: data[moduleName].structs[structName],
-        },
-      }));
-    }
-  };
 
   return (
     <Accordion
@@ -65,7 +42,7 @@ export function AppSidebar({
             <DialogTrigger asChild>
               <Button className="cursor-pointer">Create New Imports</Button>
             </DialogTrigger>
-            <AddImportDialog addImport={addImport} />
+            <AddImportDialog setImports={setImports} />
           </Dialog>
           <ImportedModuleLines imports={imports} />
         </AccordionContent>
