@@ -4,7 +4,6 @@ import {
   SuiMoveFunction,
   SuiMoveStruct,
 } from "@/types/move-syntax";
-import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 
 export function formatType(type: any): string {
   console.log(type);

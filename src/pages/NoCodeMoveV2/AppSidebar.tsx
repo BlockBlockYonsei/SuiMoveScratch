@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -15,25 +15,11 @@ import FunctionListView from "./FunctionListView";
 
 import ImportedModuleLines from "./ImportedModuleLines";
 import StructCardView from "./StructCardView";
-import { FunctionsType, ImportsType, StructsType } from "@/types/move-syntax";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
-interface Props {
-  imports: ImportsType;
-  structs: StructsType;
-  functions: FunctionsType;
-  setImports: React.Dispatch<React.SetStateAction<ImportsType>>;
-  setStructs: React.Dispatch<React.SetStateAction<StructsType>>;
-  setFunctions: React.Dispatch<React.SetStateAction<FunctionsType>>;
-}
-
-export function AppSidebar({
-  imports,
-  structs,
-  functions,
-  setImports,
-  setStructs,
-  setFunctions,
-}: Props) {
+export function AppSidebar() {
+  const { imports, structs, functions, setImports, setStructs, setFunctions } =
+    useContext(SuiMoveModuleContext);
   return (
     <Accordion
       type="multiple"
