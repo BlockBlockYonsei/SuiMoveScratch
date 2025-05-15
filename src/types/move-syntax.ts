@@ -23,7 +23,9 @@ export interface SuiMoveStruct extends SuiMoveNormalizedStruct {
 export type FunctionDataMap = Map<string, SuiMoveFunction>;
 
 export type SuiMoveFunction = {
-  function: SuiMoveNormalizedFunction;
+  function: SuiMoveNormalizedFunction & {
+    typeParameterNames: string[];
+  };
   insideCode: {
     functionName: string;
     parameters: string[];
