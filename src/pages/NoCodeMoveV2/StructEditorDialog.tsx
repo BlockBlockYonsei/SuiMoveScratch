@@ -16,8 +16,13 @@ import TypeSelect from "@/pages/NoCodeMove/components/TypeSelect";
 import { generateStructCode } from "@/pages/NoCodeMove/utils/generateCode";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
+import { SuiMoveStruct } from "@/types/move-syntax";
 
-export default function StructEditorDialog() {
+interface Props {
+  defaultStructName: string | null;
+}
+
+export default function StructEditorDialog({ defaultStructName }: Props) {
   const [structName, setStructName] = useState("MyStruct");
   const [abilities, setAbilities] = useState<SuiMoveAbility[]>([]);
   const [typeParameters, setTypeParameters] = useState<
@@ -37,61 +42,66 @@ export default function StructEditorDialog() {
   const { imports, structs, setStructs } = useContext(SuiMoveModuleContext);
 
   useEffect(() => {
-    // if (defaultStruct && defaultStructName) {
-    //   setStructName(defaultStructName);
-    //   setAbilities(defaultStruct.abilities.abilities);
-    //   setTypeParameters(defaultStruct.typeParameters);
-    //   setTypeParameterNames(defaultStruct.typeParameterNames);
-    //   setFields(defaultStruct.fields);
-    // }
+    if (!defaultStructName) return;
+
+    const defaultStruct = structs.get(defaultStructName);
+    if (defaultStruct && defaultStructName) {
+      setStructName(defaultStructName);
+      setAbilities(defaultStruct.abilities.abilities);
+      setTypeParameters(defaultStruct.typeParameters);
+      setTypeParameterNames(defaultStruct.typeParameterNames);
+      setFields(defaultStruct.fields);
+    }
   }, []);
 
   const handleComplete = () => {
     if (!structName) return;
 
-    // if (defaultStruct && defaultStructName) {
-    //   setStructs((prev: StructsType) => {
-    //     const { [defaultStructName]: _, ...rest } = prev;
-    //     return rest;
-    //   });
+    const newStructData = {
+      abilities: { abilities },
+      fields,
+      typeParameters,
+      typeParameterNames,
+    } as SuiMoveStruct;
 
-    //   setStructs((prev: StructsType) => ({
-    //     ...prev,
-    //     [structName]: {
-    //       abilities: { abilities },
-    //       fields,
-    //       typeParameters,
-    //       typeParameterNames,
-    //     },
-    //   }));
-    // }
+    setStructs((prev) => {
+      if (prev.has(structName)) {
+        return prev;
+      }
 
-    // 초기화 (Create 시에만)
-    // if (!defaultStruct || !structName) {
-    setStructs((prev: any) => ({
-      ...prev,
-      [structName]: {
-        abilities: { abilities },
-        fields,
-        typeParameters,
-        typeParameterNames,
-      },
-    }));
+      if (defaultStructName && prev.has(defaultStructName)) {
+        const newStructMap = new Map();
+        [...prev.entries()].map(([name, structData]) => {
+          console.log("NAMMEMA", name);
+          if (name === defaultStructName) {
+            newStructMap.set(structName, newStructData);
+            return;
+          }
+          newStructMap.set(name, structData);
+        });
+        return newStructMap;
+      }
+      const newStructMap = new Map(prev);
+      newStructMap.set(structName, newStructData);
+      return newStructMap;
+    });
 
+    resetState();
+  };
+
+  const resetState = () => {
     setStructName("MyStruct");
     setAbilities([]);
     setFields([]);
     setTypeParameterNames([]);
     setTypeParameters([]);
-    // }
   };
 
   return (
     <DialogContent className="lg:max-w-[800px] max-h-[80vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>
-          {/* {defaultStruct ? "Update Struct" : "Create a New Struct"} */}
-          {"Create a New Struct"}
+          {defaultStructName ? "Update Struct" : "Create a New Struct"}
         </DialogTitle>
         <DialogDescription>
           Add abilities, type parameters, and fields for your struct.

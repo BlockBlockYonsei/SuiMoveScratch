@@ -49,19 +49,12 @@ export function SideBarEditor() {
             <DialogTrigger asChild>
               <Button className="cursor-pointer">Create New Structures</Button>
             </DialogTrigger>
-            <StructEditorDialog />
+            <StructEditorDialog defaultStructName={null} />
           </Dialog>
           <div className="pt-4">
-            {Object.entries(structs).map(([name, struct], idx) => {
+            {[...structs.keys()].map((structName) => {
               return (
-                <StructCardView
-                  key={name}
-                  structName={name}
-                  structData={struct}
-                  // imports={imports}
-                  // structs={structs}
-                  // setStructs={setStructs}
-                />
+                <StructCardView key={structName} structName={structName} />
               );
             })}
           </div>

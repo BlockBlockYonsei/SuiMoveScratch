@@ -10,20 +10,27 @@ import { X } from "lucide-react";
 import StructEditorDialog from "./StructEditorDialog";
 import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-import { SuiMoveStruct } from "@/types/move-syntax";
 
 interface Props {
   structName: string;
-  structData: SuiMoveStruct;
 }
-export default function StructCardView({ structName, structData }: Props) {
-  // const { imports, structs, setStructs } = useContext(SuiMoveModuleContext);
+export default function StructCardView({ structName }: Props) {
+  const { structs, setStructs } = useContext(SuiMoveModuleContext);
+  const structData = structs.get(structName);
+
+  if (!structData) return;
 
   return (
     <Card className="w-full max-w-xl mx-auto mb-6 relative">
       <CardHeader>
         <button
-          // onClick={() => onDelete(structName)}
+          onClick={() => {
+            setStructs((prev) => {
+              const newStructData = new Map(prev);
+              newStructData.delete(structName);
+              return newStructData;
+            });
+          }}
           className="absolute cursor-pointer top-3 right-3 text-gray-400 hover:text-black"
         >
           <X size={20} />
@@ -87,20 +94,11 @@ export default function StructCardView({ structName, structData }: Props) {
         {/* Edit Button */}
         <Dialog>
           <DialogTrigger>
-            <button
-              // onClick={onEdit}
-              className="px-4 py-2 cursor-pointer bg-blue-600 text-white rounded-md"
-            >
+            <button className="px-4 py-2 cursor-pointer bg-blue-600 text-white rounded-md">
               Edit
             </button>
           </DialogTrigger>
-          <StructEditorDialog
-          // imports={imports}
-          // structs={structs}
-          // setStructs={setStructs}
-          // defaultStructName={structName}
-          // defaultStruct={structData}
-          />
+          <StructEditorDialog defaultStructName={structName} />
         </Dialog>
       </CardContent>
     </Card>

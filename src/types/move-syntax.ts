@@ -14,13 +14,13 @@ export interface ImportedSuiMoveModule {
   };
 }
 
-export type StructDatas = Map<string, SuiMoveStruct>;
+export type StructDataMap = Map<string, SuiMoveStruct>;
 
 export interface SuiMoveStruct extends SuiMoveNormalizedStruct {
   typeParameterNames: string[];
 }
 
-export type FunctionDatas = Map<string, SuiMoveFunction>;
+export type FunctionDataMap = Map<string, SuiMoveFunction>;
 
 export type SuiMoveFunction = {
   function: SuiMoveNormalizedFunction;
