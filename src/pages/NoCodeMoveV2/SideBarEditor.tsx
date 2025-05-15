@@ -17,7 +17,7 @@ import ImportedModuleLines from "./ImportedModuleLines";
 import StructCardView from "./StructCardView";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
-export function AppSidebar() {
+export function SideBarEditor() {
   const { imports, structs, functions, setImports, setStructs, setFunctions } =
     useContext(SuiMoveModuleContext);
   return (
