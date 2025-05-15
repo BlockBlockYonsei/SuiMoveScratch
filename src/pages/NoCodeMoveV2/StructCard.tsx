@@ -14,7 +14,7 @@ import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 interface Props {
   structName: string;
 }
-export default function StructCardView({ structName }: Props) {
+export default function StructCard({ structName }: Props) {
   const { structs, setStructs } = useContext(SuiMoveModuleContext);
   const structData = structs.get(structName);
 

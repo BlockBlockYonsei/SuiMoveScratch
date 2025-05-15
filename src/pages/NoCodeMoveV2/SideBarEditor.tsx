@@ -14,7 +14,7 @@ import AddFunctionDialog from "./AddFunctionDialog";
 import FunctionListView from "./FunctionListView";
 
 import ImportPreview from "./ImportPreview";
-import StructCardView from "./StructCardView";
+import StructCard from "./StructCard";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
 export function SideBarEditor() {
@@ -53,9 +53,7 @@ export function SideBarEditor() {
           </Dialog>
           <div className="pt-4">
             {[...structs.keys()].map((structName) => {
-              return (
-                <StructCardView key={structName} structName={structName} />
-              );
+              return <StructCard key={structName} structName={structName} />;
             })}
           </div>
         </AccordionContent>
