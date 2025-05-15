@@ -14,7 +14,7 @@ import {
   SuiMoveNormalizedType,
   SuiMoveVisibility,
 } from "@mysten/sui/client";
-import TypeSelect from "@/pages/NoCodeMove/components/TypeSelect";
+import TypeSelect from "@/pages/NoCodeMoveV2/TypeSelect";
 import {
   Select,
   SelectTrigger,
