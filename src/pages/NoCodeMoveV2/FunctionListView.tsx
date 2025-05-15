@@ -96,13 +96,7 @@ export default function FunctionListView() {
                   </ul>
                 )}
               </div>
-              <ManageFunctionDetail
-                imports={imports}
-                structs={structs}
-                functions={functions}
-                selectedFunction={[name, data]}
-                setFunctions={setFunctions}
-              ></ManageFunctionDetail>
+              {/* <ManageFunctionDetail functionName={name} /> */}
             </CardContent>
           </Card>
         );
