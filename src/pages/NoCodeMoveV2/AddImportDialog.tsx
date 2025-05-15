@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
 import ImportPackageModule from "./ImportPackageModule";
-import { ImportsType } from "@/types/move";
+import { ImportsType } from "@/types/move-syntax";
 
 interface Props {
   imports: ImportsType;

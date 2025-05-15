@@ -1,7 +1,7 @@
 import { AppSidebar } from "./AppSidebar";
 import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 import { useState } from "react";
-import { ImportsType, SuiMoveFunction } from "@/types/move";
+import { ImportsType, SuiMoveFunction } from "@/types/move-syntax";
 import CodePreview from "./CodePreview";
 
 export default function Main() {

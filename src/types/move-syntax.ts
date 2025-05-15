@@ -3,6 +3,19 @@ import {
   SuiMoveNormalizedStruct,
 } from "@mysten/sui/client";
 
+export type ImportsType = {
+  [pkgModuleName: string]: {
+    functions?: Record<string, SuiMoveNormalizedFunction>;
+    structs: {
+      [structName: string]: SuiMoveNormalizedStruct;
+    };
+  };
+};
+
+export type StructsType = Record<string, SuiMoveNormalizedStruct>;
+
+export type FunctionsType = Record<string, SuiMoveFunction>;
+
 export type SuiMoveFunction = {
   function: SuiMoveNormalizedFunction;
   insideCode: {
@@ -12,20 +25,6 @@ export type SuiMoveFunction = {
     typeParameters: string[];
   }[];
 };
-
-export type ImportsType = Record<
-  string,
-  {
-    functions?: Record<string, SuiMoveNormalizedFunction>;
-    structs: {
-      [structName: string]: SuiMoveNormalizedStruct;
-    };
-  }
->;
-
-export type StructsType = Record<string, SuiMoveNormalizedStruct>;
-
-export type FunctionsType = Record<string, SuiMoveFunction>;
 
 // export interface BaseProps {
 //   imports: ImportsType;

@@ -10,7 +10,7 @@ import {
   ImportsType,
   StructsType,
   SuiMoveFunction,
-} from "@/types/move";
+} from "@/types/move-syntax";
 import ManageFunctionDetail from "./ManageFunctionDetail";
 
 export default function FunctionListView({

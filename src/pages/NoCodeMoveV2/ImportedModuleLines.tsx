@@ -1,5 +1,5 @@
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
-import { ImportsType } from "@/types/move";
+import { ImportsType } from "@/types/move-syntax";
 
 interface Props {
   imports: ImportsType;

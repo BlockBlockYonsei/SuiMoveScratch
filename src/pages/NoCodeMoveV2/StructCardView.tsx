@@ -9,7 +9,7 @@ import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import AddStructDialog from "./AddStructDialog";
-import { ImportsType, StructsType } from "@/types/move";
+import { ImportsType, StructsType } from "@/types/move-syntax";
 
 interface Props {
   structName: string;

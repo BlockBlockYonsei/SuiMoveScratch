@@ -5,7 +5,7 @@ import {
   generateFunctionCode,
   downloadMoveCode,
 } from "../NoCodeMove/utils/generateCode";
-import { ImportsType, SuiMoveFunction } from "@/types/move";
+import { ImportsType, SuiMoveFunction } from "@/types/move-syntax";
 
 interface Props {
   imports: ImportsType;

@@ -24,7 +24,7 @@ import {
   ImportsType,
   StructsType,
   SuiMoveFunction,
-} from "@/types/move";
+} from "@/types/move-syntax";
 import { Label } from "@/components/ui/label";
 import FunctionParameterSelect from "./FunctionParameterSelect";
 

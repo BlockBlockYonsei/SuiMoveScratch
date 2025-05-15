@@ -1,5 +1,5 @@
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
-import { ImportsType, SuiMoveFunction } from "@/types/move";
+import { ImportsType, SuiMoveFunction } from "@/types/move-syntax";
 
 export function formatType(type: any): string {
   console.log(type);

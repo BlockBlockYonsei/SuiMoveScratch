@@ -29,7 +29,7 @@ import {
   ImportsType,
   StructsType,
   SuiMoveFunction,
-} from "@/types/move";
+} from "@/types/move-syntax";
 import { DialogClose } from "@radix-ui/react-dialog";
 
 export default function AddFunctionDialog({

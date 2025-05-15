@@ -16,7 +16,7 @@ import {
 import TypeSelect from "@/pages/NoCodeMove/components/TypeSelect";
 import { generateStructCode } from "@/pages/NoCodeMove/utils/generateCode";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { ImportsType, StructsType } from "@/types/move";
+import { ImportsType, StructsType } from "@/types/move-syntax";
 
 export default function AddStructDialog({
   defaultStructName,

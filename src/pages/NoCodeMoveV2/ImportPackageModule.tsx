@@ -1,4 +1,4 @@
-import { ImportsType } from "@/types/move";
+import { ImportsType } from "@/types/move-syntax";
 import { useSuiClientQuery } from "@mysten/dapp-kit";
 import { SuiMoveNormalizedModules } from "@mysten/sui/client";
 import { DialogClose } from "@radix-ui/react-dialog";

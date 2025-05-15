@@ -15,7 +15,7 @@ import FunctionListView from "./FunctionListView";
 
 import ImportedModuleLines from "./ImportedModuleLines";
 import StructCardView from "./StructCardView";
-import { FunctionsType, ImportsType, StructsType } from "@/types/move";
+import { FunctionsType, ImportsType, StructsType } from "@/types/move-syntax";
 
 interface Props {
   imports: ImportsType;

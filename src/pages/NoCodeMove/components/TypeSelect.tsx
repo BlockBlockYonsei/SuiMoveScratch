@@ -12,7 +12,7 @@ import {
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
-import { ImportsType } from "@/types/move";
+import { ImportsType } from "@/types/move-syntax";
 
 export default function TypeSelect({
   imports,

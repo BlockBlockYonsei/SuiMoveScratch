@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Imports from "./_Imports";
 import Structs from "./_Structs";
 import Functions from "./_Functions";
-import { SuiMoveFunction } from "@/types/move";
+import { SuiMoveFunction } from "@/types/move-syntax";
 import { downloadMoveCode } from "./utils/generateCode";
 
 export default function Main() {
@@ -23,7 +23,7 @@ export default function Main() {
     Record<string, SuiMoveNormalizedStruct>
   >({});
   const [functions, setFunctions] = useState<Record<string, SuiMoveFunction>>(
-    {},
+    {}
   );
 
   // =================================================

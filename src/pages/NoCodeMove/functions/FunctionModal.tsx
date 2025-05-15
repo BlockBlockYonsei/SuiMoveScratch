@@ -2,7 +2,7 @@ import {
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
 } from "@mysten/sui/client";
-import { SuiMoveFunction } from "@/types/move";
+import { SuiMoveFunction } from "@/types/move-syntax";
 import { useEffect, useRef } from "react";
 interface Props {
   imports: Record<
@@ -59,7 +59,7 @@ export default function FunctionModal({
           SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
         >
       >
-    >,
+    >
   );
 
   console.log(imports);
@@ -132,7 +132,7 @@ export default function FunctionModal({
                                 {functionName}
                               </li>
                             );
-                          },
+                          }
                         )}
                       </ul>
                     </div>
