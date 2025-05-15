@@ -18,8 +18,7 @@ import StructCard from "./StructCard";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
 export function SideBarEditor() {
-  const { imports, structs, functions, setImports, setStructs, setFunctions } =
-    useContext(SuiMoveModuleContext);
+  const { structs } = useContext(SuiMoveModuleContext);
   return (
     <Accordion
       type="multiple"
@@ -69,18 +68,9 @@ export function SideBarEditor() {
             <DialogTrigger asChild>
               <Button className="cursor-pointer">Create New Functions</Button>
             </DialogTrigger>
-            {/* <AddFunctionDialog
-              imports={imports}
-              structs={structs}
-              setFunctions={setFunctions}
-            /> */}
+            <AddFunctionDialog />
           </Dialog>
-          {/* <FunctionListView
-            imports={imports}
-            structs={structs}
-            setFunctions={setFunctions}
-            functions={functions}
-          /> */}
+          <FunctionListView />
         </AccordionContent>
       </AccordionItem>
     </Accordion>

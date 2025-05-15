@@ -31,20 +31,3 @@ export type SuiMoveFunction = {
     typeParameters: string[];
   }[];
 };
-
-export type ImportsType = {
-  [pkgModuleName: string]: {
-    functions?: Record<string, SuiMoveNormalizedFunction>;
-    structs: {
-      [structName: string]: SuiMoveNormalizedStruct;
-    };
-  };
-};
-
-export interface StructsType {
-  [structName: string]: SuiMoveStruct;
-}
-
-export type FunctionsType = {
-  [functionName: string]: SuiMoveFunction;
-};

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   DialogContent,
   DialogDescription,
@@ -11,7 +11,6 @@ import {
   SuiMoveAbility,
   SuiMoveAbilitySet,
   SuiMoveNormalizedFunction,
-  SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
   SuiMoveVisibility,
 } from "@mysten/sui/client";
@@ -24,23 +23,11 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { generateFunctionCode } from "@/pages/NoCodeMove/utils/generateCode";
-import {
-  FunctionsType,
-  ImportsType,
-  StructsType,
-  SuiMoveFunction,
-} from "@/types/move-syntax";
+import { SuiMoveFunction } from "@/types/move-syntax";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
-export default function AddFunctionDialog({
-  imports,
-  structs,
-  setFunctions,
-}: {
-  imports: ImportsType;
-  structs: StructsType;
-  setFunctions: React.Dispatch<React.SetStateAction<FunctionsType>>;
-}) {
+export default function AddFunctionDialog() {
   const [functionName, setFunctionName] = useState("new_function");
   const [visibility, setVisibility] = useState<SuiMoveVisibility>("Private");
   const [isEntry, setIsEntry] = useState(false);
@@ -58,6 +45,9 @@ export default function AddFunctionDialog({
   const [newReturnType, setNewReturnType] = useState<
     SuiMoveNormalizedType | undefined
   >();
+
+  const { imports, structs, functions, setFunctions } =
+    useContext(SuiMoveModuleContext);
 
   const toggleTypeParamAbility = (ability: SuiMoveAbility) => {
     setNewTypeParamAbilities((prev) =>
@@ -118,10 +108,11 @@ export default function AddFunctionDialog({
       insideCode: [],
     };
 
-    setFunctions((prev) => ({
-      ...prev,
-      [functionName]: newSuiMoveFunction,
-    }));
+    setFunctions((prev) => {
+      const newFunctionMap = new Map(prev);
+      newFunctionMap.set(functionName, newSuiMoveFunction);
+      return newFunctionMap;
+    });
 
     resetFunction();
     // Optionally reset all states
@@ -222,12 +213,12 @@ export default function AddFunctionDialog({
       <div className="mb-4">
         <label className="block mb-1 text-sm font-semibold">Parameters</label>
         <div className="flex gap-2 mb-2">
-          <TypeSelect
+          {/* <TypeSelect
             imports={imports}
             structs={structs}
             typeParameters={[]}
             setType={setNewParamType}
-          />
+          /> */}
           <Button className="cursor-pointer" onClick={handleAddParam}>
             Add
           </Button>
@@ -247,12 +238,12 @@ export default function AddFunctionDialog({
       <div className="mb-4">
         <label className="block mb-1 text-sm font-semibold">Return Types</label>
         <div className="flex gap-2 mb-2">
-          <TypeSelect
+          {/* <TypeSelect
             imports={imports}
             structs={structs}
             typeParameters={[]}
             setType={setNewReturnType}
-          />
+          /> */}
           <Button className="cursor-pointer" onClick={handleAddReturn}>
             Add
           </Button>
