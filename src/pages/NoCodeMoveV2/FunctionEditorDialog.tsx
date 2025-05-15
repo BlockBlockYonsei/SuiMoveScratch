@@ -27,7 +27,7 @@ import { SuiMoveFunction } from "@/types/move-syntax";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
-export default function AddFunctionDialog() {
+export default function FunctionEditorDialog() {
   const [functionName, setFunctionName] = useState("new_function");
   const [visibility, setVisibility] = useState<SuiMoveVisibility>("Private");
   const [isEntry, setIsEntry] = useState(false);

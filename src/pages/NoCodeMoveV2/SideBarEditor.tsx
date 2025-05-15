@@ -10,11 +10,12 @@ import { Button } from "@/components/ui/button";
 
 import ImportEditorDialog from "./ImportEditorDialog";
 import StructEditorDialog from "./StructEditorDialog";
-import AddFunctionDialog from "./AddFunctionDialog";
-import FunctionListView from "./FunctionListView";
+import FunctionEditorDialog from "./FunctionEditorDialog";
 
 import ImportPreview from "./ImportPreview";
 import StructCard from "./StructCard";
+import FunctionListView from "./FunctionListView";
+
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
 export function SideBarEditor() {
@@ -68,7 +69,7 @@ export function SideBarEditor() {
             <DialogTrigger asChild>
               <Button className="cursor-pointer">Create New Functions</Button>
             </DialogTrigger>
-            <AddFunctionDialog />
+            <FunctionEditorDialog />
           </Dialog>
           <FunctionListView />
         </AccordionContent>
