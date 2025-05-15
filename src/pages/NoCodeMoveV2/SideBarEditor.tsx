@@ -9,7 +9,7 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
 import ImportEditorDialog from "./ImportEditorDialog";
-import AddStructDialog from "./AddStructDialog";
+import StructEditorDialog from "./StructEditorDialog";
 import AddFunctionDialog from "./AddFunctionDialog";
 import FunctionListView from "./FunctionListView";
 
@@ -49,13 +49,7 @@ export function SideBarEditor() {
             <DialogTrigger asChild>
               <Button className="cursor-pointer">Create New Structures</Button>
             </DialogTrigger>
-            <AddStructDialog
-              imports={imports}
-              structs={structs}
-              setStructs={setStructs}
-              defaultStructName={null}
-              defaultStruct={null}
-            />
+            <StructEditorDialog />
           </Dialog>
           <div className="pt-4">
             {Object.entries(structs).map(([name, struct]) => {

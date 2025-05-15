@@ -8,7 +8,7 @@ import {
 import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
-import AddStructDialog from "./AddStructDialog";
+import StructEditorDialog from "./StructEditorDialog";
 import { ImportsType, StructsType } from "@/types/move-syntax";
 
 interface Props {
@@ -100,7 +100,7 @@ export default function StructCardView({
               Edit
             </button>
           </DialogTrigger>
-          <AddStructDialog
+          <StructEditorDialog
             imports={imports}
             structs={structs}
             setStructs={setStructs}

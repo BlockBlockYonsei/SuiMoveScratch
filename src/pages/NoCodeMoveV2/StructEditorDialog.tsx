@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   DialogContent,
   DialogDescription,
@@ -15,21 +15,9 @@ import {
 import TypeSelect from "@/pages/NoCodeMove/components/TypeSelect";
 import { generateStructCode } from "@/pages/NoCodeMove/utils/generateCode";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { ImportsType, StructsType, SuiMoveStruct } from "@/types/move-syntax";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
-export default function AddStructDialog({
-  defaultStructName,
-  defaultStruct,
-  imports,
-  structs,
-  setStructs,
-}: {
-  defaultStructName: string | null;
-  defaultStruct: SuiMoveStruct | null;
-  imports: ImportsType;
-  structs: StructsType;
-  setStructs: React.Dispatch<React.SetStateAction<StructsType>>;
-}) {
+export default function StructEditorDialog() {
   const [structName, setStructName] = useState("MyStruct");
   const [abilities, setAbilities] = useState<SuiMoveAbility[]>([]);
   const [typeParameters, setTypeParameters] = useState<
@@ -46,61 +34,64 @@ export default function AddStructDialog({
     SuiMoveAbility[]
   >([]);
 
+  const { imports, structs, setStructs } = useContext(SuiMoveModuleContext);
+
   useEffect(() => {
-    if (defaultStruct && defaultStructName) {
-      setStructName(defaultStructName);
-      setAbilities(defaultStruct.abilities.abilities);
-      setTypeParameters(defaultStruct.typeParameters);
-      setTypeParameterNames(defaultStruct.typeParameterNames);
-      setFields(defaultStruct.fields);
-    }
+    // if (defaultStruct && defaultStructName) {
+    //   setStructName(defaultStructName);
+    //   setAbilities(defaultStruct.abilities.abilities);
+    //   setTypeParameters(defaultStruct.typeParameters);
+    //   setTypeParameterNames(defaultStruct.typeParameterNames);
+    //   setFields(defaultStruct.fields);
+    // }
   }, []);
 
   const handleComplete = () => {
     if (!structName) return;
 
-    if (defaultStruct && defaultStructName) {
-      setStructs((prev: StructsType) => {
-        const { [defaultStructName]: _, ...rest } = prev;
-        return rest;
-      });
+    // if (defaultStruct && defaultStructName) {
+    //   setStructs((prev: StructsType) => {
+    //     const { [defaultStructName]: _, ...rest } = prev;
+    //     return rest;
+    //   });
 
-      setStructs((prev: StructsType) => ({
-        ...prev,
-        [structName]: {
-          abilities: { abilities },
-          fields,
-          typeParameters,
-          typeParameterNames,
-        },
-      }));
-    }
+    //   setStructs((prev: StructsType) => ({
+    //     ...prev,
+    //     [structName]: {
+    //       abilities: { abilities },
+    //       fields,
+    //       typeParameters,
+    //       typeParameterNames,
+    //     },
+    //   }));
+    // }
 
     // 초기화 (Create 시에만)
-    if (!defaultStruct || !structName) {
-      setStructs((prev: any) => ({
-        ...prev,
-        [structName]: {
-          abilities: { abilities },
-          fields,
-          typeParameters,
-          typeParameterNames,
-        },
-      }));
+    // if (!defaultStruct || !structName) {
+    setStructs((prev: any) => ({
+      ...prev,
+      [structName]: {
+        abilities: { abilities },
+        fields,
+        typeParameters,
+        typeParameterNames,
+      },
+    }));
 
-      setStructName("MyStruct");
-      setAbilities([]);
-      setFields([]);
-      setTypeParameterNames([]);
-      setTypeParameters([]);
-    }
+    setStructName("MyStruct");
+    setAbilities([]);
+    setFields([]);
+    setTypeParameterNames([]);
+    setTypeParameters([]);
+    // }
   };
 
   return (
     <DialogContent className="lg:max-w-[800px] max-h-[80vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>
-          {defaultStruct ? "Update Struct" : "Create a New Struct"}
+          {/* {defaultStruct ? "Update Struct" : "Create a New Struct"} */}
+          {"Create a New Struct"}
         </DialogTitle>
         <DialogDescription>
           Add abilities, type parameters, and fields for your struct.
