@@ -1,21 +1,14 @@
-import { ImportsType } from "@/types/move-syntax";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
+import { ImportDataMap, ImportedSuiMoveModule } from "@/types/move-syntax";
 import { useSuiClientQuery } from "@mysten/dapp-kit";
-import { SuiMoveNormalizedModules } from "@mysten/sui/client";
 import { DialogClose } from "@radix-ui/react-dialog";
-import * as React from "react";
+import { useContext } from "react";
 
 interface Props extends React.ComponentProps<"div"> {
   packageId: string;
-  imports: ImportsType;
-  setImports: React.Dispatch<React.SetStateAction<ImportsType>>;
 }
 
-export default function ImportPackageModule({
-  className,
-  packageId,
-  imports,
-  setImports,
-}: Props) {
+export default function ImportPackageModule({ className, packageId }: Props) {
   const { data, isPending, error } = useSuiClientQuery(
     "getNormalizedMoveModulesByPackage",
     {
@@ -26,43 +19,7 @@ export default function ImportPackageModule({
     }
   );
 
-  const addImport = (
-    data: SuiMoveNormalizedModules,
-    pkgAddress: string,
-    moduleName: string,
-    structName: string
-  ) => {
-    if (!moduleName) return;
-
-    const key = pkgAddress + "::" + moduleName;
-
-    setImports((prev: ImportsType) => {
-      const current = prev[key] || {};
-
-      if (structName === "Self") {
-        return {
-          ...prev,
-          [key]: {
-            functions: data[moduleName].exposedFunctions,
-            structs: {
-              ...(current.structs || {}),
-            },
-          },
-        } as ImportsType;
-      } else {
-        return {
-          ...prev,
-          [key]: {
-            functions: current.functions || undefined,
-            structs: {
-              ...(current.structs || {}),
-              [structName]: data[moduleName].structs[structName],
-            },
-          },
-        } as ImportsType;
-      }
-    });
-  };
+  const { setImports } = useContext(SuiMoveModuleContext);
 
   if (isPending)
     return <div className={`${className} text-center py-4`}>Loading...</div>;
@@ -87,7 +44,24 @@ export default function ImportPackageModule({
             <DialogClose>
               <li
                 onClick={() => {
-                  addImport(data, packageId, moduleName, "Self");
+                  const importKey = packageId + "::" + moduleName;
+
+                  setImports((prev: ImportDataMap) => {
+                    const newImportMap = new Map(prev);
+                    const current = prev.get(importKey) || {
+                      address: packageId,
+                      moduleName,
+                      structs: {},
+                    };
+
+                    const newImportData = {
+                      ...current,
+                      functions: data[moduleName].exposedFunctions,
+                    } as ImportedSuiMoveModule;
+                    newImportMap.set(importKey, newImportData);
+
+                    return newImportMap;
+                  });
                 }}
                 className="px-4 py-1 text-emerald-600 hover:bg-blue-50 cursor-pointer rounded transition"
               >
@@ -99,7 +73,25 @@ export default function ImportPackageModule({
                 <li
                   key={structName}
                   onClick={() => {
-                    addImport(data, packageId, moduleName, structName);
+                    const importKey = packageId + "::" + moduleName;
+
+                    setImports((prev: ImportDataMap) => {
+                      const newImportMap = new Map(prev);
+                      const current = prev.get(importKey) || {
+                        address: packageId,
+                        moduleName,
+                        structs: {},
+                      };
+                      const newImportData = {
+                        ...current,
+                        structs: {
+                          ...current.structs,
+                          [structName]: data[moduleName].structs[structName],
+                        },
+                      } as ImportedSuiMoveModule;
+                      newImportMap.set(importKey, newImportData);
+                      return newImportMap;
+                    });
                   }}
                   className={`px-4 py-1 text-emerald-600 hover:bg-blue-50 ${"cursor-pointer"} rounded transition`}
                 >

@@ -13,7 +13,7 @@ import StructEditorDialog from "./StructEditorDialog";
 import AddFunctionDialog from "./AddFunctionDialog";
 import FunctionListView from "./FunctionListView";
 
-import ImportedModuleLines from "./ImportPreview";
+import ImportPreview from "./ImportPreview";
 import StructCardView from "./StructCardView";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
@@ -36,7 +36,7 @@ export function SideBarEditor() {
             </DialogTrigger>
             <ImportEditorDialog />
           </Dialog>
-          <ImportedModuleLines />
+          <ImportPreview />
         </AccordionContent>
       </AccordionItem>
 
@@ -52,16 +52,15 @@ export function SideBarEditor() {
             <StructEditorDialog />
           </Dialog>
           <div className="pt-4">
-            {Object.entries(structs).map(([name, struct]) => {
-              if (!struct) return;
+            {Object.entries(structs).map(([name, struct], idx) => {
               return (
                 <StructCardView
                   key={name}
                   structName={name}
-                  structValue={struct}
-                  imports={imports}
-                  structs={structs}
-                  setStructs={setStructs}
+                  structData={struct}
+                  // imports={imports}
+                  // structs={structs}
+                  // setStructs={setStructs}
                 />
               );
             })}
@@ -79,18 +78,18 @@ export function SideBarEditor() {
             <DialogTrigger asChild>
               <Button className="cursor-pointer">Create New Functions</Button>
             </DialogTrigger>
-            <AddFunctionDialog
+            {/* <AddFunctionDialog
               imports={imports}
               structs={structs}
               setFunctions={setFunctions}
-            />
+            /> */}
           </Dialog>
-          <FunctionListView
+          {/* <FunctionListView
             imports={imports}
             structs={structs}
             setFunctions={setFunctions}
             functions={functions}
-          />
+          /> */}
         </AccordionContent>
       </AccordionItem>
     </Accordion>

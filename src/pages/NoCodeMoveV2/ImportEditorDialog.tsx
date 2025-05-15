@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 
 import {
   DialogContent,
@@ -15,12 +15,9 @@ import {
 } from "@/components/ui/select";
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
 import ImportPackageModule from "./ImportPackageModule";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
 export default function ImportEditorDialog() {
   const [selectedPkg, setSelectedPkg] = useState<string | null>(null);
-
-  const { imports, setImports } = useContext(SuiMoveModuleContext);
 
   return (
     <DialogContent>
@@ -53,8 +50,6 @@ export default function ImportEditorDialog() {
         <ImportPackageModule
           className={`${selectedPkg === pkg ? "" : "hidden"}`}
           packageId={pkg}
-          imports={imports}
-          setImports={setImports}
         />
       ))}
     </DialogContent>

@@ -1,9 +1,21 @@
-import { FunctionsType, ImportsType, StructsType } from "@/types/move-syntax";
+import {
+  FunctionsType,
+  ImportDataMap,
+  ImportedSuiMoveModule,
+  ImportsType,
+  StructsType,
+} from "@/types/move-syntax";
 import { createContext, useState } from "react";
 
 interface Value {
-  imports: ImportsType;
-  setImports: React.Dispatch<React.SetStateAction<ImportsType>>;
+  // imports: ImportsType;
+  // setImports: React.Dispatch<React.SetStateAction<ImportsType>>;
+  // structs: StructsType;
+  // setStructs: React.Dispatch<React.SetStateAction<StructsType>>;
+  // functions: FunctionsType;
+  // setFunctions: React.Dispatch<React.SetStateAction<FunctionsType>>;
+  imports: ImportDataMap;
+  setImports: React.Dispatch<React.SetStateAction<ImportDataMap>>;
   structs: StructsType;
   setStructs: React.Dispatch<React.SetStateAction<StructsType>>;
   functions: FunctionsType;
@@ -11,7 +23,7 @@ interface Value {
 }
 
 export const SuiMoveModuleContext = createContext<Value>({
-  imports: {},
+  imports: new Map(),
   setImports: () => {},
   structs: {},
   setStructs: () => {},
@@ -24,7 +36,9 @@ export const SuiMoveModuleProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [imports, setImports] = useState<ImportsType>({});
+  const [imports, setImports] = useState<ImportDataMap>(
+    new Map<string, ImportedSuiMoveModule>()
+  );
   const [structs, setStructs] = useState<StructsType>({});
   const [functions, setFunctions] = useState<FunctionsType>({});
 

@@ -5,26 +5,20 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import StructEditorDialog from "./StructEditorDialog";
-import { ImportsType, StructsType } from "@/types/move-syntax";
+import { useContext } from "react";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
+import { SuiMoveStruct } from "@/types/move-syntax";
 
 interface Props {
   structName: string;
-  structValue: SuiMoveNormalizedStruct;
-  imports: ImportsType;
-  structs: StructsType;
-  setStructs: React.Dispatch<React.SetStateAction<StructsType>>;
+  structData: SuiMoveStruct;
 }
-export default function StructCardView({
-  structName,
-  structValue,
-  imports,
-  structs,
-  setStructs,
-}: Props) {
+export default function StructCardView({ structName, structData }: Props) {
+  // const { imports, structs, setStructs } = useContext(SuiMoveModuleContext);
+
   return (
     <Card className="w-full max-w-xl mx-auto mb-6 relative">
       <CardHeader>
@@ -39,8 +33,8 @@ export default function StructCardView({
           {structName}
         </CardTitle>
         <CardDescription>
-          {structValue.abilities.abilities.length > 0
-            ? `has ${structValue.abilities.abilities.join(", ")}`
+          {structData.abilities.abilities.length > 0
+            ? `has ${structData.abilities.abilities.join(", ")}`
             : "No abilities"}
         </CardDescription>
       </CardHeader>
@@ -50,10 +44,10 @@ export default function StructCardView({
           <h4 className="font-semibold text-sm text-muted-foreground mb-1">
             Type Parameters
           </h4>
-          {structValue.typeParameters.length === 0 ? (
+          {structData.typeParameters.length === 0 ? (
             <p className="text-sm text-gray-500">None</p>
           ) : (
-            structValue.typeParameters.map((param, idx) => (
+            structData.typeParameters.map((param, idx) => (
               <div
                 key={idx}
                 className="text-sm text-gray-800 flex items-center justify-between"
@@ -73,10 +67,10 @@ export default function StructCardView({
           <h4 className="font-semibold text-sm text-muted-foreground mb-1">
             Fields
           </h4>
-          {structValue.fields.length === 0 ? (
+          {structData.fields.length === 0 ? (
             <p className="text-sm text-gray-500">None</p>
           ) : (
-            structValue.fields.map((field) => (
+            structData.fields.map((field) => (
               <div
                 key={field.name}
                 className="flex justify-between text-sm text-gray-800"
@@ -101,11 +95,11 @@ export default function StructCardView({
             </button>
           </DialogTrigger>
           <StructEditorDialog
-            imports={imports}
-            structs={structs}
-            setStructs={setStructs}
-            defaultStructName={structName}
-            defaultStruct={structValue}
+          // imports={imports}
+          // structs={structs}
+          // setStructs={setStructs}
+          // defaultStructName={structName}
+          // defaultStruct={structData}
           />
         </Dialog>
       </CardContent>

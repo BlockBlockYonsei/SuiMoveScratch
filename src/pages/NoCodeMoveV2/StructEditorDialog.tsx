@@ -240,7 +240,7 @@ export default function StructEditorDialog() {
                 <span className="text-blue-600 font-semibold">
                   {field.name}
                 </span>
-                <TypeSelect
+                {/* <TypeSelect
                   imports={imports}
                   structs={structs}
                   typeParameters={[]}
@@ -251,7 +251,7 @@ export default function StructEditorDialog() {
                       )
                     );
                   }}
-                />
+                /> */}
               </div>
             ))}
           </div>
