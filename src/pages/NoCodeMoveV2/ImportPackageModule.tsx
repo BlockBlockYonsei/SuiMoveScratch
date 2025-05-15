@@ -1,21 +1,19 @@
 import { ImportsType } from "@/types/move";
 import { useSuiClientQuery } from "@mysten/dapp-kit";
-import {
-  SuiMoveNormalizedFunction,
-  SuiMoveNormalizedModules,
-  SuiMoveNormalizedStruct,
-} from "@mysten/sui/client";
+import { SuiMoveNormalizedModules } from "@mysten/sui/client";
 import { DialogClose } from "@radix-ui/react-dialog";
 import * as React from "react";
 
 interface Props extends React.ComponentProps<"div"> {
   packageId: string;
+  imports: ImportsType;
   setImports: React.Dispatch<React.SetStateAction<ImportsType>>;
 }
 
 export default function ImportPackageModule({
   className,
   packageId,
+  imports,
   setImports,
 }: Props) {
   const { data, isPending, error } = useSuiClientQuery(
@@ -34,16 +32,36 @@ export default function ImportPackageModule({
     moduleName: string,
     structName: string
   ) => {
-    if (moduleName) {
-      const key = pkgAddress + "::" + moduleName;
-      setImports((prev: any) => ({
-        ...prev,
-        [key]: {
-          ...(prev[key] || {}),
-          [structName]: data[moduleName].structs[structName],
-        },
-      }));
-    }
+    if (!moduleName) return;
+
+    const key = pkgAddress + "::" + moduleName;
+
+    setImports((prev: ImportsType) => {
+      const current = prev[key] || {};
+
+      if (structName === "Self") {
+        return {
+          ...prev,
+          [key]: {
+            functions: data[moduleName].exposedFunctions,
+            structs: {
+              ...(current.structs || {}),
+            },
+          },
+        } as ImportsType;
+      } else {
+        return {
+          ...prev,
+          [key]: {
+            functions: current.functions || undefined,
+            structs: {
+              ...(current.structs || {}),
+              [structName]: data[moduleName].structs[structName],
+            },
+          },
+        } as ImportsType;
+      }
+    });
   };
 
   if (isPending)
@@ -83,7 +101,7 @@ export default function ImportPackageModule({
                   onClick={() => {
                     addImport(data, packageId, moduleName, structName);
                   }}
-                  className="px-4 py-1 text-emerald-600 hover:bg-blue-50 cursor-pointer rounded transition"
+                  className={`px-4 py-1 text-emerald-600 hover:bg-blue-50 ${"cursor-pointer"} rounded transition`}
                 >
                   {structName}
                 </li>

@@ -1,6 +1,5 @@
-import { SUI_PACKAGES } from "@/Constants";
+import { SUI_PACKAGE_ALIASES } from "@/Constants";
 import { ImportsType } from "@/types/move";
-import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 
 interface Props {
   imports: ImportsType;
@@ -8,29 +7,28 @@ interface Props {
 export default function ImportedModuleLines({ imports }: Props) {
   return (
     <div className="pt-4">
-      {Object.entries(imports)
-        .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
-        .map(([key, values]) => {
-          const typedValues = values as Record<string, SuiMoveNormalizedStruct>;
+      {Object.entries(imports).map(([key, data]) => {
+        if (!data.structs) return;
 
-          const pkgName = () => {
-            const pkg = key.split("::")[0];
-            if (pkg === SUI_PACKAGES[0]) return "std";
-            else if (pkg === SUI_PACKAGES[1]) return "sui";
-            else return pkg;
-          };
+        console.log("ImportedmoduelLisnel", data);
 
-          return (
-            <div key={key}>
-              <span className="text-blue-500">use </span>
-              {pkgName()}::{key.split("::")[1]} &#123;{" "}
-              <span className="text-emerald-500 font-semibold">
-                {Object.keys(typedValues).join(", ")}
-              </span>{" "}
-              &#125;;
-            </div>
-          );
-        })}{" "}
+        const importedStructNames = Object.keys(data.structs);
+        const pkg = key.split("::")[0];
+
+        return (
+          <div key={key}>
+            <span className="text-blue-500">use </span>
+            {SUI_PACKAGE_ALIASES[pkg] || pkg}
+            ::{key.split("::")[1]} &#123;{" "}
+            <span className="text-emerald-500 font-semibold">
+              {data.functions
+                ? ["Self", ...importedStructNames].join(", ")
+                : importedStructNames.join(", ")}
+            </span>{" "}
+            &#125;;
+          </div>
+        );
+      })}{" "}
     </div>
   );
 }

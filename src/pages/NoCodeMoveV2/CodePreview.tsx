@@ -1,23 +1,14 @@
-import {
-  SuiMoveNormalizedFunction,
-  SuiMoveNormalizedStruct,
-} from "@mysten/sui/client";
+import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 import {
   generateImportsCode,
   generateStructCode,
   generateFunctionCode,
   downloadMoveCode,
 } from "../NoCodeMove/utils/generateCode";
-import { SuiMoveFunction } from "@/types/move";
+import { ImportsType, SuiMoveFunction } from "@/types/move";
 
 interface Props {
-  imports: Record<
-    string,
-    Record<
-      string,
-      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
-    >
-  >;
+  imports: ImportsType;
   structs: Record<string, SuiMoveNormalizedStruct>;
   functions: Record<string, SuiMoveFunction>;
 }

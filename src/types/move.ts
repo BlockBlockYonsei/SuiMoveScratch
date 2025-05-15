@@ -15,10 +15,12 @@ export type SuiMoveFunction = {
 
 export type ImportsType = Record<
   string,
-  Record<
-    string,
-    SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
-  >
+  {
+    functions?: Record<string, SuiMoveNormalizedFunction>;
+    structs: {
+      [structName: string]: SuiMoveNormalizedStruct;
+    };
+  }
 >;
 
 export type StructsType = Record<string, SuiMoveNormalizedStruct>;

@@ -1,9 +1,5 @@
+import { SUI_PACKAGE_ALIASES } from "@/Constants";
 import { ImportsType, SuiMoveFunction } from "@/types/move";
-
-const PACKAGE_ALIASES: Record<string, string> = {
-  "0x0000000000000000000000000000000000000000000000000000000000000001": "std",
-  "0x0000000000000000000000000000000000000000000000000000000000000002": "sui",
-};
 
 export function formatType(type: any): string {
   console.log(type);
@@ -13,7 +9,9 @@ export function formatType(type: any): string {
     const args = typeArguments?.length
       ? `<${typeArguments.map(formatType).join(", ")}>`
       : "";
-    return `${PACKAGE_ALIASES[address] || address}::${module}::${name}${args}`;
+    return `${
+      SUI_PACKAGE_ALIASES[address] || address
+    }::${module}::${name}${args}`;
   }
   return "Unknown";
 }
@@ -22,10 +20,14 @@ export function generateImportsCode(imports: ImportsType): string {
   return Object.entries(imports)
     .map(([fullModuleName, data]) => {
       const [pkg, module] = fullModuleName.split("::");
-      const alias = PACKAGE_ALIASES[pkg] || pkg;
+      const pkgAlias = SUI_PACKAGE_ALIASES[pkg] || pkg;
 
-      const imports = Object.keys(data).join(", ");
-      return `use ${alias}::${module}::{ ${imports} };`;
+      const importedStructNames = Object.keys(data.structs);
+      const importedNames = data.functions
+        ? ["Self", ...importedStructNames].join(", ")
+        : importedStructNames.join(", ");
+
+      return `use ${pkgAlias}::${module}::{ ${importedNames} };`;
     })
     .join("\n");
 }
@@ -120,7 +122,7 @@ export function generateMoveCode({
   moduleName,
   address,
 }: {
-  imports: Record<string, Record<string, any>>;
+  imports: ImportsType;
   structs: Record<string, any>;
   functions: Record<string, any>;
   moduleName?: string;

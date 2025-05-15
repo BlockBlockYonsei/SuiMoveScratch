@@ -48,7 +48,7 @@ export function AppSidebar({
             <DialogTrigger asChild>
               <Button className="cursor-pointer">Create New Imports</Button>
             </DialogTrigger>
-            <AddImportDialog setImports={setImports} />
+            <AddImportDialog imports={imports} setImports={setImports} />
           </Dialog>
           <ImportedModuleLines imports={imports} />
         </AccordionContent>

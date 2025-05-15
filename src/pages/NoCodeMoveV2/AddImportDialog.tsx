@@ -1,8 +1,4 @@
 import { useState } from "react";
-import {
-  SuiMoveNormalizedFunction,
-  SuiMoveNormalizedStruct,
-} from "@mysten/sui/client";
 
 import {
   DialogContent,
@@ -17,15 +13,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SUI_PACKAGES } from "@/Constants";
+import { SUI_PACKAGE_ALIASES } from "@/Constants";
 import ImportPackageModule from "./ImportPackageModule";
 import { ImportsType } from "@/types/move";
 
 interface Props {
+  imports: ImportsType;
   setImports: React.Dispatch<React.SetStateAction<ImportsType>>;
 }
 
-export default function AddImportDialog({ setImports }: Props) {
+export default function AddImportDialog({ imports, setImports }: Props) {
   const [selectedPkg, setSelectedPkg] = useState<string | null>(null);
 
   return (
@@ -46,19 +43,20 @@ export default function AddImportDialog({ setImports }: Props) {
           <SelectValue placeholder="Select a package" />
         </SelectTrigger>
         <SelectContent>
-          {SUI_PACKAGES.map((pkg) => (
+          {Object.entries(SUI_PACKAGE_ALIASES).map(([pkg, alias]) => (
             <SelectItem key={pkg} value={pkg}>
-              {pkg.slice(0, 8)}...{pkg.slice(-4)}
+              {pkg.slice(0, 8)}...{pkg.slice(-4)} ({alias})
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
 
       {/* 패키지를 선택한 후만 로딩/오류/리스트 표시 */}
-      {SUI_PACKAGES.map((pkg) => (
+      {Object.keys(SUI_PACKAGE_ALIASES).map((pkg) => (
         <ImportPackageModule
           className={`${selectedPkg === pkg ? "" : "hidden"}`}
           packageId={pkg}
+          imports={imports}
           setImports={setImports}
         />
       ))}
