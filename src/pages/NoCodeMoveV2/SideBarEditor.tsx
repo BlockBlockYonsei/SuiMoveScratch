@@ -36,7 +36,7 @@ export function SideBarEditor() {
             </DialogTrigger>
             <ImportEditorDialog />
           </Dialog>
-          <ImportedModuleLines imports={imports} />
+          <ImportedModuleLines />
         </AccordionContent>
       </AccordionItem>
 

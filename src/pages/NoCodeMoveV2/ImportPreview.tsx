@@ -1,10 +1,9 @@
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
-import { ImportsType } from "@/types/move-syntax";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
+import { useContext } from "react";
 
-interface Props {
-  imports: ImportsType;
-}
-export default function ImportedModuleLines({ imports }: Props) {
+export default function ImportedModuleLines() {
+  const { imports } = useContext(SuiMoveModuleContext);
   return (
     <div className="pt-4">
       {Object.entries(imports).map(([key, data]) => {
