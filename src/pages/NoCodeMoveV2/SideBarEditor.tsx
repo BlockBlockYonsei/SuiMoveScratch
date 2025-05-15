@@ -8,7 +8,7 @@ import {
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-import AddImportDialog from "./AddImportDialog";
+import ImportEditorDialog from "./ImportEditorDialog";
 import AddStructDialog from "./AddStructDialog";
 import AddFunctionDialog from "./AddFunctionDialog";
 import FunctionListView from "./FunctionListView";
@@ -34,7 +34,7 @@ export function SideBarEditor() {
             <DialogTrigger asChild>
               <Button className="cursor-pointer">Create New Imports</Button>
             </DialogTrigger>
-            <AddImportDialog imports={imports} setImports={setImports} />
+            <ImportEditorDialog imports={imports} setImports={setImports} />
           </Dialog>
           <ImportedModuleLines imports={imports} />
         </AccordionContent>

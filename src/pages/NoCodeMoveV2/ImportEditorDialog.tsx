@@ -22,7 +22,7 @@ interface Props {
   setImports: React.Dispatch<React.SetStateAction<ImportsType>>;
 }
 
-export default function AddImportDialog({ imports, setImports }: Props) {
+export default function ImportEditorDialog({ imports, setImports }: Props) {
   const [selectedPkg, setSelectedPkg] = useState<string | null>(null);
 
   return (
