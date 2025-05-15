@@ -13,7 +13,7 @@ import AddStructDialog from "./AddStructDialog";
 import AddFunctionDialog from "./AddFunctionDialog";
 import FunctionListView from "./FunctionListView";
 
-import ImportedModuleLines from "./ImportedModuleLines";
+import ImportedModuleLines from "./ImportPreview";
 import StructCardView from "./StructCardView";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
