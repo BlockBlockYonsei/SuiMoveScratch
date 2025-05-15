@@ -49,40 +49,6 @@ export default function AddFunctionDialog() {
   const { imports, structs, functions, setFunctions } =
     useContext(SuiMoveModuleContext);
 
-  const toggleTypeParamAbility = (ability: SuiMoveAbility) => {
-    setNewTypeParamAbilities((prev) =>
-      prev.includes(ability)
-        ? prev.filter((a) => a !== ability)
-        : [...prev, ability]
-    );
-  };
-
-  // 실제 추가 함수
-  const commitTypeParameter = () => {
-    if (!newTypeParamAbilities) return;
-
-    setTypeParameters([
-      ...typeParameters,
-      {
-        abilities: newTypeParamAbilities,
-      },
-    ]);
-    // 초기화
-    setNewTypeParamAbilities([]);
-  };
-
-  const handleAddParam = () => {
-    if (!newParamType) return;
-    setParameters((prev) => [...prev, newParamType]);
-    setNewParamType("Bool");
-  };
-
-  const handleAddReturn = () => {
-    if (!newReturnType) return;
-    setReturns((prev) => [...prev, newReturnType]);
-    setNewReturnType("Bool");
-  };
-
   const resetFunction = () => {
     setFunctionName("new_function");
     setVisibility("Private");
@@ -177,22 +143,44 @@ export default function AddFunctionDialog() {
 
         <div className="flex place-content-between  gap-2 mb-2 flex-wrap">
           <div className="flex gap-x-2 mb-2 flex-wrap">
-            {["copy", "drop", "store", "key"].map((a) => (
+            {(
+              ["copy", "drop", "store", "key"] as unknown as SuiMoveAbility[]
+            ).map((ability) => (
               <Button
-                key={a}
+                key={ability}
                 variant={
-                  newTypeParamAbilities.includes(a as SuiMoveAbility)
+                  newTypeParamAbilities.includes(ability)
                     ? "default"
                     : "outline"
                 }
-                onClick={() => toggleTypeParamAbility(a as SuiMoveAbility)}
+                onClick={() => {
+                  setNewTypeParamAbilities((prev) =>
+                    prev.includes(ability)
+                      ? prev.filter((a) => a !== ability)
+                      : [...prev, ability]
+                  );
+                }}
                 size="sm"
               >
-                {a}
+                {ability}
               </Button>
             ))}
           </div>
-          <Button className="cursor-pointer" onClick={commitTypeParameter}>
+          <Button
+            className="cursor-pointer"
+            onClick={() => {
+              if (!newTypeParamAbilities) return;
+
+              setTypeParameters([
+                ...typeParameters,
+                {
+                  abilities: newTypeParamAbilities,
+                },
+              ]);
+              // 초기화
+              setNewTypeParamAbilities([]);
+            }}
+          >
             Add
           </Button>
         </div>
@@ -219,7 +207,14 @@ export default function AddFunctionDialog() {
             typeParameters={[]}
             setType={setNewParamType}
           /> */}
-          <Button className="cursor-pointer" onClick={handleAddParam}>
+          <Button
+            className="cursor-pointer"
+            onClick={() => {
+              if (!newParamType) return;
+              setParameters((prev) => [...prev, newParamType]);
+              setNewParamType("Bool");
+            }}
+          >
             Add
           </Button>
         </div>
@@ -244,7 +239,14 @@ export default function AddFunctionDialog() {
             typeParameters={[]}
             setType={setNewReturnType}
           /> */}
-          <Button className="cursor-pointer" onClick={handleAddReturn}>
+          <Button
+            className="cursor-pointer"
+            onClick={() => {
+              if (!newReturnType) return;
+              setReturns((prev) => [...prev, newReturnType]);
+              setNewReturnType("Bool");
+            }}
+          >
             Add
           </Button>
         </div>
