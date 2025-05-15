@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import {
   DialogContent,
@@ -15,15 +15,12 @@ import {
 } from "@/components/ui/select";
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
 import ImportPackageModule from "./ImportPackageModule";
-import { ImportsType } from "@/types/move-syntax";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
-interface Props {
-  imports: ImportsType;
-  setImports: React.Dispatch<React.SetStateAction<ImportsType>>;
-}
-
-export default function ImportEditorDialog({ imports, setImports }: Props) {
+export default function ImportEditorDialog() {
   const [selectedPkg, setSelectedPkg] = useState<string | null>(null);
+
+  const { imports, setImports } = useContext(SuiMoveModuleContext);
 
   return (
     <DialogContent>

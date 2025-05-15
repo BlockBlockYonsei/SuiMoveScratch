@@ -34,7 +34,7 @@ export function SideBarEditor() {
             <DialogTrigger asChild>
               <Button className="cursor-pointer">Create New Imports</Button>
             </DialogTrigger>
-            <ImportEditorDialog imports={imports} setImports={setImports} />
+            <ImportEditorDialog />
           </Dialog>
           <ImportedModuleLines imports={imports} />
         </AccordionContent>
