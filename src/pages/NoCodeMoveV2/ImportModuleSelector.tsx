@@ -8,7 +8,7 @@ interface Props extends React.ComponentProps<"div"> {
   packageId: string;
 }
 
-export default function ImportPackageModule({ className, packageId }: Props) {
+export default function ImportModuleSelector({ className, packageId }: Props) {
   const { data, isPending, error } = useSuiClientQuery(
     "getNormalizedMoveModulesByPackage",
     {

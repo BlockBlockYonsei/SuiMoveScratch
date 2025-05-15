@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
-import ImportPackageModule from "./ImportPackageModule";
+import ImportModuleSelector from "./ImportModuleSelector";
 
 export default function ImportEditorDialog() {
   const [selectedPkg, setSelectedPkg] = useState<string | null>(null);
@@ -47,7 +47,7 @@ export default function ImportEditorDialog() {
 
       {/* 패키지를 선택한 후만 로딩/오류/리스트 표시 */}
       {Object.keys(SUI_PACKAGE_ALIASES).map((pkg) => (
-        <ImportPackageModule
+        <ImportModuleSelector
           className={`${selectedPkg === pkg ? "" : "hidden"}`}
           packageId={pkg}
         />
