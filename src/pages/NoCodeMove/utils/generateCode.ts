@@ -1,5 +1,10 @@
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
-import { ImportsType, SuiMoveFunction } from "@/types/move-syntax";
+import {
+  ImportsType,
+  SuiMoveFunction,
+  SuiMoveStruct,
+} from "@/types/move-syntax";
+import { SuiMoveNormalizedStruct } from "@mysten/sui/client";
 
 export function formatType(type: any): string {
   console.log(type);
@@ -34,18 +39,20 @@ export function generateImportsCode(imports: ImportsType): string {
 
 export function generateStructCode(
   name: string,
-  struct: any,
-  typeParameterNames?: string[]
+  struct: SuiMoveStruct
 ): string {
-  const abilities = (struct.abilities?.abilities || [])
-    .map((a: string) => a.toLowerCase())
-    .join(", ");
+  const abilities =
+    struct.abilities.abilities.length > 0
+      ? ` has ${struct.abilities.abilities
+          .map((ability: string) => ability.toLowerCase())
+          .join(", ")}`
+      : "";
 
   const typeParams = (struct.typeParameters || [])
     .map((tp: any, i: number) => {
       const phantom = tp.isPhantom ? "phantom " : "";
       const paramName =
-        typeParameterNames?.[i] ??
+        struct.typeParameterNames?.[i] ??
         (struct.typeParameters.length === 1 ? "T" : `T${i}`);
       const abilities = tp.constraints?.abilities
         ?.map((a: string) => a.toLowerCase())
@@ -60,7 +67,7 @@ export function generateStructCode(
     .map((f: any) => `  ${f.name}: ${formatType(f.type)},`)
     .join("\n");
 
-  return `public struct ${name}${generics} has ${abilities} {\n${fields}\n}`;
+  return `public struct ${name}${generics}${abilities} {\n${fields}\n}`;
 }
 
 export function generateFunctionCode(

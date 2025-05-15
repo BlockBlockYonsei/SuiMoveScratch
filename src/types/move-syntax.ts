@@ -12,7 +12,15 @@ export type ImportsType = {
   };
 };
 
-export type StructsType = Record<string, SuiMoveNormalizedStruct>;
+// export type StructsType = Record<string, SuiMoveNormalizedStruct>;
+
+export interface StructsType {
+  [structName: string]: SuiMoveStruct;
+}
+
+export interface SuiMoveStruct extends SuiMoveNormalizedStruct {
+  typeParameterNames: string[];
+}
 
 export type FunctionsType = Record<string, SuiMoveFunction>;
 

@@ -9,14 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"; // 추가된 input이 있다면
 import {
   SuiMoveAbility,
-  SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
 import TypeSelect from "@/pages/NoCodeMove/components/TypeSelect";
 import { generateStructCode } from "@/pages/NoCodeMove/utils/generateCode";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { ImportsType, StructsType } from "@/types/move-syntax";
+import { ImportsType, StructsType, SuiMoveStruct } from "@/types/move-syntax";
 
 export default function AddStructDialog({
   defaultStructName,
@@ -26,20 +25,21 @@ export default function AddStructDialog({
   setStructs,
 }: {
   defaultStructName: string | null;
-  defaultStruct: SuiMoveNormalizedStruct | null;
+  defaultStruct: SuiMoveStruct | null;
   imports: ImportsType;
   structs: StructsType;
   setStructs: React.Dispatch<React.SetStateAction<StructsType>>;
 }) {
   const [structName, setStructName] = useState("MyStruct");
   const [abilities, setAbilities] = useState<SuiMoveAbility[]>([]);
-  const [typeParameterNames, setTypeParameterNames] = useState<string[]>([]);
   const [typeParameters, setTypeParameters] = useState<
     SuiMoveStructTypeParameter[]
   >([]);
+  const [typeParameterNames, setTypeParameterNames] = useState<string[]>([]);
   const [fields, setFields] = useState<
     { name: string; type: SuiMoveNormalizedType }[]
   >([]);
+
   const [newFieldName, setNewFieldName] = useState("");
   const [newTypeParamName, setNewTypeParamName] = useState("");
   const [newTypeParamAbilities, setNewTypeParamAbilities] = useState<
@@ -51,73 +51,21 @@ export default function AddStructDialog({
       setStructName(defaultStructName);
       setAbilities(defaultStruct.abilities.abilities);
       setTypeParameters(defaultStruct.typeParameters);
-      // 추후 수정
       setTypeParameterNames(defaultStruct.typeParameterNames);
       setFields(defaultStruct.fields);
     }
   }, []);
 
-  // toggle 함수
-  const toggleTypeParamAbility = (ability: SuiMoveAbility) => {
-    setNewTypeParamAbilities((prev) =>
-      prev.includes(ability)
-        ? prev.filter((a) => a !== ability)
-        : [...prev, ability]
-    );
-  };
-
-  // 실제 추가 함수
-  const commitTypeParameter = () => {
-    if (!newTypeParamName || typeParameterNames.includes(newTypeParamName))
-      return;
-
-    setTypeParameterNames([...typeParameterNames, newTypeParamName]);
-    setTypeParameters([
-      ...typeParameters,
-      {
-        isPhantom: false,
-        constraints: { abilities: newTypeParamAbilities },
-      },
-    ]);
-
-    // 초기화
-    setNewTypeParamName("");
-    setNewTypeParamAbilities([]);
-  };
-
-  const toggleAbility = (ability: SuiMoveAbility) => {
-    setAbilities((prev) =>
-      prev.includes(ability)
-        ? prev.filter((a) => a !== ability)
-        : [...prev, ability]
-    );
-  };
-
-  const addField = () => {
-    if (!newFieldName || fields.some((f) => f.name === newFieldName)) return;
-    setFields([...fields, { name: newFieldName, type: "U64" }]);
-    setNewFieldName("");
-  };
-
-  const updateFieldType = (
-    fieldName: string,
-    newType: SuiMoveNormalizedType
-  ) => {
-    setFields((prev) =>
-      prev.map((f) => (f.name === fieldName ? { ...f, type: newType } : f))
-    );
-  };
-
   const handleComplete = () => {
     if (!structName) return;
 
     if (defaultStruct && defaultStructName) {
-      setStructs((prev: Record<string, SuiMoveNormalizedStruct>) => {
+      setStructs((prev: StructsType) => {
         const { [defaultStructName]: _, ...rest } = prev;
         return rest;
       });
 
-      setStructs((prev: Record<string, SuiMoveNormalizedStruct>) => ({
+      setStructs((prev: StructsType) => ({
         ...prev,
         [structName]: {
           abilities: { abilities },
@@ -149,7 +97,7 @@ export default function AddStructDialog({
   };
 
   return (
-    <DialogContent className="max-h-[80vh] overflow-y-auto">
+    <DialogContent className="lg:max-w-[800px] max-h-[80vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>
           {defaultStruct ? "Update Struct" : "Create a New Struct"}
@@ -159,112 +107,181 @@ export default function AddStructDialog({
         </DialogDescription>
       </DialogHeader>
 
-      {/* Struct 이름 */}
-      <div className="mb-4">
-        <label className="block font-semibold mb-1">Struct Name</label>
-        <Input
-          value={structName}
-          onChange={(e) => setStructName(e.target.value)}
-        />
-      </div>
-
-      {/* Abilities */}
-      <div className="mb-4">
-        <label className="block font-semibold mb-1">Abilities</label>
-        <div className="flex gap-2 flex-wrap">
-          {["copy", "drop", "store", "key"].map((a) => (
-            <Button
-              key={a}
-              className="cursor-pointer"
-              variant={
-                abilities.includes(a as SuiMoveAbility) ? "default" : "outline"
-              }
-              onClick={() => toggleAbility(a as SuiMoveAbility)}
-            >
-              {a}
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      {/* Type Parameters */}
-      <div className="mb-4">
-        <div className="flex gap-2 mb-2">
-          <Input
-            placeholder="Type parameter name"
-            value={newTypeParamName}
-            onChange={(e) => setNewTypeParamName(e.target.value)}
-          />
-          <Button className="cursor-pointer" onClick={commitTypeParameter}>
-            Add
-          </Button>
-        </div>
-
-        <div className="flex gap-2 mb-2 flex-wrap">
-          {["copy", "drop", "store", "key"].map((a) => (
-            <Button
-              key={a}
-              className="cursor-pointer"
-              variant={
-                newTypeParamAbilities.includes(a as SuiMoveAbility)
-                  ? "default"
-                  : "outline"
-              }
-              onClick={() => toggleTypeParamAbility(a as SuiMoveAbility)}
-              size="sm"
-            >
-              {a}
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      {/* Fields */}
-      <div className="mb-4">
-        <label className="block font-semibold mb-1">Fields</label>
-        <div className="flex gap-2 mb-2">
-          <Input
-            value={newFieldName}
-            placeholder="Field name"
-            onChange={(e) => setNewFieldName(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") addField();
-            }}
-          />
-          <Button className="cursor-pointer" onClick={addField}>
-            Add
-          </Button>
-        </div>
-
-        {fields.map((field) => (
-          <div key={field.name} className="flex items-center gap-2 mb-2">
-            <span className="text-blue-600 font-semibold">{field.name}</span>
-            <TypeSelect
-              imports={imports}
-              structs={structs}
-              typeParameters={[]}
-              setType={(type) => updateFieldType(field.name, type)}
+      <div className="lg:grid lg:grid-cols-9 lg:gap-10">
+        <section className="col-span-4">
+          {/* Struct 이름 */}
+          <div className="mb-4">
+            <label className="block font-semibold mb-1">Struct Name</label>
+            <Input
+              value={structName}
+              onChange={(e) => setStructName(e.target.value)}
             />
           </div>
-        ))}
-      </div>
 
-      <div className="mt-4">
-        <pre className="text-sm bg-gray-100 p-4 rounded whitespace-pre-wrap">
-          {generateStructCode(
-            structName,
-            {
-              abilities: { abilities },
-              typeParameters,
-              fields,
-            },
-            typeParameterNames
-          )}
-        </pre>
+          {/* Abilities */}
+          <div className="mb-4">
+            <label className="block font-semibold mb-1">Abilities</label>
+            <div className="flex gap-2 flex-wrap">
+              {(
+                ["copy", "drop", "store", "key"] as unknown as SuiMoveAbility[]
+              ).map((ability) => (
+                <Button
+                  key={ability}
+                  className="cursor-pointer"
+                  variant={abilities.includes(ability) ? "default" : "outline"}
+                  onClick={() => {
+                    setAbilities((prev) =>
+                      prev.includes(ability)
+                        ? prev.filter((a) => a !== ability)
+                        : [...prev, ability]
+                    );
+                  }}
+                >
+                  {ability}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Type Parameters */}
+          <div className="mb-4">
+            <label className="block font-semibold mb-1">Type Parameters</label>
+            <div className="flex gap-2 mb-2 flex-wrap">
+              {(
+                ["copy", "drop", "store", "key"] as unknown as SuiMoveAbility[]
+              ).map((ability) => (
+                <Button
+                  key={ability}
+                  className="cursor-pointer"
+                  size="sm"
+                  variant={
+                    newTypeParamAbilities.includes(ability)
+                      ? "default"
+                      : "outline"
+                  }
+                  onClick={() => {
+                    setNewTypeParamAbilities((prev) =>
+                      prev.includes(ability)
+                        ? prev.filter((a) => a !== ability)
+                        : [...prev, ability]
+                    );
+                  }}
+                >
+                  {ability}
+                </Button>
+              ))}
+            </div>
+            <div className="flex gap-2 mb-2">
+              <Input
+                placeholder="Type parameter name"
+                value={newTypeParamName}
+                onChange={(e) => setNewTypeParamName(e.target.value)}
+              />
+              <Button
+                className="cursor-pointer"
+                onClick={() => {
+                  if (
+                    !newTypeParamName ||
+                    typeParameterNames.includes(newTypeParamName)
+                  )
+                    return;
+
+                  setTypeParameterNames([
+                    ...typeParameterNames,
+                    newTypeParamName,
+                  ]);
+                  setTypeParameters([
+                    ...typeParameters,
+                    {
+                      isPhantom: false,
+                      constraints: { abilities: newTypeParamAbilities },
+                    },
+                  ]);
+
+                  // 초기화
+                  setNewTypeParamName("");
+                  setNewTypeParamAbilities([]);
+                }}
+              >
+                Add
+              </Button>
+            </div>
+          </div>
+
+          {/* Fields */}
+          <div className="mb-4">
+            <label className="block font-semibold mb-1">Fields</label>
+            <div className="flex gap-2 mb-2">
+              <Input
+                value={newFieldName}
+                placeholder="Field name"
+                onChange={(e) => setNewFieldName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    if (
+                      !newFieldName ||
+                      fields.some((f) => f.name === newFieldName)
+                    )
+                      return;
+                    setFields([...fields, { name: newFieldName, type: "U64" }]);
+                    setNewFieldName("");
+                  }
+                }}
+              />
+              <Button
+                className="cursor-pointer"
+                onClick={() => {
+                  if (
+                    !newFieldName ||
+                    fields.some((f) => f.name === newFieldName)
+                  )
+                    return;
+                  setFields([...fields, { name: newFieldName, type: "U64" }]);
+                  setNewFieldName("");
+                }}
+              >
+                Add
+              </Button>
+            </div>
+
+            {fields.map((field) => (
+              <div key={field.name} className="flex items-center gap-2 mb-2">
+                <span className="text-blue-600 font-semibold">
+                  {field.name}
+                </span>
+                <TypeSelect
+                  imports={imports}
+                  structs={structs}
+                  typeParameters={[]}
+                  setType={(type) => {
+                    setFields((prev) =>
+                      prev.map((f) =>
+                        f.name === field.name ? { ...f, type } : f
+                      )
+                    );
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="col-span-5">
+          <div className="mt-4">
+            <pre className="text-sm bg-gray-100 p-4 rounded whitespace-pre-wrap">
+              {generateStructCode(structName, {
+                abilities: { abilities },
+                typeParameters,
+                fields,
+                typeParameterNames,
+              })}
+            </pre>
+          </div>
+        </section>
       </div>
 
       <DialogClose>
-        <Button className="cursor-pointer" onClick={handleComplete}>
+        <Button className="cursor-pointer w-90" onClick={handleComplete}>
           Complete
         </Button>
       </DialogClose>
