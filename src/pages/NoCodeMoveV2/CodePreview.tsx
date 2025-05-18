@@ -12,6 +12,7 @@ import StructEditorDialog from "./structs/StructEditorDialog";
 import FunctionEditorDialog from "./functions/FunctionEditorDialog";
 import StructCard from "./structs/StructCard";
 import FunctionListView from "./functions/FunctionListView";
+import { PlusIcon } from "lucide-react";
 
 export default function CodePreview({
   menu,
@@ -29,7 +30,7 @@ export default function CodePreview({
       >
         code download
       </button> */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-start items-center gap-4">
         <h1 className="text-2xl font-bold">{menu}</h1>
 
         {menu !== "code" && (
@@ -37,13 +38,14 @@ export default function CodePreview({
             <DialogTrigger asChild>
               <Button
                 variant="outline"
+                className="cursor-pointer"
                 onClick={() => {
                   if (menu === "structs") {
                     setSelectedStruct(null);
                   }
                 }}
               >
-                Add {menu}
+                <PlusIcon />
               </Button>
             </DialogTrigger>
             {menu === "imports" && <ImportEditorDialog />}
@@ -70,7 +72,7 @@ export default function CodePreview({
             <code>
               {Array.from(structs.entries())
                 .map(([structName, structData]) =>
-                  generateStructCode(structName, structData),
+                  generateStructCode(structName, structData)
                 )
                 .join("\n\n")}
             </code>

@@ -1,8 +1,6 @@
 import {
-  SuiMoveAbilitySet,
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
-  SuiMoveNormalizedType,
 } from "@mysten/sui/client";
 import {
   Select,
@@ -12,7 +10,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 
 interface FunctionParameterSelectProps {
   function: SuiMoveNormalizedFunction;
