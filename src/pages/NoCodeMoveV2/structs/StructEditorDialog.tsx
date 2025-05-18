@@ -41,15 +41,22 @@ export default function StructEditorDialog() {
     useContext(SuiMoveModuleContext);
 
   useEffect(() => {
-    if (!selectedStruct) return;
-
-    const structData = structs.get(selectedStruct);
-    if (structData) {
-      setStructName(selectedStruct);
-      setAbilities(structData.abilities.abilities);
-      setTypeParameters(structData.typeParameters);
-      setTypeParameterNames(structData.typeParameterNames);
-      setFields(structData.fields);
+    if (selectedStruct) {
+      const structData = structs.get(selectedStruct);
+      if (structData) {
+        setStructName(selectedStruct);
+        setAbilities(structData.abilities.abilities);
+        setTypeParameters(structData.typeParameters);
+        setTypeParameterNames(structData.typeParameterNames);
+        setFields(structData.fields);
+      }
+    } else {
+      // 새로운 struct 생성 시 초기화
+      setStructName("MyStruct");
+      setAbilities([]);
+      setTypeParameters([]);
+      setTypeParameterNames([]);
+      setFields([]);
     }
   }, [selectedStruct, structs]);
 
