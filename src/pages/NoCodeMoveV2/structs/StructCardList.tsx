@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 
 export default function StructCardList() {
-  const { structs, setStructs, setSelectedStruct } =
-    useContext(SuiMoveModuleContext);
+  const { structs, setSelectedStruct } = useContext(SuiMoveModuleContext);
 
   const formatType = (type: any): string => {
     if (typeof type === "string") return type;
@@ -32,11 +31,7 @@ export default function StructCardList() {
             className="cursor-pointer rounded-md"
             onClick={() => setSelectedStruct(structName)}
           >
-            <StructCard
-              structName={structName}
-              structData={structData}
-              setStructs={setStructs}
-            />
+            <StructCard structName={structName} structData={structData} />
           </DialogTrigger>
           <StructEditorDialog />
         </Dialog>

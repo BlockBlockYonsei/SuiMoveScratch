@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 
 export default function FunctionCardList() {
-  const { imports, structs, functions, setFunctions, setSelectedFunction } =
-    useContext(SuiMoveModuleContext);
+  const { functions, setSelectedFunction } = useContext(SuiMoveModuleContext);
   return (
     <div className="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-2">
       {[...functions.entries()].map(([name, data]) => {

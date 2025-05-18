@@ -6,19 +6,21 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { X } from "lucide-react";
-import { StructDataMap, SuiMoveStruct } from "@/types/move-syntax";
+import { SuiMoveStruct } from "@/types/move-syntax";
 import { SuiMoveNormalizedType } from "@mysten/sui/client";
 import { Button } from "@/components/ui/button";
+import { useContext } from "react";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
 export default function StructCard({
   structName,
   structData,
-  setStructs,
 }: {
   structName: string;
   structData: SuiMoveStruct;
-  setStructs: React.Dispatch<React.SetStateAction<StructDataMap>>;
 }) {
+  const { setStructs } = useContext(SuiMoveModuleContext);
+
   const formatType = (type: SuiMoveNormalizedType): string => {
     if (typeof type === "string") return type;
     if ("Struct" in type && type.Struct) {
