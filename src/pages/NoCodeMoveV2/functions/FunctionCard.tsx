@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardHeader,
@@ -9,6 +10,7 @@ import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SuiMoveFunction } from "@/types/move-syntax";
 import { X } from "lucide-react";
 import { useContext } from "react";
+import { SuiMoveNormalizedType } from "@mysten/sui/client";
 
 export default function FunctionCard({
   functionName,
@@ -19,6 +21,20 @@ export default function FunctionCard({
 }) {
   const fn = functionData.function;
   const { setFunctions } = useContext(SuiMoveModuleContext);
+
+  const formatType = (type: SuiMoveNormalizedType): string => {
+    if (typeof type === "string") return type;
+    if ("Struct" in type && type.Struct) {
+      const { name, typeArguments } = type.Struct;
+      if (typeArguments && typeArguments.length > 0) {
+        return `${name}<${typeArguments
+          .map((t: any) => formatType(t))
+          .join(", ")}>`;
+      }
+      return name;
+    }
+    return JSON.stringify(type);
+  };
   return (
     <Card className="relative">
       <CardHeader>
@@ -34,9 +50,14 @@ export default function FunctionCard({
         >
           <X size={20} />
         </button>
-        <CardTitle className="text-blue-600 font-bold">
+        <CardTitle className="text-lg text-start font-bold text-pink-600 truncate">
           {fn.isEntry ? "[entry] " : ""}
-          fun {functionName}
+          {/* {fn.visibility === "Public"
+            ? "public"
+            : fn.visibility === "Friend"
+            ? "public (package)"
+            : ""}{" "} */}
+          {functionName}
         </CardTitle>
         <CardDescription className="text-sm text-gray-500">
           visibility: {fn.visibility}
@@ -46,66 +67,77 @@ export default function FunctionCard({
       <CardContent className="space-y-4 text-sm">
         {/* Type Parameters */}
         <div>
-          <div className="font-semibold text-muted-foreground">
+          <CardTitle className="font-semibold text-sm text-start text-muted-foreground mb-1">
             Type Parameters
-          </div>
-          {fn.typeParameters.length === 0 ? (
-            <div className="text-gray-500">None</div>
+          </CardTitle>
+          {functionData.function.typeParameters.length === 0 ? (
+            <p className="text-sm text-gray-500 border rounded-sm">None</p>
           ) : (
-            <ul className="ml-4 list-disc">
-              {fn.typeParameters.map((tp, idx) => (
-                <li key={idx}>
-                  T{idx}
-                  {tp.abilities.length > 0 && (
-                    <span className="text-gray-500 ml-1">
-                      (has {tp.abilities.join(", ")})
-                    </span>
-                  )}
-                </li>
-              ))}
-            </ul>
+            functionData.function.typeParameters.map((param, idx) => (
+              <div
+                key={idx}
+                className="text-sm text-gray-800 flex items-center justify-between"
+              >
+                <span className="font-semibold">
+                  {functionData.function.typeParameterNames[idx]}:
+                </span>
+                <span className="text-xs text-gray-500">
+                  {param.abilities.map((a) => (
+                    <Button
+                      key={a}
+                      variant={"outline"}
+                      className="cursor-pointer text-xs px-1 font-semibold border-2"
+                    >
+                      {a.toUpperCase()}
+                    </Button>
+                  ))}
+                </span>
+              </div>
+            ))
           )}
         </div>
 
         {/* Parameters */}
         <div>
-          <div className="font-semibold text-muted-foreground">Parameters</div>
-          {fn.parameters.length === 0 ? (
-            <div className="text-gray-500">None</div>
+          <CardTitle className="font-semibold text-sm text-start text-muted-foreground mb-1">
+            Parameters
+          </CardTitle>
+
+          {functionData.function.parameters.length === 0 ? (
+            <p className="text-sm text-gray-500 border rounded-sm">None</p>
           ) : (
-            <ul className="ml-4 list-disc">
-              {fn.parameters.map((p, idx) => (
-                <li key={idx}>
-                  {typeof p === "string"
-                    ? p
-                    : "Struct" in p
-                    ? p.Struct.name
-                    : "Unknown"}
-                </li>
-              ))}
-            </ul>
+            functionData.function.parameters.map((param, i) => (
+              <div
+                key={functionData.function.parameterNames[i]}
+                className="flex justify-between text-sm text-gray-800"
+              >
+                <span>{functionData.function.parameterNames[i]}</span>
+                <span className="text-xs text-gray-500">
+                  {formatType(param)}
+                </span>
+              </div>
+            ))
           )}
         </div>
 
         {/* Returns */}
         <div>
-          <div className="font-semibold text-muted-foreground">
-            Return Types
-          </div>
-          {fn.return.length === 0 ? (
-            <div className="text-gray-500">None</div>
+          <CardTitle className="font-semibold text-sm text-start text-muted-foreground mb-1">
+            Returns
+          </CardTitle>
+
+          {functionData.function.return.length === 0 ? (
+            <p className="text-sm text-gray-500 border rounded-sm">None</p>
           ) : (
-            <ul className="ml-4 list-disc">
-              {fn.return.map((r, idx) => (
-                <li key={idx}>
-                  {typeof r === "string"
-                    ? r
-                    : "Struct" in r
-                    ? r.Struct.name
-                    : "Unknown"}
-                </li>
-              ))}
-            </ul>
+            functionData.function.return.map((r, i) => (
+              <div
+                key={functionData.function.returnNames[i]}
+                className="flex justify-between text-sm text-gray-800"
+              >
+                <span>{functionData.function.returnNames[i]}</span>
+                <span className="text-xs text-gray-500">{formatType(r)}</span>
+              </div>
+            ))
           )}
         </div>
         {/* <ManageFunctionDetail functionName={name} /> */}

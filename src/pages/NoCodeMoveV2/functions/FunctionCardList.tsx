@@ -22,13 +22,7 @@ export default function FunctionCardList() {
       })}
       <Dialog>
         <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            className="cursor-pointer h-full text-9xl"
-            onClick={() => {
-              setSelectedFunction(null);
-            }}
-          >
+          <Button variant="outline" className="cursor-pointer h-full text-9xl">
             <PlusIcon />
           </Button>
         </DialogTrigger>
