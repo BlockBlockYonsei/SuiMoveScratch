@@ -8,13 +8,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  SuiMoveAbility,
   SuiMoveAbilitySet,
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedType,
   SuiMoveVisibility,
 } from "@mysten/sui/client";
-import TypeSelect from "@/pages/NoCodeMoveV2/structs/StructTypeSelect";
 import {
   Select,
   SelectTrigger,
@@ -22,34 +20,32 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { generateFunctionCode } from "@/pages/NoCodeMoveV2/utils/generateCode";
 import { SuiMoveFunction } from "@/types/move-syntax";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import AbilitySelector from "../structs/AbilitySelector";
 import { X } from "lucide-react";
+import FunctionTypeSelect from "./FunctionTypeSelect";
+import { generateFunctionCode } from "../utils/generateCode";
 
 export default function FunctionEditorDialog() {
   const [functionName, setFunctionName] = useState("new_function");
   const [visibility, setVisibility] = useState<SuiMoveVisibility>("Private");
   const [isEntry, setIsEntry] = useState(false);
-  const [typeParameters, setTypeParameters] = useState<SuiMoveAbilitySet[]>([]);
-  const [typeParameterNames, setTypeParameterNames] = useState<string[]>([]);
 
-  const [parameters, setParameters] = useState<SuiMoveNormalizedType[]>([]);
-  const [parameterNames, setParameterNames] = useState<string[]>([]);
-  const [newTypeParamName, setNewTypeParamName] = useState("");
-  const [returns, setReturns] = useState<SuiMoveNormalizedType[]>([]);
-
-  const [newParamType, setNewParamType] = useState<
-    SuiMoveNormalizedType | undefined
-  >();
-  const [newTypeParamAbilities, setNewTypeParamAbilities] = useState<
-    SuiMoveAbility[]
+  const [parameters, setParameters] = useState<
+    { name: string; type: SuiMoveNormalizedType }[]
   >([]);
-  const [newReturnType, setNewReturnType] = useState<
-    SuiMoveNormalizedType | undefined
-  >();
+  const [returns, setReturns] = useState<
+    { name: string; type: SuiMoveNormalizedType }[]
+  >([]);
+  const [typeParameters, setTypeParameters] = useState<
+    { name: string; type: SuiMoveAbilitySet }[]
+  >([]);
+
+  const [newParamName, setNewParamName] = useState("");
+  const [newTypeParamName, setNewTypeParamName] = useState("");
+  const [newReturnName, setNewReturnName] = useState("");
 
   const { imports, structs, functions, setFunctions } =
     useContext(SuiMoveModuleContext);
@@ -61,21 +57,22 @@ export default function FunctionEditorDialog() {
     setTypeParameters([]);
     setParameters([]);
     setReturns([]);
-    setNewParamType(undefined);
-    setNewTypeParamAbilities([]);
-    setNewReturnType(undefined);
   };
 
   const handleComplete = () => {
     const newFunction: SuiMoveNormalizedFunction & {
       typeParameterNames: string[];
+      parameterNames: string[];
+      returnNames: string[];
     } = {
       isEntry: isEntry,
-      parameters: parameters,
-      return: returns,
-      typeParameters: typeParameters,
+      parameters: parameters.map((p) => p.type),
+      parameterNames: parameters.map((p) => p.name),
+      return: returns.map((r) => r.type),
+      returnNames: parameters.map((p) => p.name),
       visibility: visibility,
-      typeParameterNames: [],
+      typeParameters: typeParameters.map((t) => t.type),
+      typeParameterNames: typeParameters.map((t) => t.name),
     };
     const newSuiMoveFunction: SuiMoveFunction = {
       function: newFunction,
@@ -106,15 +103,12 @@ export default function FunctionEditorDialog() {
         <section className="col-span-6">
           {/* Name */}
           <div className="mb-2">
-            <label className="block mb-1 text-sm font-semibold">
-              Function Name
-            </label>
+            <label className="block mb-1 font-semibold">Function Name</label>
             <Input
               value={functionName}
               onChange={(e) => setFunctionName(e.target.value)}
             />
           </div>
-
           {/* Entry + Visibility */}
           <div className="flex gap-4 mb-4">
             <Select
@@ -157,63 +151,58 @@ export default function FunctionEditorDialog() {
 
           {/* Type Parameters */}
           <div className="mb-4">
-            <label className="block mb-1 text-sm font-semibold">
-              Type Parameters
-            </label>
+            <label className="block mb-1 font-semibold">Type Parameters</label>
 
-            <div className="flex place-content-between  gap-2 mb-2 flex-wrap">
-              <div className="flex gap-2 mb-2">
-                <Input
-                  placeholder="Type parameter name"
-                  value={newTypeParamName}
-                  onChange={(e) => setNewTypeParamName(e.target.value)}
-                />
-                <Button
-                  className="cursor-pointer"
-                  onClick={() => {
-                    if (
-                      !newTypeParamName ||
-                      typeParameterNames.includes(newTypeParamName)
-                    )
-                      return;
+            <div className="flex gap-2 mb-2">
+              <Input
+                placeholder="Type parameter name"
+                value={newTypeParamName}
+                onChange={(e) => setNewTypeParamName(e.target.value)}
+              />
+              <Button
+                className="cursor-pointer"
+                onClick={() => {
+                  if (
+                    !newTypeParamName ||
+                    typeParameters.map((t) => t.name).includes(newTypeParamName)
+                  )
+                    return;
 
-                    setTypeParameterNames([
-                      ...typeParameterNames,
-                      newTypeParamName,
-                    ]);
-                    setTypeParameters([
-                      ...typeParameters,
-                      {
-                        abilities: newTypeParamAbilities,
+                  setTypeParameters((prev) => [
+                    ...prev,
+                    {
+                      name: newTypeParamName,
+                      type: {
+                        abilities: [],
                       },
-                    ]);
+                    },
+                  ]);
 
-                    // 초기화
-                    setNewTypeParamName("");
-                    setNewTypeParamAbilities([]);
-                  }}
-                >
-                  Add
-                </Button>
-              </div>
+                  // 초기화
+                  setNewTypeParamName("");
+                  // setNewTypeParamAbilities([]);
+                }}
+              >
+                Add
+              </Button>
             </div>
 
             {/* 추가된 타입 파라미터 목록 */}
-            {typeParameterNames.map((name, index) => (
-              <div key={name} className="flex items-center gap-2 mb-2">
+            {typeParameters.map((t, index) => (
+              <div key={t.name} className="flex items-center gap-2 mb-2">
                 <span className="text-blue-600 font-semibold min-w-[100px]">
-                  {name}
+                  {t.name}
                 </span>
                 <AbilitySelector
-                  abilities={typeParameters[index].abilities}
+                  abilities={typeParameters[index].type.abilities}
                   onChange={(newAbilities) => {
                     setTypeParameters((prev) => {
-                      const newParams = [...prev];
-                      newParams[index] = {
-                        ...newParams[index],
-                        abilities: newAbilities,
+                      const newTypeParams = [...prev];
+                      newTypeParams[index] = {
+                        ...newTypeParams[index],
+                        type: { abilities: newAbilities },
                       };
-                      return newParams;
+                      return newTypeParams;
                     });
                   }}
                   className="flex-1"
@@ -221,11 +210,8 @@ export default function FunctionEditorDialog() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-gray-500 hover:text-gray-700 p-1 h-7 w-7 flex-shrink-0"
+                  className="text-gray-500 hover:text-gray-700 p-1 h-7 w-7 flex-shrink-0 cursor-pointer"
                   onClick={() => {
-                    setTypeParameterNames((prev) =>
-                      prev.filter((_, i) => i !== index)
-                    );
                     setTypeParameters((prev) =>
                       prev.filter((_, i) => i !== index)
                     );
@@ -239,74 +225,129 @@ export default function FunctionEditorDialog() {
 
           {/* Parameters */}
           <div className="mb-4">
-            <label className="block mb-1 text-sm font-semibold">
-              Parameters
-            </label>
+            <label className="block font-semibold mb-1">Parameters</label>
             <div className="flex gap-2 mb-2">
-              {/* <TypeSelect
-            imports={imports}
-            structs={structs}
-            typeParameters={[]}
-            setType={setNewParamType}
-          /> */}
+              <Input
+                value={newParamName}
+                placeholder="Parameter name"
+                onChange={(e) => setNewParamName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    if (
+                      !newParamName ||
+                      parameters.some((p) => p.name === newParamName)
+                    )
+                      return;
+                    setParameters((prev) => [
+                      ...prev,
+                      { name: newParamName, type: "U64" },
+                    ]);
+                    setNewParamName("");
+                  }
+                }}
+              />
               <Button
                 className="cursor-pointer"
                 onClick={() => {
-                  if (!newParamType) return;
-                  setParameters((prev) => [...prev, newParamType]);
-                  setNewParamType("Bool");
+                  if (
+                    !newParamName ||
+                    parameters.some((p) => p.name === newParamName)
+                  )
+                    return;
+                  setParameters([
+                    ...parameters,
+                    { name: newParamName, type: "U64" },
+                  ]);
+                  setNewParamName("");
                 }}
               >
                 Add
               </Button>
             </div>
-            {parameters.map((p, index) => (
-              <li key={`arg${index}`} className="flex justify-between">
-                {typeof p === "string"
-                  ? p
-                  : "Struct" in p
-                  ? p.Struct.name
-                  : "Unknown"}
-              </li>
+
+            {parameters.map((param, index) => (
+              <div key={param.name} className="flex items-center gap-2 mb-2">
+                <span className="text-blue-600 font-semibold min-w-[100px]">
+                  {param.name}
+                </span>
+                <FunctionTypeSelect typeParameters={[]} />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-500 hover:text-gray-700 p-1 h-7 w-7 flex-shrink-0 cursor-pointer"
+                  onClick={() => {
+                    setParameters((prev) => prev.filter((_, i) => i !== index));
+                  }}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
             ))}
           </div>
 
           {/* Returns */}
           <div className="mb-4">
-            <label className="block mb-1 text-sm font-semibold">
-              Return Types
-            </label>
+            <label className="block font-semibold mb-1">Returns</label>
             <div className="flex gap-2 mb-2">
-              {/* <TypeSelect
-            imports={imports}
-            structs={structs}
-            typeParameters={[]}
-            setType={setNewReturnType}
-          /> */}
+              <Input
+                value={newReturnName}
+                placeholder="Returns name"
+                onChange={(e) => setNewReturnName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    if (
+                      !newReturnName ||
+                      returns.some((p) => p.name === newReturnName)
+                    )
+                      return;
+                    setReturns((prev) => [
+                      ...prev,
+                      { name: newReturnName, type: "U64" },
+                    ]);
+                    setNewReturnName("");
+                  }
+                }}
+              />
               <Button
                 className="cursor-pointer"
                 onClick={() => {
-                  if (!newReturnType) return;
-                  setReturns((prev) => [...prev, newReturnType]);
-                  setNewReturnType("Bool");
+                  if (
+                    !newReturnName ||
+                    returns.some((p) => p.name === newReturnName)
+                  )
+                    return;
+                  setReturns([
+                    ...returns,
+                    { name: newReturnName, type: "U64" },
+                  ]);
+                  setNewReturnName("");
                 }}
               >
                 Add
               </Button>
             </div>
-            <ul className="text-sm space-y-1">
-              {returns.map((ret, idx) => (
-                <li key={idx} className="text-gray-700">
-                  {typeof ret === "string"
-                    ? ret
-                    : "Struct" in ret
-                    ? ret.Struct.name
-                    : "Unknown"}
-                </li>
-              ))}
-            </ul>
+
+            {returns.map((r, index) => (
+              <div key={r.name} className="flex items-center gap-2 mb-2">
+                <span className="text-blue-600 font-semibold min-w-[100px]">
+                  {r.name}
+                </span>
+                <FunctionTypeSelect typeParameters={[]} />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-500 hover:text-gray-700 p-1 h-7 w-7 flex-shrink-0 cursor-pointer"
+                  onClick={() => {
+                    setReturns((prev) => prev.filter((_, i) => i !== index));
+                  }}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
           </div>
         </section>
+
         <section className="col-span-6">
           {/* Preview */}
           <div className="bg-gray-100 p-4 text-sm rounded whitespace-pre-wrap mb-4">
@@ -314,10 +355,12 @@ export default function FunctionEditorDialog() {
               function: {
                 visibility,
                 isEntry,
-                typeParameters,
-                typeParameterNames,
-                parameters: parameters,
-                return: returns,
+                typeParameters: typeParameters.map((t) => t.type),
+                typeParameterNames: typeParameters.map((t) => t.name),
+                parameters: parameters.map((p) => p.type),
+                parameterNames: parameters.map((p) => p.name),
+                return: returns.map((r) => r.type),
+                returnNames: returns.map((r) => r.name),
               },
               insideCode: [],
             })}

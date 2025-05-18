@@ -77,7 +77,7 @@ export function generateFunctionCode(
       const name =
         func.function.typeParameters.length === 1
           ? `${func.function.typeParameterNames[i]}`
-          : `${func.function.typeParameterNames[i]}${i}`;
+          : `${func.function.typeParameterNames[i]}`;
       const abilities = tp.abilities
         ?.map((a: string) => a.toLowerCase())
         .join(" + ");
@@ -86,7 +86,10 @@ export function generateFunctionCode(
     .join(", ");
   const generics = typeParams ? `<${typeParams}>` : "";
   const parameters = func.function.parameters
-    .map((p: any, i: number) => `arg${i}: ${formatType(p)}`)
+    .map(
+      (p: any, i: number) =>
+        `${func.function.parameterNames[i]}: ${formatType(p)}`
+    )
     .join(", ");
 
   const returnType =

@@ -24,7 +24,9 @@ export type FunctionDataMap = Map<string, SuiMoveFunction>;
 
 export type SuiMoveFunction = {
   function: SuiMoveNormalizedFunction & {
+    parameterNames: string[];
     typeParameterNames: string[];
+    returnNames: string[];
   };
   insideCode: {
     functionName: string;
