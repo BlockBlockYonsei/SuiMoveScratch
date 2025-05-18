@@ -185,7 +185,7 @@ const HeroSection = ({ isVisible }: HeroSectionProps) => (
         </div>
         <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
           Build{" "}
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500 whitespace-nowrap">
             Move Smart Contracts
           </span>{" "}
           Without Coding
@@ -201,13 +201,10 @@ const HeroSection = ({ isVisible }: HeroSectionProps) => (
           >
             Start Building
           </Link>
-          <a
-            href="https://github.com/BlockBlockYonsei/SuiMoveScratch"
-            className="px-6 py-3 rounded-md border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium transition-colors flex items-center justify-center space-x-2"
-          >
+          <button className="px-6 py-3 rounded-md border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium transition-colors flex items-center justify-center space-x-2">
             <Github size={20} />
             <span>View on GitHub</span>
-          </a>
+          </button>
         </div>
         <div className="flex justify-center items-center space-x-8 text-sm text-gray-500 dark:text-gray-400">
           {features.map((feature, index) => (
@@ -241,7 +238,14 @@ const CTASection = ({ isVisible }: CTASectionProps) => (
           Join thousands of developers creating innovative applications on the
           Sui blockchain with SuiMoveScratch.
         </p>
-
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <button className="px-8 py-3 bg-white text-purple-600 font-medium rounded-lg hover:bg-gray-100 transition-colors">
+            Get Started
+          </button>
+          <button className="px-8 py-3 bg-transparent border border-white text-white font-medium rounded-lg hover:bg-white/10 transition-colors">
+            Register for Hackathon
+          </button>
+        </div>
         <div className="mt-12 flex flex-wrap justify-center gap-x-12 gap-y-6">
           {stats.map((stat, index) => (
             <div key={index}>

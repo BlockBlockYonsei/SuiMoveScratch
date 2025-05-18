@@ -1,79 +1,81 @@
-import { useContext } from "react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-import ImportEditorDialog from "@/pages/NoCodeMoveV2/imports/ImportEditorDialog";
-import StructEditorDialog from "@/pages/NoCodeMoveV2/structs/StructEditorDialog";
-import FunctionEditorDialog from "@/pages/NoCodeMoveV2/functions/FunctionEditorDialog";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarHeader,
+} from "@/components/ui/sidebar";
 
-import ImportPreview from "@/pages/NoCodeMoveV2/imports/ImportPreview";
-import StructCard from "@/pages/NoCodeMoveV2/structs/StructCard";
-import FunctionListView from "@/pages/NoCodeMoveV2/functions/FunctionListView";
-
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-
-export function SideBarEditor() {
-  const { structs } = useContext(SuiMoveModuleContext);
+export function SideBarEditor({
+  menu,
+  setMenu,
+}: {
+  menu: "imports" | "structs" | "functions" | "code";
+  setMenu: (menu: "imports" | "structs" | "functions" | "code") => void;
+}) {
   return (
-    <Accordion
-      type="multiple"
-      className="w-[350px] bg-blue-50 min-h-screen p-5"
-    >
-      <AccordionItem value="item-1">
-        <AccordionTrigger className="cursor-pointer text-xl">
-          Imports
-        </AccordionTrigger>
-        <AccordionContent>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button className="cursor-pointer">Create New Imports</Button>
-            </DialogTrigger>
-            <ImportEditorDialog />
-          </Dialog>
-          <ImportPreview />
-        </AccordionContent>
-      </AccordionItem>
+    <Sidebar className="w-[350px] bg-blue-50 min-h-screen ">
+      <SidebarHeader>
+        <SidebarHeader className="text-2xl font-bold">
+          SuiMoveScratch
+        </SidebarHeader>
+      </SidebarHeader>
 
-      <AccordionItem value="item-2">
-        <AccordionTrigger className="cursor-pointer text-xl">
-          Structs
-        </AccordionTrigger>
-        <AccordionContent>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button className="cursor-pointer">Create New Structures</Button>
-            </DialogTrigger>
-            <StructEditorDialog defaultStructName={null} />
-          </Dialog>
-          <div className="pt-4">
-            {[...structs.keys()].map((structName) => {
-              return <StructCard key={structName} structName={structName} />;
-            })}
-          </div>
-        </AccordionContent>
-        <AccordionContent></AccordionContent>
-      </AccordionItem>
-
-      <AccordionItem value="item-3">
-        <AccordionTrigger className="cursor-pointer text-xl">
-          Functions
-        </AccordionTrigger>
-        <AccordionContent>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button className="cursor-pointer">Create New Functions</Button>
-            </DialogTrigger>
-            <FunctionEditorDialog />
-          </Dialog>
-          <FunctionListView />
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+      <SidebarContent>
+        <SidebarGroup>
+          <Button
+            variant={menu === "imports" ? "default" : "ghost"}
+            className={
+              menu === "imports"
+                ? "bg-black text-white hover:bg-black/90"
+                : "text-gray-800 hover:bg-gray-100"
+            }
+            onClick={() => setMenu("imports")}
+          >
+            Imports
+          </Button>
+        </SidebarGroup>
+        <SidebarGroup>
+          <Button
+            variant={menu === "structs" ? "default" : "ghost"}
+            className={
+              menu === "structs"
+                ? "bg-black text-white hover:bg-black/90"
+                : "text-gray-800 hover:bg-gray-100"
+            }
+            onClick={() => setMenu("structs")}
+          >
+            Structs
+          </Button>
+        </SidebarGroup>
+        <SidebarGroup>
+          <Button
+            variant={menu === "functions" ? "default" : "ghost"}
+            className={
+              menu === "functions"
+                ? "bg-black text-white hover:bg-black/90"
+                : "text-gray-800 hover:bg-gray-100"
+            }
+            onClick={() => setMenu("functions")}
+          >
+            Functions
+          </Button>
+        </SidebarGroup>
+        <SidebarGroup>
+          <Button
+            variant={menu === "code" ? "default" : "ghost"}
+            className={
+              menu === "code"
+                ? "bg-black text-white hover:bg-black/90"
+                : "text-gray-800 hover:bg-gray-100"
+            }
+            onClick={() => setMenu("code")}
+          >
+            Code
+          </Button>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
 }
