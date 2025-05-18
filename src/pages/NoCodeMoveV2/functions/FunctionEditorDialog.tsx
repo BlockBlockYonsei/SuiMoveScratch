@@ -14,7 +14,7 @@ import {
   SuiMoveNormalizedType,
   SuiMoveVisibility,
 } from "@mysten/sui/client";
-import TypeSelect from "@/pages/NoCodeMoveV2/TypeSelect";
+import TypeSelect from "@/pages/NoCodeMoveV2/structs/StructTypeSelect";
 import {
   Select,
   SelectTrigger,
@@ -22,7 +22,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { generateFunctionCode } from "@/pages/NoCodeMove/utils/generateCode";
+import { generateFunctionCode } from "@/pages/NoCodeMoveV2/utils/generateCode";
 import { SuiMoveFunction } from "@/types/move-syntax";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
@@ -157,7 +157,7 @@ export default function FunctionEditorDialog() {
                   setNewTypeParamAbilities((prev) =>
                     prev.includes(ability)
                       ? prev.filter((a) => a !== ability)
-                      : [...prev, ability]
+                      : [...prev, ability],
                   );
                 }}
                 size="sm"

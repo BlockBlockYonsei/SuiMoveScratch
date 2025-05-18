@@ -12,8 +12,8 @@ import {
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
-import TypeSelect from "@/pages/NoCodeMoveV2/TypeSelect";
-import { generateStructCode } from "@/pages/NoCodeMove/utils/generateCode";
+import TypeSelect from "@/pages/NoCodeMoveV2/structs/StructTypeSelect";
+import { generateStructCode } from "@/pages/NoCodeMoveV2/utils/generateCode";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SuiMoveStruct } from "@/types/move-syntax";
@@ -134,7 +134,7 @@ export default function StructEditorDialog({ defaultStructName }: Props) {
                     setAbilities((prev) =>
                       prev.includes(ability)
                         ? prev.filter((a) => a !== ability)
-                        : [...prev, ability]
+                        : [...prev, ability],
                     );
                   }}
                 >
@@ -164,7 +164,7 @@ export default function StructEditorDialog({ defaultStructName }: Props) {
                     setNewTypeParamAbilities((prev) =>
                       prev.includes(ability)
                         ? prev.filter((a) => a !== ability)
-                        : [...prev, ability]
+                        : [...prev, ability],
                     );
                   }}
                 >

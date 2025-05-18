@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
-import ImportModuleSelector from "./ImportModuleSelector";
+import ImportModuleSelector from "@/pages/NoCodeMoveV2/imports/ImportModuleSelector";
 
 export default function ImportEditorDialog() {
   const [selectedPkg, setSelectedPkg] = useState<string | null>(null);

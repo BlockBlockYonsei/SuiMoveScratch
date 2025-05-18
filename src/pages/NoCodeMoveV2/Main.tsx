@@ -1,5 +1,5 @@
-import { SideBarEditor } from "./SideBarEditor";
-import CodePreview from "./CodePreview";
+import { SideBarEditor } from "@/pages/NoCodeMoveV2/SideBarEditor";
+import CodePreview from "@/pages/NoCodeMoveV2/CodePreview";
 import { SuiMoveModuleProvider } from "@/context/SuiMoveModuleContext";
 
 export default function Main() {

@@ -5,7 +5,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import ManageFunctionDetail from "./ManageFunctionDetail";
+import ManageFunctionDetail from "@/pages/NoCodeMoveV2/functions/ManageFunctionDetail";
 import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
