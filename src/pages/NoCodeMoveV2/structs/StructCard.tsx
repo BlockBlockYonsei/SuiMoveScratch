@@ -96,7 +96,7 @@ export default function StructCard({
                       variant={"outline"}
                       className="cursor-pointer text-xs px-1 font-semibold border-2"
                     >
-                      {a.toUpperCase().replace(/[aeiouAEIOU]/g, "")}
+                      {a.toUpperCase()}
                     </Button>
                   ))}
                 </span>
