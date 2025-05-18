@@ -35,7 +35,7 @@ export function generateImportsCode(imports: ImportDataMap): string {
 
 export function generateStructCode(
   name: string,
-  struct: SuiMoveStruct,
+  struct: SuiMoveStruct
 ): string {
   const abilities =
     struct.abilities.abilities.length > 0
@@ -66,7 +66,7 @@ export function generateStructCode(
 
 export function generateFunctionCode(
   name: string,
-  func: SuiMoveFunction,
+  func: SuiMoveFunction
 ): string {
   const visibility = func.function.visibility.toLowerCase();
   const isEntry = func.function.isEntry;
@@ -74,7 +74,10 @@ export function generateFunctionCode(
   const visKeyword = visibility !== "private" ? `${visibility} ` : "";
   const typeParams = func.function.typeParameters
     .map((tp: any, i: number) => {
-      const name = func.function.typeParameters.length === 1 ? "T" : `T${i}`;
+      const name =
+        func.function.typeParameters.length === 1
+          ? `${func.function.typeParameterNames[i]}`
+          : `${func.function.typeParameterNames[i]}${i}`;
       const abilities = tp.abilities
         ?.map((a: string) => a.toLowerCase())
         .join(" + ");
@@ -153,7 +156,7 @@ export function generateMoveCode({
 export function downloadMoveCode(
   imports: ImportDataMap,
   structs: StructDataMap,
-  functions: FunctionDataMap,
+  functions: FunctionDataMap
 ) {
   const code = generateMoveCode({ imports, structs, functions });
   const blob = new Blob([code], { type: "text/plain" });

@@ -26,6 +26,8 @@ import { generateFunctionCode } from "@/pages/NoCodeMoveV2/utils/generateCode";
 import { SuiMoveFunction } from "@/types/move-syntax";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
+import AbilitySelector from "../structs/AbilitySelector";
+import { X } from "lucide-react";
 
 export default function FunctionEditorDialog() {
   const [functionName, setFunctionName] = useState("new_function");
@@ -91,7 +93,7 @@ export default function FunctionEditorDialog() {
   };
 
   return (
-    <DialogContent className="lg:max-w-[800px] max-w-3xl max-h-[80vh] overflow-y-auto">
+    <DialogContent className="lg:max-w-[900px] max-w-3xl max-h-[80vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>Create a New Function</DialogTitle>
         <DialogDescription>
@@ -100,8 +102,8 @@ export default function FunctionEditorDialog() {
         </DialogDescription>
       </DialogHeader>
 
-      <div className="lg:grid lg:grid-cols-9 lg:gap-10">
-        <section className="col-span-4">
+      <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+        <section className="col-span-6">
           {/* Name */}
           <div className="mb-2">
             <label className="block mb-1 text-sm font-semibold">
@@ -160,36 +162,6 @@ export default function FunctionEditorDialog() {
             </label>
 
             <div className="flex place-content-between  gap-2 mb-2 flex-wrap">
-              <div className="flex gap-x-2 mb-2 flex-wrap">
-                {(
-                  [
-                    "copy",
-                    "drop",
-                    "store",
-                    "key",
-                  ] as unknown as SuiMoveAbility[]
-                ).map((ability) => (
-                  <Button
-                    key={ability}
-                    variant={
-                      newTypeParamAbilities.includes(ability)
-                        ? "default"
-                        : "outline"
-                    }
-                    onClick={() => {
-                      setNewTypeParamAbilities((prev) =>
-                        prev.includes(ability)
-                          ? prev.filter((a) => a !== ability)
-                          : [...prev, ability]
-                      );
-                    }}
-                    size="sm"
-                    className="cursor-pointer"
-                  >
-                    {ability}
-                  </Button>
-                ))}
-              </div>
               <div className="flex gap-2 mb-2">
                 <Input
                   placeholder="Type parameter name"
@@ -199,15 +171,25 @@ export default function FunctionEditorDialog() {
                 <Button
                   className="cursor-pointer"
                   onClick={() => {
-                    if (!newTypeParamAbilities) return;
+                    if (
+                      !newTypeParamName ||
+                      typeParameterNames.includes(newTypeParamName)
+                    )
+                      return;
 
+                    setTypeParameterNames([
+                      ...typeParameterNames,
+                      newTypeParamName,
+                    ]);
                     setTypeParameters([
                       ...typeParameters,
                       {
                         abilities: newTypeParamAbilities,
                       },
                     ]);
+
                     // 초기화
+                    setNewTypeParamName("");
                     setNewTypeParamAbilities([]);
                   }}
                 >
@@ -216,15 +198,42 @@ export default function FunctionEditorDialog() {
               </div>
             </div>
 
-            {typeParameters.map((typeParameter, index) => (
-              <li key={`T${index}`} className="flex gap-x-2">
-                <span>T{index}</span>
-                {typeParameter.abilities.map((type) => (
-                  <div>
-                    <span>{type}</span>
-                  </div>
-                ))}
-              </li>
+            {/* 추가된 타입 파라미터 목록 */}
+            {typeParameterNames.map((name, index) => (
+              <div key={name} className="flex items-center gap-2 mb-2">
+                <span className="text-blue-600 font-semibold min-w-[100px]">
+                  {name}
+                </span>
+                <AbilitySelector
+                  abilities={typeParameters[index].abilities}
+                  onChange={(newAbilities) => {
+                    setTypeParameters((prev) => {
+                      const newParams = [...prev];
+                      newParams[index] = {
+                        ...newParams[index],
+                        abilities: newAbilities,
+                      };
+                      return newParams;
+                    });
+                  }}
+                  className="flex-1"
+                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-500 hover:text-gray-700 p-1 h-7 w-7 flex-shrink-0"
+                  onClick={() => {
+                    setTypeParameterNames((prev) =>
+                      prev.filter((_, i) => i !== index)
+                    );
+                    setTypeParameters((prev) =>
+                      prev.filter((_, i) => i !== index)
+                    );
+                  }}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
             ))}
           </div>
 
@@ -298,7 +307,7 @@ export default function FunctionEditorDialog() {
             </ul>
           </div>
         </section>
-        <section className="col-span-5">
+        <section className="col-span-6">
           {/* Preview */}
           <div className="bg-gray-100 p-4 text-sm rounded whitespace-pre-wrap mb-4">
             {generateFunctionCode(functionName, {
@@ -306,6 +315,7 @@ export default function FunctionEditorDialog() {
                 visibility,
                 isEntry,
                 typeParameters,
+                typeParameterNames,
                 parameters: parameters,
                 return: returns,
               },
