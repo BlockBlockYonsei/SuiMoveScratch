@@ -26,7 +26,7 @@ export default function StructCardList() {
   return (
     <div className="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-2">
       {Array.from(structs.entries()).map(([structName, structData]) => (
-        <Dialog>
+        <Dialog key={structName}>
           <DialogTrigger
             className="cursor-pointer rounded-md"
             onClick={() => setSelectedStruct(structName)}

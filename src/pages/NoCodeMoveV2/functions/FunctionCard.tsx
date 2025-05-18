@@ -5,7 +5,10 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SuiMoveFunction } from "@/types/move-syntax";
+import { X } from "lucide-react";
+import { useContext } from "react";
 
 export default function FunctionCard({
   functionName,
@@ -15,9 +18,22 @@ export default function FunctionCard({
   functionData: SuiMoveFunction;
 }) {
   const fn = functionData.function;
+  const { setFunctions } = useContext(SuiMoveModuleContext);
   return (
-    <Card>
+    <Card className="relative">
       <CardHeader>
+        <button
+          onClick={() => {
+            setFunctions((prev) => {
+              const newFunctionData = new Map(prev);
+              newFunctionData.delete(functionName);
+              return newFunctionData;
+            });
+          }}
+          className="absolute cursor-pointer top-3 right-3 text-gray-400 hover:text-black"
+        >
+          <X size={20} />
+        </button>
         <CardTitle className="text-blue-600 font-bold">
           {fn.isEntry ? "[entry] " : ""}
           fun {functionName}

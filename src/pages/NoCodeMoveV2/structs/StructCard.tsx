@@ -36,7 +36,7 @@ export default function StructCard({
   };
 
   return (
-    <Card key={structName} className="w-full max-w-xl mx-auto relative">
+    <Card className="relative">
       <CardHeader>
         <button
           onClick={() => {

@@ -12,7 +12,7 @@ export default function FunctionCardList() {
     <div className="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-2">
       {[...functions.entries()].map(([name, data]) => {
         return (
-          <Dialog>
+          <Dialog key={name}>
             <DialogTrigger className="cursor-pointer rounded-md">
               <FunctionCard functionName={name} functionData={data} />
             </DialogTrigger>
