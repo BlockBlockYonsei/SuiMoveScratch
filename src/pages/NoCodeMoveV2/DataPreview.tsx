@@ -15,7 +15,7 @@ import FunctionListView from "./functions/FunctionListView";
 import { PlusIcon } from "lucide-react";
 import ImportPreview from "./imports/ImportPreview";
 
-export default function CodePreview({
+export default function DataPreview({
   menu,
 }: {
   menu: "imports" | "structs" | "functions" | "code";
