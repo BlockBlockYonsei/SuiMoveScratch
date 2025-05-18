@@ -17,6 +17,8 @@ import { generateStructCode } from "@/pages/NoCodeMoveV2/utils/generateCode";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SuiMoveStruct } from "@/types/move-syntax";
+import { X } from "lucide-react";
+import AbilitySelector from "./AbilitySelector";
 
 interface Props {
   defaultStructName: string | null;
@@ -98,7 +100,7 @@ export default function StructEditorDialog({ defaultStructName }: Props) {
   };
 
   return (
-    <DialogContent className="lg:max-w-[800px] max-h-[80vh] overflow-y-auto">
+    <DialogContent className="lg:max-w-[900px] max-h-[80vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>
           {defaultStructName ? "Update Struct" : "Create a New Struct"}
@@ -108,8 +110,8 @@ export default function StructEditorDialog({ defaultStructName }: Props) {
         </DialogDescription>
       </DialogHeader>
 
-      <div className="lg:grid lg:grid-cols-9 lg:gap-10">
-        <section className="col-span-4">
+      <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+        <section className="col-span-6">
           {/* Struct 이름 */}
           <div className="mb-4">
             <label className="block font-semibold mb-1">Struct Name</label>
@@ -122,56 +124,12 @@ export default function StructEditorDialog({ defaultStructName }: Props) {
           {/* Abilities */}
           <div className="mb-4">
             <label className="block font-semibold mb-1">Abilities</label>
-            <div className="flex gap-2 flex-wrap">
-              {(
-                ["copy", "drop", "store", "key"] as unknown as SuiMoveAbility[]
-              ).map((ability) => (
-                <Button
-                  key={ability}
-                  className="cursor-pointer"
-                  variant={abilities.includes(ability) ? "default" : "outline"}
-                  onClick={() => {
-                    setAbilities((prev) =>
-                      prev.includes(ability)
-                        ? prev.filter((a) => a !== ability)
-                        : [...prev, ability],
-                    );
-                  }}
-                >
-                  {ability}
-                </Button>
-              ))}
-            </div>
+            <AbilitySelector abilities={abilities} onChange={setAbilities} />
           </div>
 
           {/* Type Parameters */}
           <div className="mb-4">
             <label className="block font-semibold mb-1">Type Parameters</label>
-            <div className="flex gap-2 mb-2 flex-wrap">
-              {(
-                ["copy", "drop", "store", "key"] as unknown as SuiMoveAbility[]
-              ).map((ability) => (
-                <Button
-                  key={ability}
-                  className="cursor-pointer"
-                  size="sm"
-                  variant={
-                    newTypeParamAbilities.includes(ability)
-                      ? "default"
-                      : "outline"
-                  }
-                  onClick={() => {
-                    setNewTypeParamAbilities((prev) =>
-                      prev.includes(ability)
-                        ? prev.filter((a) => a !== ability)
-                        : [...prev, ability],
-                    );
-                  }}
-                >
-                  {ability}
-                </Button>
-              ))}
-            </div>
             <div className="flex gap-2 mb-2">
               <Input
                 placeholder="Type parameter name"
@@ -207,6 +165,44 @@ export default function StructEditorDialog({ defaultStructName }: Props) {
                 Add
               </Button>
             </div>
+
+            {/* 추가된 타입 파라미터 목록 */}
+            {typeParameterNames.map((name, index) => (
+              <div key={name} className="flex items-center gap-2 mb-2">
+                <span className="text-blue-600 font-semibold min-w-[100px]">
+                  {name}
+                </span>
+                <AbilitySelector
+                  abilities={typeParameters[index].constraints.abilities}
+                  onChange={(newAbilities) => {
+                    setTypeParameters((prev) => {
+                      const newParams = [...prev];
+                      newParams[index] = {
+                        ...newParams[index],
+                        constraints: { abilities: newAbilities },
+                      };
+                      return newParams;
+                    });
+                  }}
+                  className="flex-1"
+                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-500 hover:text-gray-700 p-1 h-7 w-7 flex-shrink-0"
+                  onClick={() => {
+                    setTypeParameterNames((prev) =>
+                      prev.filter((_, i) => i !== index),
+                    );
+                    setTypeParameters((prev) =>
+                      prev.filter((_, i) => i !== index),
+                    );
+                  }}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
           </div>
 
           {/* Fields */}
@@ -245,31 +241,30 @@ export default function StructEditorDialog({ defaultStructName }: Props) {
               </Button>
             </div>
 
-            {fields.map((field) => (
+            {fields.map((field, index) => (
               <div key={field.name} className="flex items-center gap-2 mb-2">
-                <span className="text-blue-600 font-semibold">
+                <span className="text-blue-600 font-semibold min-w-[100px]">
                   {field.name}
                 </span>
-                <TypeSelect
-                  // imports={imports}
-                  // structs={structs}
-                  typeParameters={[]}
-                  // setType={(type) => {
-                  //   setFields((prev) =>
-                  //     prev.map((f) =>
-                  //       f.name === field.name ? { ...f, type } : f
-                  //     )
-                  //   );
-                  // }}
-                />
+                <TypeSelect typeParameters={[]} />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-500 hover:text-gray-700 p-1 h-7 w-7 flex-shrink-0"
+                  onClick={() => {
+                    setFields((prev) => prev.filter((_, i) => i !== index));
+                  }}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="col-span-5">
+        <section className="col-span-6">
           <div className="mt-4">
-            <pre className="text-sm bg-gray-100 p-4 rounded whitespace-pre-wrap">
+            <pre className="text-sm bg-gray-100 p-4 rounded whitespace-pre-wrap overflow-y-auto">
               {generateStructCode(structName, {
                 abilities: { abilities },
                 typeParameters,
