@@ -26,11 +26,12 @@ export function SideBarEditor({
         <SidebarGroup>
           <Button
             variant={menu === "imports" ? "default" : "ghost"}
-            className={
+            className={`${
               menu === "imports"
                 ? "bg-black text-white hover:bg-black/90"
                 : "text-gray-800 hover:bg-gray-100"
-            }
+            } cursor-pointer
+              `}
             onClick={() => setMenu("imports")}
           >
             Imports
@@ -39,11 +40,11 @@ export function SideBarEditor({
         <SidebarGroup>
           <Button
             variant={menu === "structs" ? "default" : "ghost"}
-            className={
+            className={`${
               menu === "structs"
                 ? "bg-black text-white hover:bg-black/90"
                 : "text-gray-800 hover:bg-gray-100"
-            }
+            } cursor-pointer`}
             onClick={() => setMenu("structs")}
           >
             Structs
@@ -52,11 +53,11 @@ export function SideBarEditor({
         <SidebarGroup>
           <Button
             variant={menu === "functions" ? "default" : "ghost"}
-            className={
+            className={`${
               menu === "functions"
                 ? "bg-black text-white hover:bg-black/90"
                 : "text-gray-800 hover:bg-gray-100"
-            }
+            } cursor-pointer`}
             onClick={() => setMenu("functions")}
           >
             Functions
@@ -65,11 +66,11 @@ export function SideBarEditor({
         <SidebarGroup>
           <Button
             variant={menu === "code" ? "default" : "ghost"}
-            className={
+            className={`${
               menu === "code"
                 ? "bg-black text-white hover:bg-black/90"
                 : "text-gray-800 hover:bg-gray-100"
-            }
+            } cursor-pointer`}
             onClick={() => setMenu("code")}
           >
             Code
