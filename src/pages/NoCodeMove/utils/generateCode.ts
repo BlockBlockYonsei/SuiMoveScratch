@@ -1,8 +1,10 @@
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
 import {
-  ImportsType,
+  ImportDataMap,
   SuiMoveFunction,
   SuiMoveStruct,
+  StructDataMap,
+  FunctionDataMap,
 } from "@/types/move-syntax";
 
 export function formatType(type: any): string {
@@ -20,25 +22,23 @@ export function formatType(type: any): string {
   return "Unknown";
 }
 
-export function generateImportsCode(imports: ImportsType): string {
-  return Object.entries(imports)
-    .map(([fullModuleName, data]) => {
-      const [pkg, module] = fullModuleName.split("::");
-      const pkgAlias = SUI_PACKAGE_ALIASES[pkg] || pkg;
-
+export function generateImportsCode(imports: ImportDataMap): string {
+  return Array.from(imports.entries())
+    .map(([_, data]) => {
+      const pkgAlias = SUI_PACKAGE_ALIASES[data.address] || data.address;
       const importedStructNames = Object.keys(data.structs);
       const importedNames = data.functions
         ? ["Self", ...importedStructNames].join(", ")
         : importedStructNames.join(", ");
 
-      return `use ${pkgAlias}::${module}::{ ${importedNames} };`;
+      return `use ${pkgAlias}::${data.moduleName}::{ ${importedNames} };`;
     })
     .join("\n");
 }
 
 export function generateStructCode(
   name: string,
-  struct: SuiMoveStruct
+  struct: SuiMoveStruct,
 ): string {
   const abilities =
     struct.abilities.abilities.length > 0
@@ -71,7 +71,7 @@ export function generateStructCode(
 
 export function generateFunctionCode(
   name: string,
-  func: SuiMoveFunction
+  func: SuiMoveFunction,
 ): string {
   const visibility = func.function.visibility.toLowerCase();
   const isEntry = func.function.isEntry;
@@ -128,9 +128,9 @@ export function generateMoveCode({
   moduleName,
   address,
 }: {
-  imports: ImportsType;
-  structs: Record<string, any>;
-  functions: Record<string, any>;
+  imports: ImportDataMap;
+  structs: StructDataMap;
+  functions: FunctionDataMap;
   moduleName?: string;
   address?: string;
 }): string {
@@ -156,9 +156,9 @@ export function generateMoveCode({
 }
 
 export function downloadMoveCode(
-  imports: Record<string, any>,
-  structs: Record<string, any>,
-  functions: Record<string, any>
+  imports: ImportDataMap,
+  structs: StructDataMap,
+  functions: FunctionDataMap,
 ) {
   const code = generateMoveCode({ imports, structs, functions });
   const blob = new Blob([code], { type: "text/plain" });
