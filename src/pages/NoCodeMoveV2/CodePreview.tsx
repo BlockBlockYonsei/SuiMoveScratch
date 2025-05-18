@@ -13,6 +13,7 @@ import FunctionEditorDialog from "./functions/FunctionEditorDialog";
 import StructCardList from "./structs/StructCardList";
 import FunctionListView from "./functions/FunctionListView";
 import { PlusIcon } from "lucide-react";
+import ImportPreview from "./imports/ImportPreview";
 
 export default function CodePreview({
   menu,
@@ -56,12 +57,7 @@ export default function CodePreview({
       </div>
 
       <pre className="bg-white p-4 rounded-md shadow whitespace-pre-wrap overflow-auto">
-        {menu === "imports" && (
-          <div>
-            <code>{generateImportsCode(imports)}</code>
-            <br /> <br />
-          </div>
-        )}
+        {menu === "imports" && <ImportPreview />}
         {menu === "structs" && <StructCardList />}
         {menu === "functions" && <FunctionListView />}
 
