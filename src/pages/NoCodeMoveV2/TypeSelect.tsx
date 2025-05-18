@@ -154,17 +154,20 @@ export default function TypeSelect({
         {[...imports.entries()].map(([key, module]) => {
           const [pkgAddress, moduleName] = key.split("::");
           const alias = SUI_PACKAGE_ALIASES[pkgAddress] || pkgAddress;
+
+          if (Object.keys(module.structs).length === 0) return;
+
           return (
             <div key={pkgAddress}>
               <div>
-                {alias}, {moduleName}
+                {alias}::{moduleName}
               </div>
-              <div className="grid grid-cols-4">
+              <div className="grid grid-cols-2">
                 {Object.keys(module.structs).map((structName) => {
                   return (
                     <SelectItem
-                      value={`external::structName`}
-                      className="cursor-pointer hover:bg-gray-200"
+                      value={`external::${structName}`}
+                      className="cursor-pointer hover:bg-gray-200 break-words whitespace-normal"
                     >
                       {structName}
                     </SelectItem>
