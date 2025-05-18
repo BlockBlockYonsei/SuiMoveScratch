@@ -23,7 +23,7 @@ export default function StructCardList() {
   };
 
   return (
-    <div className="space-y-2 grid grid-cols-3">
+    <div className="space-y-2 grid grid-cols-2 lg:grid-cols-3">
       {Array.from(structs.entries()).map(([structName, structData]) => (
         <Dialog>
           <DialogTrigger

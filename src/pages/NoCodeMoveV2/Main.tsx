@@ -22,9 +22,9 @@ export default function Main() {
   }, []);
 
   return (
-    <div className="w-5/6 min-h-screen m-auto bg-gray-200">
+    <div className="min-h-screen m-auto bg-gray-200">
       <SuiMoveModuleProvider>
-        <div className="flex">
+        <div className="flex gap-4">
           <SideBarEditor menu={menu} setMenu={setMenu} />
           <CodePreview menu={menu} />
         </div>

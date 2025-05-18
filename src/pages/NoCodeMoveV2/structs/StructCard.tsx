@@ -8,6 +8,7 @@ import {
 import { X } from "lucide-react";
 import { StructDataMap, SuiMoveStruct } from "@/types/move-syntax";
 import { SuiMoveNormalizedType } from "@mysten/sui/client";
+import { Button } from "@/components/ui/button";
 
 export default function StructCard({
   structName,
@@ -48,46 +49,68 @@ export default function StructCard({
           <X size={20} />
         </button>
 
-        <CardTitle className="text-xl font-bold text-emerald-600 truncate">
+        <CardTitle className="text-xl text-start font-bold text-emerald-600 truncate">
           {structName}
         </CardTitle>
-        <CardDescription>
-          {structData.abilities.abilities.length > 0
-            ? `has ${structData.abilities.abilities.join(", ")}`
-            : "No abilities"}
+        <CardDescription className="text-start">
+          {structData.abilities.abilities.length > 0 && (
+            <span>
+              {structData.abilities.abilities.map((a) => (
+                <Button
+                  key={a}
+                  variant={"outline"}
+                  className="cursor-pointer text-xs px-2 font-semibold border-2 py-1"
+                >
+                  {a.toUpperCase()}
+                </Button>
+              ))}
+            </span>
+          )}
         </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-4">
         <div>
-          <h4 className="font-semibold text-sm text-muted-foreground mb-1">
+          <CardTitle className="font-semibold text-sm text-start text-muted-foreground mb-1">
             Type Parameters
-          </h4>
+          </CardTitle>
           {structData.typeParameters.length === 0 ? (
-            <p className="text-sm text-gray-500">None</p>
+            <p className="text-sm text-gray-500 border rounded-sm">None</p>
           ) : (
             structData.typeParameters.map((param, idx) => (
               <div
                 key={idx}
                 className="text-sm text-gray-800 flex items-center justify-between"
               >
-                <span>
-                  {structData.typeParameterNames[idx]}
-                  {param.isPhantom && " (phantom)"}
+                <span
+                  className={`${
+                    !param.isPhantom ? "text-purple-500" : ""
+                  } font-semibold`}
+                >
+                  {structData.typeParameterNames[idx]}:
                 </span>
                 <span className="text-xs text-gray-500">
-                  {param.constraints.abilities.join(", ")}
+                  {param.constraints.abilities.map((a) => (
+                    <Button
+                      key={a}
+                      variant={"outline"}
+                      className="cursor-pointer text-xs px-1 font-semibold border-2"
+                    >
+                      {a.toUpperCase().replace(/[aeiouAEIOU]/g, "")}
+                    </Button>
+                  ))}
                 </span>
               </div>
             ))
           )}
         </div>
         <div>
-          <h4 className="font-semibold text-sm text-muted-foreground mb-1">
+          <CardTitle className="font-semibold text-sm text-start text-muted-foreground mb-1">
             Fields
-          </h4>
+          </CardTitle>
+
           {structData.fields.length === 0 ? (
-            <p className="text-sm text-gray-500">None</p>
+            <p className="text-sm text-gray-500 border rounded-sm">None</p>
           ) : (
             structData.fields.map((field) => (
               <div

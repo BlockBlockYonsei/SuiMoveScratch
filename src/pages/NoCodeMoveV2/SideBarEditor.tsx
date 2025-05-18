@@ -15,7 +15,7 @@ export function SideBarEditor({
   setMenu: (menu: "imports" | "structs" | "functions" | "code") => void;
 }) {
   return (
-    <Sidebar className="w-[350px] bg-blue-50 min-h-screen ">
+    <Sidebar className="bg-blue-50 min-h-screen ">
       <SidebarHeader>
         <SidebarHeader className="text-2xl font-bold">
           SuiMoveScratch
