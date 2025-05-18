@@ -270,7 +270,15 @@ export default function FunctionEditorDialog() {
                 <span className="text-blue-600 font-semibold min-w-[100px]">
                   {param.name}
                 </span>
-                <FunctionTypeSelect typeParameters={[]} />
+                <FunctionTypeSelect
+                  typeParameters={typeParameters.map((t) => t.type)}
+                  defaultValue={param.type}
+                  onChange={(type: SuiMoveNormalizedType) => {
+                    setParameters((prev) =>
+                      prev.map((f, i) => (i === index ? { ...f, type } : f))
+                    );
+                  }}
+                />
                 <Button
                   variant="ghost"
                   size="sm"
@@ -332,7 +340,15 @@ export default function FunctionEditorDialog() {
                 <span className="text-blue-600 font-semibold min-w-[100px]">
                   {r.name}
                 </span>
-                <FunctionTypeSelect typeParameters={[]} />
+                <FunctionTypeSelect
+                  typeParameters={typeParameters.map((t) => t.type)}
+                  defaultValue={r.type}
+                  onChange={(type: SuiMoveNormalizedType) => {
+                    setParameters((prev) =>
+                      prev.map((f, i) => (i === index ? { ...f, type } : f))
+                    );
+                  }}
+                />
                 <Button
                   variant="ghost"
                   size="sm"
