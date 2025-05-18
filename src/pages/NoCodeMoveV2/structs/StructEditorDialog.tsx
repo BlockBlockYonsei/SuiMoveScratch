@@ -73,8 +73,41 @@ export default function StructEditorDialog() {
     setStructs((prev) => {
       const newStructMap = new Map(prev);
 
-      if (selectedStruct && prev.has(selectedStruct)) {
+      // 이전 struct 이름이 있고, 새로운 이름과 다른 경우 (이름 변경)
+      if (selectedStruct && selectedStruct !== structName) {
+        // 이전 struct 데이터 삭제
         newStructMap.delete(selectedStruct);
+
+        // 다른 struct들의 필드 타입 업데이트
+        newStructMap.forEach((structData, structKey) => {
+          const updatedFields = structData.fields.map((field) => {
+            if (
+              field.type &&
+              typeof field.type === "object" &&
+              "Struct" in field.type
+            ) {
+              const structType = field.type.Struct;
+              if (structType.name === selectedStruct) {
+                return {
+                  ...field,
+                  type: {
+                    ...field.type,
+                    Struct: {
+                      ...structType,
+                      name: structName,
+                    },
+                  },
+                };
+              }
+            }
+            return field;
+          });
+
+          newStructMap.set(structKey, {
+            ...structData,
+            fields: updatedFields,
+          });
+        });
       }
 
       newStructMap.set(structName, newStructData);
