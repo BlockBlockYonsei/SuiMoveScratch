@@ -18,7 +18,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
-        <WalletProvider>
+        <WalletProvider preferredWallets={["suiet"]}>
           <Routers />
         </WalletProvider>
       </SuiClientProvider>
