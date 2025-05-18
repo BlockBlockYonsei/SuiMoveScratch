@@ -23,20 +23,18 @@ export default function StructCardList() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2 grid grid-cols-3">
       {Array.from(structs.entries()).map(([structName, structData]) => (
         <Dialog>
-          <DialogTrigger>
-            <button
-              className="px-4 py-2 cursor-pointer rounded-md"
-              onClick={() => setSelectedStruct(structName)}
-            >
-              <StructCard
-                structName={structName}
-                structData={structData}
-                setStructs={setStructs}
-              />
-            </button>
+          <DialogTrigger
+            className="p-2 cursor-pointer rounded-md"
+            onClick={() => setSelectedStruct(structName)}
+          >
+            <StructCard
+              structName={structName}
+              structData={structData}
+              setStructs={setStructs}
+            />
           </DialogTrigger>
           <StructEditorDialog />
         </Dialog>

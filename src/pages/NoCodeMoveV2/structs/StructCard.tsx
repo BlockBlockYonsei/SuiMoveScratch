@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/card";
 import { X } from "lucide-react";
 import { StructDataMap, SuiMoveStruct } from "@/types/move-syntax";
+import { SuiMoveNormalizedType } from "@mysten/sui/client";
 
 export default function StructCard({
   structName,
@@ -17,9 +18,9 @@ export default function StructCard({
   structData: SuiMoveStruct;
   setStructs: React.Dispatch<React.SetStateAction<StructDataMap>>;
 }) {
-  const formatType = (type: any): string => {
+  const formatType = (type: SuiMoveNormalizedType): string => {
     if (typeof type === "string") return type;
-    if (type.Struct) {
+    if ("Struct" in type && type.Struct) {
       const { name, typeArguments } = type.Struct;
       if (typeArguments && typeArguments.length > 0) {
         return `${name}<${typeArguments
@@ -47,7 +48,7 @@ export default function StructCard({
           <X size={20} />
         </button>
 
-        <CardTitle className="text-xl font-bold text-emerald-600">
+        <CardTitle className="text-xl font-bold text-emerald-600 truncate">
           {structName}
         </CardTitle>
         <CardDescription>
