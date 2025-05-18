@@ -8,7 +8,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import {
-  SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
@@ -16,15 +15,15 @@ import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
 
-export default function TypeSelect({
-  typeParameters,
+export default function StructTypeSelect({
   defaultValue,
+  onChange,
 }: {
   typeParameters: SuiMoveStructTypeParameter[];
-  // setType: (type: SuiMoveNormalizedType) => void;
   defaultValue?: SuiMoveNormalizedType | { abilities: string[] };
+  onChange?: (type: SuiMoveNormalizedType) => void;
 }) {
-  const { imports, structs, setStructs } = useContext(SuiMoveModuleContext);
+  const { imports, structs } = useContext(SuiMoveModuleContext);
 
   const PRIMITIVE_TYPES: SuiMoveNormalizedType[] = [
     "Bool",
@@ -57,41 +56,23 @@ export default function TypeSelect({
   };
 
   const handleSelect = (value: string) => {
-    const [kind, ...rest] = value.split("::");
+    if (!onChange) return;
 
-    // if (kind === "primitive") {
-    //   setType(rest[0] as SuiMoveNormalizedType);
-    // } else if (kind === "typeParam") {
-    //   // const abilities = rest[0].split(" + ");
-    //   setType({
-    //     Struct: {
-    //       address: "0x0",
-    //       module: "currentModule",
-    //       name: "T",
-    //       typeArguments: [],
-    //     },
-    //   });
-    // } else if (kind === "local") {
-    //   const [name] = rest;
-    //   setType({
-    //     Struct: {
-    //       address: "0x0",
-    //       module: "currentModule",
-    //       name,
-    //       typeArguments: [],
-    //     },
-    //   });
-    // } else if (kind === "external") {
-    //   const [packageAddress, module, name] = rest;
-    //   setType({
-    //     Struct: {
-    //       address: packageAddress,
-    //       module,
-    //       name,
-    //       typeArguments: [],
-    //     },
-    //   });
-    // }
+    const [kind, ...rest] = value.split("::");
+    const name = rest[rest.length - 1];
+
+    if (kind === "primitive") {
+      onChange(name as SuiMoveNormalizedType);
+    } else {
+      onChange({
+        Struct: {
+          address: "0x0",
+          module: "currentModule",
+          name,
+          typeArguments: [],
+        },
+      });
+    }
   };
 
   return (
@@ -166,7 +147,8 @@ export default function TypeSelect({
                 {Object.keys(module.structs).map((structName) => {
                   return (
                     <SelectItem
-                      value={`external::${structName}`}
+                      key={structName}
+                      value={`external::${pkgAddress}::${moduleName}::${structName}`}
                       className="cursor-pointer hover:bg-gray-200 break-words whitespace-normal"
                     >
                       {structName}
