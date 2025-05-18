@@ -8,13 +8,13 @@ import {
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-import ImportEditorDialog from "./ImportEditorDialog";
-import StructEditorDialog from "./StructEditorDialog";
-import FunctionEditorDialog from "./FunctionEditorDialog";
+import ImportEditorDialog from "@/pages/NoCodeMoveV2/imports/ImportEditorDialog";
+import StructEditorDialog from "@/pages/NoCodeMoveV2/structs/StructEditorDialog";
+import FunctionEditorDialog from "@/pages/NoCodeMoveV2/functions/FunctionEditorDialog";
 
-import ImportPreview from "./ImportPreview";
-import StructCard from "./StructCard";
-import FunctionListView from "./FunctionListView";
+import ImportPreview from "@/pages/NoCodeMoveV2/imports/ImportPreview";
+import StructCard from "@/pages/NoCodeMoveV2/structs/StructCard";
+import FunctionListView from "@/pages/NoCodeMoveV2/functions/FunctionListView";
 
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 

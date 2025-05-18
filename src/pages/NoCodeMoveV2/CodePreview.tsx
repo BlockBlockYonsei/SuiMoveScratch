@@ -3,7 +3,7 @@ import {
   generateStructCode,
   generateFunctionCode,
   downloadMoveCode,
-} from "../NoCodeMove/utils/generateCode";
+} from "@/pages/NoCodeMoveV2/utils/generateCode";
 import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
