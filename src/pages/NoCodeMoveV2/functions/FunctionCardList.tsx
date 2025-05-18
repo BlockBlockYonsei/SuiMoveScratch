@@ -1,10 +1,3 @@
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
 import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import FunctionCard from "./FunctionCard";
@@ -13,7 +6,7 @@ import FunctionEditorDialog from "./FunctionEditorDialog";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 
-export default function FunctionListView() {
+export default function FunctionCardList() {
   const { imports, structs, functions, setFunctions, setSelectedFunction } =
     useContext(SuiMoveModuleContext);
   return (

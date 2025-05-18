@@ -11,7 +11,7 @@ import ImportEditorDialog from "./imports/ImportEditorDialog";
 import StructEditorDialog from "./structs/StructEditorDialog";
 import FunctionEditorDialog from "./functions/FunctionEditorDialog";
 import StructCardList from "./structs/StructCardList";
-import FunctionListView from "./functions/FunctionListView";
+import FunctionCardList from "./functions/FunctionCardList";
 import { PlusIcon } from "lucide-react";
 import ImportPreview from "./imports/ImportPreview";
 
@@ -66,7 +66,7 @@ export default function DataPreview({
       <pre className="bg-white p-4 rounded-md shadow whitespace-pre-wrap overflow-auto">
         {menu === "imports" && <ImportPreview />}
         {menu === "structs" && <StructCardList />}
-        {menu === "functions" && <FunctionListView />}
+        {menu === "functions" && <FunctionCardList />}
 
         {menu === "code" && (
           <div>
