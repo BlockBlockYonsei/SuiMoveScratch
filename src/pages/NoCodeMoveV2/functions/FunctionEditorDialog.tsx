@@ -32,8 +32,11 @@ export default function FunctionEditorDialog() {
   const [visibility, setVisibility] = useState<SuiMoveVisibility>("Private");
   const [isEntry, setIsEntry] = useState(false);
   const [typeParameters, setTypeParameters] = useState<SuiMoveAbilitySet[]>([]);
+  const [typeParameterNames, setTypeParameterNames] = useState<string[]>([]);
 
   const [parameters, setParameters] = useState<SuiMoveNormalizedType[]>([]);
+  const [parameterNames, setParameterNames] = useState<string[]>([]);
+  const [newTypeParamName, setNewTypeParamName] = useState("");
   const [returns, setReturns] = useState<SuiMoveNormalizedType[]>([]);
 
   const [newParamType, setNewParamType] = useState<
@@ -62,12 +65,15 @@ export default function FunctionEditorDialog() {
   };
 
   const handleComplete = () => {
-    const newFunction: SuiMoveNormalizedFunction = {
+    const newFunction: SuiMoveNormalizedFunction & {
+      typeParameterNames: string[];
+    } = {
       isEntry: isEntry,
       parameters: parameters,
       return: returns,
       typeParameters: typeParameters,
       visibility: visibility,
+      typeParameterNames: [],
     };
     const newSuiMoveFunction: SuiMoveFunction = {
       function: newFunction,
@@ -85,7 +91,7 @@ export default function FunctionEditorDialog() {
   };
 
   return (
-    <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+    <DialogContent className="lg:max-w-[800px] max-w-3xl max-h-[80vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>Create a New Function</DialogTitle>
         <DialogDescription>
@@ -94,191 +100,223 @@ export default function FunctionEditorDialog() {
         </DialogDescription>
       </DialogHeader>
 
-      {/* Name */}
-      <div className="mb-2">
-        <label className="block mb-1 text-sm font-semibold">
-          Function Name
-        </label>
-        <Input
-          value={functionName}
-          onChange={(e) => setFunctionName(e.target.value)}
-        />
-      </div>
+      <div className="lg:grid lg:grid-cols-9 lg:gap-10">
+        <section className="col-span-4">
+          {/* Name */}
+          <div className="mb-2">
+            <label className="block mb-1 text-sm font-semibold">
+              Function Name
+            </label>
+            <Input
+              value={functionName}
+              onChange={(e) => setFunctionName(e.target.value)}
+            />
+          </div>
 
-      {/* Entry + Visibility */}
-      <div className="flex gap-4 mb-4">
-        <Select
-          onValueChange={(v) => setIsEntry(v === "true")}
-          value={String(isEntry)}
-        >
-          <SelectTrigger className="w-32">
-            <SelectValue placeholder="Entry" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="true">Entry</SelectItem>
-            <SelectItem value="false">Non-entry</SelectItem>
-          </SelectContent>
-        </Select>
+          {/* Entry + Visibility */}
+          <div className="flex gap-4 mb-4">
+            <Select
+              onValueChange={(v) => setIsEntry(v === "true")}
+              value={String(isEntry)}
+            >
+              <SelectTrigger className="w-32 cursor-pointer">
+                <SelectValue placeholder="Entry" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem className="cursor-pointer" value="true">
+                  Entry
+                </SelectItem>
+                <SelectItem className="cursor-pointer" value="false">
+                  Non-entry
+                </SelectItem>
+              </SelectContent>
+            </Select>
 
-        <Select
-          onValueChange={(v) => setVisibility(v as SuiMoveVisibility)}
-          value={visibility}
-        >
-          <SelectTrigger className="w-32">
-            <SelectValue placeholder="Visibility" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Private">Private</SelectItem>
-            <SelectItem value="Friend">Friend</SelectItem>
-            <SelectItem value="Public">Public</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+            <Select
+              onValueChange={(v) => setVisibility(v as SuiMoveVisibility)}
+              value={visibility}
+            >
+              <SelectTrigger className="w-32 cursor-pointer">
+                <SelectValue placeholder="Visibility" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem className="cursor-pointer" value="Private">
+                  Private
+                </SelectItem>
+                <SelectItem className="cursor-pointer" value="Friend">
+                  Friend
+                </SelectItem>
+                <SelectItem className="cursor-pointer" value="Public">
+                  Public
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-      {/* Type Parameters */}
-      <div className="mb-4">
-        <label className="block mb-1 text-sm font-semibold">
-          Type Parameters
-        </label>
+          {/* Type Parameters */}
+          <div className="mb-4">
+            <label className="block mb-1 text-sm font-semibold">
+              Type Parameters
+            </label>
 
-        <div className="flex place-content-between  gap-2 mb-2 flex-wrap">
-          <div className="flex gap-x-2 mb-2 flex-wrap">
-            {(
-              ["copy", "drop", "store", "key"] as unknown as SuiMoveAbility[]
-            ).map((ability) => (
-              <Button
-                key={ability}
-                variant={
-                  newTypeParamAbilities.includes(ability)
-                    ? "default"
-                    : "outline"
-                }
-                onClick={() => {
-                  setNewTypeParamAbilities((prev) =>
-                    prev.includes(ability)
-                      ? prev.filter((a) => a !== ability)
-                      : [...prev, ability],
-                  );
-                }}
-                size="sm"
-              >
-                {ability}
-              </Button>
+            <div className="flex place-content-between  gap-2 mb-2 flex-wrap">
+              <div className="flex gap-x-2 mb-2 flex-wrap">
+                {(
+                  [
+                    "copy",
+                    "drop",
+                    "store",
+                    "key",
+                  ] as unknown as SuiMoveAbility[]
+                ).map((ability) => (
+                  <Button
+                    key={ability}
+                    variant={
+                      newTypeParamAbilities.includes(ability)
+                        ? "default"
+                        : "outline"
+                    }
+                    onClick={() => {
+                      setNewTypeParamAbilities((prev) =>
+                        prev.includes(ability)
+                          ? prev.filter((a) => a !== ability)
+                          : [...prev, ability]
+                      );
+                    }}
+                    size="sm"
+                    className="cursor-pointer"
+                  >
+                    {ability}
+                  </Button>
+                ))}
+              </div>
+              <div className="flex gap-2 mb-2">
+                <Input
+                  placeholder="Type parameter name"
+                  value={newTypeParamName}
+                  onChange={(e) => setNewTypeParamName(e.target.value)}
+                />
+                <Button
+                  className="cursor-pointer"
+                  onClick={() => {
+                    if (!newTypeParamAbilities) return;
+
+                    setTypeParameters([
+                      ...typeParameters,
+                      {
+                        abilities: newTypeParamAbilities,
+                      },
+                    ]);
+                    // 초기화
+                    setNewTypeParamAbilities([]);
+                  }}
+                >
+                  Add
+                </Button>
+              </div>
+            </div>
+
+            {typeParameters.map((typeParameter, index) => (
+              <li key={`T${index}`} className="flex gap-x-2">
+                <span>T{index}</span>
+                {typeParameter.abilities.map((type) => (
+                  <div>
+                    <span>{type}</span>
+                  </div>
+                ))}
+              </li>
             ))}
           </div>
-          <Button
-            className="cursor-pointer"
-            onClick={() => {
-              if (!newTypeParamAbilities) return;
 
-              setTypeParameters([
-                ...typeParameters,
-                {
-                  abilities: newTypeParamAbilities,
-                },
-              ]);
-              // 초기화
-              setNewTypeParamAbilities([]);
-            }}
-          >
-            Add
-          </Button>
-        </div>
-
-        {typeParameters.map((typeParameter, index) => (
-          <li key={`T${index}`} className="flex gap-x-2">
-            <span>T{index}</span>
-            {typeParameter.abilities.map((type) => (
-              <div>
-                <span>{type}</span>
-              </div>
-            ))}
-          </li>
-        ))}
-      </div>
-
-      {/* Parameters */}
-      <div className="mb-4">
-        <label className="block mb-1 text-sm font-semibold">Parameters</label>
-        <div className="flex gap-2 mb-2">
-          {/* <TypeSelect
+          {/* Parameters */}
+          <div className="mb-4">
+            <label className="block mb-1 text-sm font-semibold">
+              Parameters
+            </label>
+            <div className="flex gap-2 mb-2">
+              {/* <TypeSelect
             imports={imports}
             structs={structs}
             typeParameters={[]}
             setType={setNewParamType}
           /> */}
-          <Button
-            className="cursor-pointer"
-            onClick={() => {
-              if (!newParamType) return;
-              setParameters((prev) => [...prev, newParamType]);
-              setNewParamType("Bool");
-            }}
-          >
-            Add
-          </Button>
-        </div>
-        {parameters.map((p, index) => (
-          <li key={`arg${index}`} className="flex justify-between">
-            {typeof p === "string"
-              ? p
-              : "Struct" in p
-              ? p.Struct.name
-              : "Unknown"}
-          </li>
-        ))}
-      </div>
+              <Button
+                className="cursor-pointer"
+                onClick={() => {
+                  if (!newParamType) return;
+                  setParameters((prev) => [...prev, newParamType]);
+                  setNewParamType("Bool");
+                }}
+              >
+                Add
+              </Button>
+            </div>
+            {parameters.map((p, index) => (
+              <li key={`arg${index}`} className="flex justify-between">
+                {typeof p === "string"
+                  ? p
+                  : "Struct" in p
+                  ? p.Struct.name
+                  : "Unknown"}
+              </li>
+            ))}
+          </div>
 
-      {/* Returns */}
-      <div className="mb-4">
-        <label className="block mb-1 text-sm font-semibold">Return Types</label>
-        <div className="flex gap-2 mb-2">
-          {/* <TypeSelect
+          {/* Returns */}
+          <div className="mb-4">
+            <label className="block mb-1 text-sm font-semibold">
+              Return Types
+            </label>
+            <div className="flex gap-2 mb-2">
+              {/* <TypeSelect
             imports={imports}
             structs={structs}
             typeParameters={[]}
             setType={setNewReturnType}
           /> */}
-          <Button
-            className="cursor-pointer"
-            onClick={() => {
-              if (!newReturnType) return;
-              setReturns((prev) => [...prev, newReturnType]);
-              setNewReturnType("Bool");
-            }}
-          >
-            Add
-          </Button>
-        </div>
-        <ul className="text-sm space-y-1">
-          {returns.map((ret, idx) => (
-            <li key={idx} className="text-gray-700">
-              {typeof ret === "string"
-                ? ret
-                : "Struct" in ret
-                ? ret.Struct.name
-                : "Unknown"}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Preview */}
-      <div className="bg-gray-100 p-4 text-sm rounded whitespace-pre-wrap mb-4">
-        {generateFunctionCode(functionName, {
-          function: {
-            visibility,
-            isEntry,
-            typeParameters,
-            parameters: parameters,
-            return: returns,
-          },
-          insideCode: [],
-        })}
+              <Button
+                className="cursor-pointer"
+                onClick={() => {
+                  if (!newReturnType) return;
+                  setReturns((prev) => [...prev, newReturnType]);
+                  setNewReturnType("Bool");
+                }}
+              >
+                Add
+              </Button>
+            </div>
+            <ul className="text-sm space-y-1">
+              {returns.map((ret, idx) => (
+                <li key={idx} className="text-gray-700">
+                  {typeof ret === "string"
+                    ? ret
+                    : "Struct" in ret
+                    ? ret.Struct.name
+                    : "Unknown"}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+        <section className="col-span-5">
+          {/* Preview */}
+          <div className="bg-gray-100 p-4 text-sm rounded whitespace-pre-wrap mb-4">
+            {generateFunctionCode(functionName, {
+              function: {
+                visibility,
+                isEntry,
+                typeParameters,
+                parameters: parameters,
+                return: returns,
+              },
+              insideCode: [],
+            })}
+          </div>
+        </section>
       </div>
 
       <DialogClose>
-        <Button className="cursor-pointer" onClick={handleComplete}>
+        <Button className="cursor-pointer w-90" onClick={handleComplete}>
           Complete
         </Button>
       </DialogClose>
