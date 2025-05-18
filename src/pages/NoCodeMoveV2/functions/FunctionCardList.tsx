@@ -10,18 +10,21 @@ export default function FunctionCardList() {
   const { functions, setSelectedFunction } = useContext(SuiMoveModuleContext);
   return (
     <div className="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-2">
-      {[...functions.entries()].map(([name, data]) => {
+      {[...functions.entries()].map(([functionName, data]) => {
         return (
-          <Dialog key={name}>
-            <DialogTrigger className="cursor-pointer rounded-md">
-              <FunctionCard functionName={name} functionData={data} />
+          <Dialog key={functionName}>
+            <DialogTrigger
+              className="cursor-pointer rounded-md"
+              onClick={() => setSelectedFunction(functionName)}
+            >
+              <FunctionCard functionName={functionName} functionData={data} />
             </DialogTrigger>
             <FunctionEditorDialog />
           </Dialog>
         );
       })}
       <Dialog>
-        <DialogTrigger asChild>
+        <DialogTrigger asChild onClick={() => setSelectedFunction(null)}>
           <Button variant="outline" className="cursor-pointer h-full text-9xl">
             <PlusIcon />
           </Button>
