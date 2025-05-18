@@ -10,7 +10,7 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import ImportEditorDialog from "./imports/ImportEditorDialog";
 import StructEditorDialog from "./structs/StructEditorDialog";
 import FunctionEditorDialog from "./functions/FunctionEditorDialog";
-import StructCard from "./structs/StructCard";
+import StructCardList from "./structs/StructCardList";
 import FunctionListView from "./functions/FunctionListView";
 import { PlusIcon } from "lucide-react";
 
@@ -62,7 +62,7 @@ export default function CodePreview({
             <br /> <br />
           </div>
         )}
-        {menu === "structs" && <StructCard />}
+        {menu === "structs" && <StructCardList />}
         {menu === "functions" && <FunctionListView />}
 
         {menu === "code" && (

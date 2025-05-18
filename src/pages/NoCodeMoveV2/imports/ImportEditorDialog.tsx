@@ -38,7 +38,7 @@ export default function ImportEditorDialog() {
         </SelectTrigger>
         <SelectContent>
           {Object.entries(SUI_PACKAGE_ALIASES).map(([pkg, alias]) => (
-            <SelectItem key={pkg} value={pkg}>
+            <SelectItem key={pkg} value={pkg} className="cursor-pointer">
               {pkg.slice(0, 8)}...{pkg.slice(-4)} ({alias})
             </SelectItem>
           ))}

@@ -11,7 +11,7 @@ import StructEditorDialog from "./StructEditorDialog";
 import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
-export default function StructCard() {
+export default function StructCardList() {
   const { structs, setStructs, setSelectedStruct } =
     useContext(SuiMoveModuleContext);
 
