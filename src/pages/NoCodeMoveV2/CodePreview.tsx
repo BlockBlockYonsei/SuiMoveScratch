@@ -22,15 +22,15 @@ export default function CodePreview() {
         <code>{generateImportsCode(imports)}</code>
         <br /> <br />
         <code>
-          {Object.entries(structs)
+          {Array.from(structs.entries())
             .map(([structName, structData]) =>
-              generateStructCode(structName, structData)
+              generateStructCode(structName, structData),
             )
             .join("\n\n")}
         </code>
         <br /> <br />
         <code>
-          {Object.entries(functions)
+          {Array.from(functions.entries())
             .map(([name, f]) => generateFunctionCode(name, f))
             .join("\n\n")}
         </code>

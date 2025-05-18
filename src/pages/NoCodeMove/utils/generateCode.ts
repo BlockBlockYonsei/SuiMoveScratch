@@ -50,9 +50,7 @@ export function generateStructCode(
   const typeParams = (struct.typeParameters || [])
     .map((tp: any, i: number) => {
       const phantom = tp.isPhantom ? "phantom " : "";
-      const paramName =
-        struct.typeParameterNames?.[i] ??
-        (struct.typeParameters.length === 1 ? "T" : `T${i}`);
+      const paramName = struct.typeParameterNames?.[i] ?? `T${i}`;
       const abilities = tp.constraints?.abilities
         ?.map((a: string) => a.toLowerCase())
         .join(" + ");
@@ -136,10 +134,10 @@ export function generateMoveCode({
 }): string {
   const moduleHeader = `module ${address}::${moduleName};\n`;
   const importSection = generateImportsCode(imports);
-  const structSection = Object.entries(structs)
+  const structSection = Array.from(structs.entries())
     .map(([name, struct]) => generateStructCode(name, struct))
     .join("\n\n");
-  const functionSection = Object.entries(functions)
+  const functionSection = Array.from(functions.entries())
     .map(([name, func]) => generateFunctionCode(name, func))
     .join("\n\n");
 
