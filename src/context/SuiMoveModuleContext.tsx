@@ -15,6 +15,8 @@ interface Value {
   setStructs: React.Dispatch<React.SetStateAction<StructDataMap>>;
   functions: FunctionDataMap;
   setFunctions: React.Dispatch<React.SetStateAction<FunctionDataMap>>;
+  selectedStruct: string | null;
+  setSelectedStruct: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export const SuiMoveModuleContext = createContext<Value>({
@@ -24,6 +26,8 @@ export const SuiMoveModuleContext = createContext<Value>({
   setStructs: () => {},
   functions: new Map(),
   setFunctions: () => {},
+  selectedStruct: null,
+  setSelectedStruct: () => {},
 });
 
 export const SuiMoveModuleProvider = ({
@@ -32,14 +36,15 @@ export const SuiMoveModuleProvider = ({
   children: React.ReactNode;
 }) => {
   const [imports, setImports] = useState<ImportDataMap>(
-    new Map<string, ImportedSuiMoveModule>()
+    new Map<string, ImportedSuiMoveModule>(),
   );
   const [structs, setStructs] = useState<StructDataMap>(
-    new Map<string, SuiMoveStruct>()
+    new Map<string, SuiMoveStruct>(),
   );
   const [functions, setFunctions] = useState<FunctionDataMap>(
-    new Map<string, SuiMoveFunction>()
+    new Map<string, SuiMoveFunction>(),
   );
+  const [selectedStruct, setSelectedStruct] = useState<string | null>(null);
 
   return (
     <SuiMoveModuleContext.Provider
@@ -50,6 +55,8 @@ export const SuiMoveModuleProvider = ({
         setStructs,
         functions,
         setFunctions,
+        selectedStruct,
+        setSelectedStruct,
       }}
     >
       {children}
