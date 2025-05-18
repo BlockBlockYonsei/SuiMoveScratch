@@ -50,18 +50,39 @@ export default function FunctionCard({
         >
           <X size={20} />
         </button>
+        <div className="flex ">
+          <Button
+            disabled={!fn.isEntry}
+            variant={"outline"}
+            className={`${
+              fn.isEntry ? "text-pink-600" : "text-black"
+            } cursor-pointer text-xs px-1 font-semibold border-2 mr-2`}
+          >
+            {"[entry]"}
+          </Button>
+          <Button
+            variant={"outline"}
+            className={`${
+              fn.visibility === "Public"
+                ? "text-blue-500"
+                : fn.visibility === "Friend"
+                ? "text-yellow-400"
+                : ""
+            } text-start text-xs font-semibold cursor-pointer`}
+          >
+            {fn.visibility === "Public"
+              ? "public"
+              : fn.visibility === "Friend"
+              ? "public (package)"
+              : "private"}{" "}
+          </Button>
+        </div>
         <CardTitle className="text-lg text-start font-bold text-pink-600 truncate">
-          {fn.isEntry ? "[entry] " : ""}
-          {/* {fn.visibility === "Public"
-            ? "public"
-            : fn.visibility === "Friend"
-            ? "public (package)"
-            : ""}{" "} */}
           {functionName}
         </CardTitle>
-        <CardDescription className="text-sm text-gray-500">
+        {/* <CardDescription className="text-sm text-gray-500">
           visibility: {fn.visibility}
-        </CardDescription>
+        </CardDescription> */}
       </CardHeader>
 
       <CardContent className="space-y-4 text-sm">
