@@ -7,99 +7,41 @@ import {
 } from "@/components/ui/card";
 import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
+import FunctionCard from "./FunctionCard";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import FunctionEditorDialog from "./FunctionEditorDialog";
+import { Button } from "@/components/ui/button";
+import { PlusIcon } from "lucide-react";
 
 export default function FunctionListView() {
-  const { imports, structs, functions, setFunctions } =
+  const { imports, structs, functions, setFunctions, setSelectedFunction } =
     useContext(SuiMoveModuleContext);
   return (
-    <div className="space-y-4 max-w-xl mx-auto">
+    <div className="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-2">
       {[...functions.entries()].map(([name, data]) => {
-        const fn = data.function;
-
         return (
-          <Card key={name}>
-            <CardHeader>
-              <CardTitle className="text-blue-600 font-bold">
-                {fn.isEntry ? "[entry] " : ""}
-                fun {name}
-              </CardTitle>
-              <CardDescription className="text-sm text-gray-500">
-                visibility: {fn.visibility}
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent className="space-y-4 text-sm">
-              {/* Type Parameters */}
-              <div>
-                <div className="font-semibold text-muted-foreground">
-                  Type Parameters
-                </div>
-                {fn.typeParameters.length === 0 ? (
-                  <div className="text-gray-500">None</div>
-                ) : (
-                  <ul className="ml-4 list-disc">
-                    {fn.typeParameters.map((tp, idx) => (
-                      <li key={idx}>
-                        T{idx}
-                        {tp.abilities.length > 0 && (
-                          <span className="text-gray-500 ml-1">
-                            (has {tp.abilities.join(", ")})
-                          </span>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-              {/* Parameters */}
-              <div>
-                <div className="font-semibold text-muted-foreground">
-                  Parameters
-                </div>
-                {fn.parameters.length === 0 ? (
-                  <div className="text-gray-500">None</div>
-                ) : (
-                  <ul className="ml-4 list-disc">
-                    {fn.parameters.map((p, idx) => (
-                      <li key={idx}>
-                        {typeof p === "string"
-                          ? p
-                          : "Struct" in p
-                          ? p.Struct.name
-                          : "Unknown"}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-              {/* Returns */}
-              <div>
-                <div className="font-semibold text-muted-foreground">
-                  Return Types
-                </div>
-                {fn.return.length === 0 ? (
-                  <div className="text-gray-500">None</div>
-                ) : (
-                  <ul className="ml-4 list-disc">
-                    {fn.return.map((r, idx) => (
-                      <li key={idx}>
-                        {typeof r === "string"
-                          ? r
-                          : "Struct" in r
-                          ? r.Struct.name
-                          : "Unknown"}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-              {/* <ManageFunctionDetail functionName={name} /> */}
-            </CardContent>
-          </Card>
+          <Dialog>
+            <DialogTrigger className="cursor-pointer rounded-md">
+              <FunctionCard functionName={name} functionData={data} />
+            </DialogTrigger>
+            <FunctionEditorDialog />
+          </Dialog>
         );
       })}
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button
+            variant="outline"
+            className="cursor-pointer h-full text-9xl"
+            onClick={() => {
+              setSelectedFunction(null);
+            }}
+          >
+            <PlusIcon />
+          </Button>
+        </DialogTrigger>
+        <FunctionEditorDialog />
+      </Dialog>
     </div>
   );
 }

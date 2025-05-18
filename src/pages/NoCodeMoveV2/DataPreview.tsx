@@ -20,8 +20,13 @@ export default function DataPreview({
 }: {
   menu: "imports" | "structs" | "functions" | "code";
 }) {
-  const { imports, structs, functions, setSelectedStruct } =
-    useContext(SuiMoveModuleContext);
+  const {
+    imports,
+    structs,
+    functions,
+    setSelectedStruct,
+    setSelectedFunction,
+  } = useContext(SuiMoveModuleContext);
 
   return (
     <div className="flex-1 p-5 space-y-6 text-sm font-mono">
@@ -43,6 +48,8 @@ export default function DataPreview({
                 onClick={() => {
                   if (menu === "structs") {
                     setSelectedStruct(null);
+                  } else if (menu === "functions") {
+                    setSelectedFunction(null);
                   }
                 }}
               >
