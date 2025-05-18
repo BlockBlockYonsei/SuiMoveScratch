@@ -1,9 +1,9 @@
-import { ImportsType, SuiMoveFunction } from "@/types/move";
-
-const PACKAGE_ALIASES: Record<string, string> = {
-  "0x0000000000000000000000000000000000000000000000000000000000000001": "std",
-  "0x0000000000000000000000000000000000000000000000000000000000000002": "sui",
-};
+import { SUI_PACKAGE_ALIASES } from "@/Constants";
+import {
+  ImportsType,
+  SuiMoveFunction,
+  SuiMoveStruct,
+} from "@/types/move-syntax";
 
 export function formatType(type: any): string {
   console.log(type);
@@ -13,7 +13,9 @@ export function formatType(type: any): string {
     const args = typeArguments?.length
       ? `<${typeArguments.map(formatType).join(", ")}>`
       : "";
-    return `${PACKAGE_ALIASES[address] || address}::${module}::${name}${args}`;
+    return `${
+      SUI_PACKAGE_ALIASES[address] || address
+    }::${module}::${name}${args}`;
   }
   return "Unknown";
 }
@@ -22,28 +24,34 @@ export function generateImportsCode(imports: ImportsType): string {
   return Object.entries(imports)
     .map(([fullModuleName, data]) => {
       const [pkg, module] = fullModuleName.split("::");
-      const alias = PACKAGE_ALIASES[pkg] || pkg;
+      const pkgAlias = SUI_PACKAGE_ALIASES[pkg] || pkg;
 
-      const imports = Object.keys(data).join(", ");
-      return `use ${alias}::${module}::{ ${imports} };`;
+      const importedStructNames = Object.keys(data.structs);
+      const importedNames = data.functions
+        ? ["Self", ...importedStructNames].join(", ")
+        : importedStructNames.join(", ");
+
+      return `use ${pkgAlias}::${module}::{ ${importedNames} };`;
     })
     .join("\n");
 }
 
 export function generateStructCode(
   name: string,
-  struct: any,
-  typeParameterNames?: string[]
+  struct: SuiMoveStruct
 ): string {
-  const abilities = (struct.abilities?.abilities || [])
-    .map((a: string) => a.toLowerCase())
-    .join(", ");
+  const abilities =
+    struct.abilities.abilities.length > 0
+      ? ` has ${struct.abilities.abilities
+          .map((ability: string) => ability.toLowerCase())
+          .join(", ")}`
+      : "";
 
   const typeParams = (struct.typeParameters || [])
     .map((tp: any, i: number) => {
       const phantom = tp.isPhantom ? "phantom " : "";
       const paramName =
-        typeParameterNames?.[i] ??
+        struct.typeParameterNames?.[i] ??
         (struct.typeParameters.length === 1 ? "T" : `T${i}`);
       const abilities = tp.constraints?.abilities
         ?.map((a: string) => a.toLowerCase())
@@ -58,7 +66,7 @@ export function generateStructCode(
     .map((f: any) => `  ${f.name}: ${formatType(f.type)},`)
     .join("\n");
 
-  return `public struct ${name}${generics} has ${abilities} {\n${fields}\n}`;
+  return `public struct ${name}${generics}${abilities} {\n${fields}\n}`;
 }
 
 export function generateFunctionCode(
@@ -120,7 +128,7 @@ export function generateMoveCode({
   moduleName,
   address,
 }: {
-  imports: Record<string, Record<string, any>>;
+  imports: ImportsType;
   structs: Record<string, any>;
   functions: Record<string, any>;
   moduleName?: string;

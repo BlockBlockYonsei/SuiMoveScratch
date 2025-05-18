@@ -5,28 +5,16 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import {
-  FunctionsType,
-  ImportsType,
-  StructsType,
-  SuiMoveFunction,
-} from "@/types/move";
 import ManageFunctionDetail from "./ManageFunctionDetail";
+import { useContext } from "react";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
-export default function FunctionListView({
-  imports,
-  structs,
-  setFunctions,
-  functions,
-}: {
-  imports: ImportsType;
-  structs: StructsType;
-  functions: FunctionsType;
-  setFunctions: React.Dispatch<React.SetStateAction<FunctionsType>>;
-}) {
+export default function FunctionListView() {
+  const { imports, structs, functions, setFunctions } =
+    useContext(SuiMoveModuleContext);
   return (
     <div className="space-y-4 max-w-xl mx-auto">
-      {Object.entries(functions).map(([name, data]) => {
+      {[...functions.entries()].map(([name, data]) => {
         const fn = data.function;
 
         return (
@@ -108,13 +96,7 @@ export default function FunctionListView({
                   </ul>
                 )}
               </div>
-              <ManageFunctionDetail
-                imports={imports}
-                structs={structs}
-                functions={functions}
-                selectedFunction={[name, data]}
-                setFunctions={setFunctions}
-              ></ManageFunctionDetail>
+              {/* <ManageFunctionDetail functionName={name} /> */}
             </CardContent>
           </Card>
         );

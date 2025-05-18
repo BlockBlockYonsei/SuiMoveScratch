@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -19,14 +19,10 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import {
-  FunctionsType,
-  ImportsType,
-  StructsType,
-  SuiMoveFunction,
-} from "@/types/move";
+import { SuiMoveFunction } from "@/types/move-syntax";
 import { Label } from "@/components/ui/label";
 import FunctionParameterSelect from "./FunctionParameterSelect";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
 interface InsideCode {
   functionName: string;
@@ -36,17 +32,9 @@ interface InsideCode {
 }
 
 export default function ManageFunctionDetail({
-  imports,
-  structs,
-  functions,
-  selectedFunction,
-  setFunctions,
+  functionName,
 }: {
-  selectedFunction: [string, SuiMoveFunction];
-  imports: ImportsType;
-  structs: StructsType;
-  functions: FunctionsType;
-  setFunctions: React.Dispatch<React.SetStateAction<FunctionsType>>;
+  functionName: string;
 }) {
   const [open, setOpen] = useState(false);
   const [insideCodes, setInsideCodes] = useState<InsideCode[]>([]);
@@ -59,6 +47,9 @@ export default function ManageFunctionDetail({
   const [selectedParams, setSelectedParams] = useState<string[]>([]);
   const [selectedReturns, setSelectedReturns] = useState<string[]>([]);
   const [selectedTypeArgs, setSelectedTypeArgs] = useState<string[]>([]);
+
+  const { imports, structs, functions, setFunctions } =
+    useContext(SuiMoveModuleContext);
 
   const handleSelect = (functionName: string) => {
     let selectedFn;

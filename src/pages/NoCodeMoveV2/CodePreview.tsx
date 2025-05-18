@@ -1,28 +1,14 @@
 import {
-  SuiMoveNormalizedFunction,
-  SuiMoveNormalizedStruct,
-} from "@mysten/sui/client";
-import {
   generateImportsCode,
   generateStructCode,
   generateFunctionCode,
   downloadMoveCode,
 } from "../NoCodeMove/utils/generateCode";
-import { SuiMoveFunction } from "@/types/move";
+import { useContext } from "react";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
-interface Props {
-  imports: Record<
-    string,
-    Record<
-      string,
-      SuiMoveNormalizedStruct | Record<string, SuiMoveNormalizedFunction>
-    >
-  >;
-  structs: Record<string, SuiMoveNormalizedStruct>;
-  functions: Record<string, SuiMoveFunction>;
-}
-
-export default function CodePreview({ imports, structs, functions }: Props) {
+export default function CodePreview() {
+  const { imports, structs, functions } = useContext(SuiMoveModuleContext);
   return (
     <div className="flex-1 p-5 space-y-6 text-sm font-mono">
       <button
@@ -37,8 +23,8 @@ export default function CodePreview({ imports, structs, functions }: Props) {
         <br /> <br />
         <code>
           {Object.entries(structs)
-            .map(([name, s]) =>
-              generateStructCode(name, s, (s as any).typeParameterNames || [])
+            .map(([structName, structData]) =>
+              generateStructCode(structName, structData)
             )
             .join("\n\n")}
         </code>
