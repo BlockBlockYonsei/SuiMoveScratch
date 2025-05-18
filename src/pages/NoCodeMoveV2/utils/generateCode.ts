@@ -8,16 +8,13 @@ import {
 } from "@/types/move-syntax";
 
 export function formatType(type: any): string {
-  console.log(type);
   if (typeof type === "string") return type;
   if ("Struct" in type) {
-    const { address, module, name, typeArguments } = type.Struct;
+    const { name, typeArguments } = type.Struct;
     const args = typeArguments?.length
       ? `<${typeArguments.map(formatType).join(", ")}>`
       : "";
-    return `${
-      SUI_PACKAGE_ALIASES[address] || address
-    }::${module}::${name}${args}`;
+    return `${name}${args}`;
   }
   return "Unknown";
 }
