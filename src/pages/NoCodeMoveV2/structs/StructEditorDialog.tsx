@@ -20,11 +20,7 @@ import { SuiMoveStruct } from "@/types/move-syntax";
 import { X } from "lucide-react";
 import AbilitySelector from "./AbilitySelector";
 
-interface Props {
-  defaultStructName: string | null;
-}
-
-export default function StructEditorDialog({ defaultStructName }: Props) {
+export default function StructEditorDialog() {
   const [structName, setStructName] = useState("MyStruct");
   const [abilities, setAbilities] = useState<SuiMoveAbility[]>([]);
   const [typeParameters, setTypeParameters] = useState<
@@ -41,20 +37,21 @@ export default function StructEditorDialog({ defaultStructName }: Props) {
     SuiMoveAbility[]
   >([]);
 
-  const { imports, structs, setStructs } = useContext(SuiMoveModuleContext);
+  const { structs, setStructs, selectedStruct } =
+    useContext(SuiMoveModuleContext);
 
   useEffect(() => {
-    if (!defaultStructName) return;
+    if (!selectedStruct) return;
 
-    const defaultStruct = structs.get(defaultStructName);
-    if (defaultStruct && defaultStructName) {
-      setStructName(defaultStructName);
-      setAbilities(defaultStruct.abilities.abilities);
-      setTypeParameters(defaultStruct.typeParameters);
-      setTypeParameterNames(defaultStruct.typeParameterNames);
-      setFields(defaultStruct.fields);
+    const structData = structs.get(selectedStruct);
+    if (structData) {
+      setStructName(selectedStruct);
+      setAbilities(structData.abilities.abilities);
+      setTypeParameters(structData.typeParameters);
+      setTypeParameterNames(structData.typeParameterNames);
+      setFields(structData.fields);
     }
-  }, []);
+  }, [selectedStruct, structs]);
 
   const handleComplete = () => {
     if (!structName) return;
@@ -67,23 +64,12 @@ export default function StructEditorDialog({ defaultStructName }: Props) {
     } as SuiMoveStruct;
 
     setStructs((prev) => {
-      if (prev.has(structName)) {
-        return prev;
+      const newStructMap = new Map(prev);
+
+      if (selectedStruct && prev.has(selectedStruct)) {
+        newStructMap.delete(selectedStruct);
       }
 
-      if (defaultStructName && prev.has(defaultStructName)) {
-        const newStructMap = new Map();
-        [...prev.entries()].map(([name, structData]) => {
-          console.log("NAMMEMA", name);
-          if (name === defaultStructName) {
-            newStructMap.set(structName, newStructData);
-            return;
-          }
-          newStructMap.set(name, structData);
-        });
-        return newStructMap;
-      }
-      const newStructMap = new Map(prev);
       newStructMap.set(structName, newStructData);
       return newStructMap;
     });
@@ -103,7 +89,7 @@ export default function StructEditorDialog({ defaultStructName }: Props) {
     <DialogContent className="lg:max-w-[900px] max-h-[80vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>
-          {defaultStructName ? "Update Struct" : "Create a New Struct"}
+          {selectedStruct ? "Update Struct" : "Create a New Struct"}
         </DialogTitle>
         <DialogDescription>
           Add abilities, type parameters, and fields for your struct.

@@ -2,7 +2,6 @@ import {
   generateImportsCode,
   generateStructCode,
   generateFunctionCode,
-  downloadMoveCode,
 } from "@/pages/NoCodeMoveV2/utils/generateCode";
 import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
@@ -19,12 +18,8 @@ export default function CodePreview({
 }: {
   menu: "imports" | "structs" | "functions" | "code";
 }) {
-  const { imports, structs, functions } = useContext(SuiMoveModuleContext);
-
-  const handleAdd = () => {
-    if (menu === "imports") {
-    }
-  };
+  const { imports, structs, functions, setSelectedStruct } =
+    useContext(SuiMoveModuleContext);
 
   return (
     <div className="flex-1 p-5 space-y-6 text-sm font-mono">
@@ -40,12 +35,19 @@ export default function CodePreview({
         {menu !== "code" && (
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline">Add {menu}</Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  if (menu === "structs") {
+                    setSelectedStruct(null);
+                  }
+                }}
+              >
+                Add {menu}
+              </Button>
             </DialogTrigger>
             {menu === "imports" && <ImportEditorDialog />}
-            {menu === "structs" && (
-              <StructEditorDialog defaultStructName={""} />
-            )}
+            {menu === "structs" && <StructEditorDialog />}
             {menu === "functions" && <FunctionEditorDialog />}
           </Dialog>
         )}
@@ -68,7 +70,7 @@ export default function CodePreview({
             <code>
               {Array.from(structs.entries())
                 .map(([structName, structData]) =>
-                  generateStructCode(structName, structData)
+                  generateStructCode(structName, structData),
                 )
                 .join("\n\n")}
             </code>

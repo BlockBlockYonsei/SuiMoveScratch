@@ -12,7 +12,22 @@ import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
 export default function StructCard() {
-  const { structs, setStructs } = useContext(SuiMoveModuleContext);
+  const { structs, setStructs, setSelectedStruct } =
+    useContext(SuiMoveModuleContext);
+
+  const formatType = (type: any): string => {
+    if (typeof type === "string") return type;
+    if (type.Struct) {
+      const { name, typeArguments } = type.Struct;
+      if (typeArguments && typeArguments.length > 0) {
+        return `${name}<${typeArguments
+          .map((t: any) => formatType(t))
+          .join(", ")}>`;
+      }
+      return name;
+    }
+    return JSON.stringify(type);
+  };
 
   return (
     <div className="space-y-6">
@@ -56,7 +71,7 @@ export default function StructCard() {
                     className="text-sm text-gray-800 flex items-center justify-between"
                   >
                     <span>
-                      T{idx}
+                      {structData.typeParameterNames[idx]}
                       {param.isPhantom && " (phantom)"}
                     </span>
                     <span className="text-xs text-gray-500">
@@ -80,7 +95,7 @@ export default function StructCard() {
                   >
                     <span>{field.name}</span>
                     <span className="text-xs text-gray-500">
-                      {JSON.stringify(field.type)}
+                      {formatType(field.type)}
                     </span>
                   </div>
                 ))
@@ -90,11 +105,14 @@ export default function StructCard() {
             {/* Edit Button */}
             <Dialog>
               <DialogTrigger>
-                <button className="px-4 py-2 cursor-pointer bg-blue-600 text-white rounded-md">
+                <button
+                  className="px-4 py-2 cursor-pointer bg-blue-600 text-white rounded-md"
+                  onClick={() => setSelectedStruct(structName)}
+                >
                   Edit
                 </button>
               </DialogTrigger>
-              <StructEditorDialog defaultStructName={structName} />
+              <StructEditorDialog />
             </Dialog>
           </CardContent>
         </Card>
