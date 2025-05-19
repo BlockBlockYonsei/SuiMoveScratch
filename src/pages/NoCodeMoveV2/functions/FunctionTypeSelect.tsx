@@ -60,11 +60,21 @@ export default function FunctionTypeSelect({
 
     if (kind === "primitive") {
       onChange(name as SuiMoveNormalizedType);
-    } else {
+    } else if (kind === "local") {
       onChange({
         Struct: {
           address: "0x0",
           module: "currentModule",
+          name,
+          typeArguments: [],
+        },
+      });
+    } else if (kind === "external") {
+      const [pkg, module, name] = rest;
+      onChange({
+        Struct: {
+          address: pkg,
+          module: module,
           name,
           typeArguments: [],
         },
@@ -136,7 +146,7 @@ export default function FunctionTypeSelect({
           if (Object.keys(module.structs).length === 0) return;
 
           return (
-            <div key={pkgAddress}>
+            <div key={moduleName}>
               <div>
                 {alias}::{moduleName}
               </div>

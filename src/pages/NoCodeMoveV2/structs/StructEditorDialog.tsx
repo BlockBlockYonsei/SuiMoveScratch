@@ -218,10 +218,10 @@ export default function StructEditorDialog() {
                   className="text-gray-500 hover:text-gray-700 p-1 h-7 w-7 flex-shrink-0"
                   onClick={() => {
                     setTypeParameterNames((prev) =>
-                      prev.filter((_, i) => i !== index),
+                      prev.filter((_, i) => i !== index)
                     );
                     setTypeParameters((prev) =>
-                      prev.filter((_, i) => i !== index),
+                      prev.filter((_, i) => i !== index)
                     );
                   }}
                 >
@@ -277,7 +277,7 @@ export default function StructEditorDialog() {
                   defaultValue={field.type}
                   onChange={(type: SuiMoveNormalizedType) => {
                     setFields((prev) =>
-                      prev.map((f, i) => (i === index ? { ...f, type } : f)),
+                      prev.map((f, i) => (i === index ? { ...f, type } : f))
                     );
                   }}
                 />

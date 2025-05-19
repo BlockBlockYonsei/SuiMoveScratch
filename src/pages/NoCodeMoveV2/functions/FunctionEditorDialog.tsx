@@ -101,13 +101,13 @@ export default function FunctionEditorDialog() {
       returnNames: string[];
     } = {
       isEntry: isEntry,
+      visibility: visibility,
+      typeParameters: typeParameters.map((t) => t.type),
+      typeParameterNames: typeParameters.map((t) => t.name),
       parameters: parameters.map((p) => p.type),
       parameterNames: parameters.map((p) => p.name),
       return: returns.map((r) => r.type),
       returnNames: parameters.map((p) => p.name),
-      visibility: visibility,
-      typeParameters: typeParameters.map((t) => t.type),
-      typeParameterNames: typeParameters.map((t) => t.name),
     };
     const newSuiMoveFunctionData: SuiMoveFunction = {
       function: newFunctionData,
@@ -117,9 +117,9 @@ export default function FunctionEditorDialog() {
     setFunctions((prev) => {
       const newFunctionMap = new Map(prev);
       newFunctionMap.set(functionName, newSuiMoveFunctionData);
-      // 이전 struct 이름이 있고, 새로운 이름과 다른 경우 (이름 변경)
+      // 이전 function 이름이 있고, 새로운 이름과 다른 경우 (이름 변경)
       if (selectedFunction && selectedFunction !== functionName) {
-        // 이전 struct 데이터 삭제
+        // 이전 function 데이터 삭제
         newFunctionMap.delete(selectedFunction);
       }
 
@@ -389,7 +389,7 @@ export default function FunctionEditorDialog() {
                   typeParameters={typeParameters.map((t) => t.type)}
                   defaultValue={r.type}
                   onChange={(type: SuiMoveNormalizedType) => {
-                    setParameters((prev) =>
+                    setReturns((prev) =>
                       prev.map((f, i) => (i === index ? { ...f, type } : f))
                     );
                   }}
