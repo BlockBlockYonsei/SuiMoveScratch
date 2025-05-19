@@ -5,19 +5,25 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
-import StructEditorDialog from "./StructEditorDialog";
+import { SuiMoveStruct } from "@/types/move-syntax";
+import { SuiMoveNormalizedType } from "@mysten/sui/client";
+import { Button } from "@/components/ui/button";
 import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
-export default function StructCard() {
-  const { structs, setStructs, setSelectedStruct } =
-    useContext(SuiMoveModuleContext);
+export default function StructCard({
+  structName,
+  structData,
+}: {
+  structName: string;
+  structData: SuiMoveStruct;
+}) {
+  const { setStructs } = useContext(SuiMoveModuleContext);
 
-  const formatType = (type: any): string => {
+  const formatType = (type: SuiMoveNormalizedType): string => {
     if (typeof type === "string") return type;
-    if (type.Struct) {
+    if ("Struct" in type && type.Struct) {
       const { name, typeArguments } = type.Struct;
       if (typeArguments && typeArguments.length > 0) {
         return `${name}<${typeArguments
@@ -30,93 +36,98 @@ export default function StructCard() {
   };
 
   return (
-    <div className="space-y-6">
-      {Array.from(structs.entries()).map(([structName, structData]) => (
-        <Card key={structName} className="w-full max-w-xl mx-auto relative">
-          <CardHeader>
-            <button
-              onClick={() => {
-                setStructs((prev) => {
-                  const newStructData = new Map(prev);
-                  newStructData.delete(structName);
-                  return newStructData;
-                });
-              }}
-              className="absolute cursor-pointer top-3 right-3 text-gray-400 hover:text-black"
-            >
-              <X size={20} />
-            </button>
+    <Card className="relative">
+      <CardHeader>
+        <button
+          onClick={() => {
+            setStructs((prev) => {
+              const newStructData = new Map(prev);
+              newStructData.delete(structName);
+              return newStructData;
+            });
+          }}
+          className="absolute cursor-pointer top-3 right-3 text-gray-400 hover:text-black"
+        >
+          <X size={20} />
+        </button>
 
-            <CardTitle className="text-xl font-bold text-emerald-600">
-              {structName}
-            </CardTitle>
-            <CardDescription>
-              {structData.abilities.abilities.length > 0
-                ? `has ${structData.abilities.abilities.join(", ")}`
-                : "No abilities"}
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent className="space-y-4">
-            <div>
-              <h4 className="font-semibold text-sm text-muted-foreground mb-1">
-                Type Parameters
-              </h4>
-              {structData.typeParameters.length === 0 ? (
-                <p className="text-sm text-gray-500">None</p>
-              ) : (
-                structData.typeParameters.map((param, idx) => (
-                  <div
-                    key={idx}
-                    className="text-sm text-gray-800 flex items-center justify-between"
-                  >
-                    <span>
-                      {structData.typeParameterNames[idx]}
-                      {param.isPhantom && " (phantom)"}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {param.constraints.abilities.join(", ")}
-                    </span>
-                  </div>
-                ))
-              )}
-            </div>
-            <div>
-              <h4 className="font-semibold text-sm text-muted-foreground mb-1">
-                Fields
-              </h4>
-              {structData.fields.length === 0 ? (
-                <p className="text-sm text-gray-500">None</p>
-              ) : (
-                structData.fields.map((field) => (
-                  <div
-                    key={field.name}
-                    className="flex justify-between text-sm text-gray-800"
-                  >
-                    <span>{field.name}</span>
-                    <span className="text-xs text-gray-500">
-                      {formatType(field.type)}
-                    </span>
-                  </div>
-                ))
-              )}
-            </div>
-
-            {/* Edit Button */}
-            <Dialog>
-              <DialogTrigger>
-                <button
-                  className="px-4 py-2 cursor-pointer bg-blue-600 text-white rounded-md"
-                  onClick={() => setSelectedStruct(structName)}
+        <CardTitle className="text-xl text-start font-bold text-emerald-600 truncate">
+          {structName}
+        </CardTitle>
+        <CardDescription className="text-start">
+          {structData.abilities.abilities.length > 0 && (
+            <span>
+              {structData.abilities.abilities.map((a) => (
+                <Button
+                  key={a}
+                  variant={"outline"}
+                  className="cursor-pointer text-xs px-2 font-semibold border-2 py-1"
                 >
-                  Edit
-                </button>
-              </DialogTrigger>
-              <StructEditorDialog />
-            </Dialog>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
+                  {a.toUpperCase()}
+                </Button>
+              ))}
+            </span>
+          )}
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        <div>
+          <CardTitle className="font-semibold text-sm text-start text-muted-foreground mb-1">
+            Type Parameters
+          </CardTitle>
+          {structData.typeParameters.length === 0 ? (
+            <p className="text-sm text-gray-500 border rounded-sm">None</p>
+          ) : (
+            structData.typeParameters.map((param, idx) => (
+              <div
+                key={idx}
+                className="text-sm text-gray-800 flex items-center justify-between"
+              >
+                <span
+                  className={`${
+                    !param.isPhantom ? "text-purple-500" : ""
+                  } font-semibold`}
+                >
+                  {structData.typeParameterNames[idx]}:
+                </span>
+                <span className="text-xs text-gray-500">
+                  {param.constraints.abilities.map((a) => (
+                    <Button
+                      key={a}
+                      variant={"outline"}
+                      className="cursor-pointer text-xs px-1 font-semibold border-2"
+                    >
+                      {a.toUpperCase()}
+                    </Button>
+                  ))}
+                </span>
+              </div>
+            ))
+          )}
+        </div>
+        <div>
+          <CardTitle className="font-semibold text-sm text-start text-muted-foreground mb-1">
+            Fields
+          </CardTitle>
+
+          {structData.fields.length === 0 ? (
+            <p className="text-sm text-gray-500 border rounded-sm">None</p>
+          ) : (
+            structData.fields.map((field) => (
+              <div
+                key={field.name}
+                className="flex justify-between text-sm text-gray-800"
+              >
+                <span>{field.name}</span>
+                <span className="text-xs text-gray-500">
+                  {formatType(field.type)}
+                </span>
+              </div>
+            ))
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 }

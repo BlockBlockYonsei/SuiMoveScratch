@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   DialogContent,
   DialogDescription,
@@ -25,7 +25,7 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import AbilitySelector from "../structs/AbilitySelector";
 import { X } from "lucide-react";
-import FunctionTypeSelect from "./FunctionTypeSelect";
+import FunctionTypeSelector from "./FunctionTypeSelector";
 import { generateFunctionCode } from "../utils/generateCode";
 
 export default function FunctionEditorDialog() {
@@ -47,8 +47,43 @@ export default function FunctionEditorDialog() {
   const [newTypeParamName, setNewTypeParamName] = useState("");
   const [newReturnName, setNewReturnName] = useState("");
 
-  const { imports, structs, functions, setFunctions } =
+  const { functions, setFunctions, selectedFunction } =
     useContext(SuiMoveModuleContext);
+
+  useEffect(() => {
+    if (selectedFunction) {
+      const functionData = functions.get(selectedFunction);
+      if (functionData) {
+        setFunctionName(selectedFunction);
+        setVisibility(functionData.function.visibility);
+        setTypeParameters(
+          functionData.function.typeParameters.map((tp, i) => ({
+            name: functionData.function.typeParameterNames[i],
+            type: tp,
+          }))
+        );
+        setParameters(
+          functionData.function.parameters.map((p, i) => ({
+            name: functionData.function.parameterNames[i],
+            type: p,
+          }))
+        );
+        setReturns(
+          functionData.function.return.map((r, i) => ({
+            name: functionData.function.returnNames[i],
+            type: r,
+          }))
+        );
+      }
+    } else {
+      // 새로운 struct 생성 시 초기화
+      setFunctionName("new_function");
+      setVisibility("Private");
+      setTypeParameters([]);
+      setParameters([]);
+      setReturns([]);
+    }
+  }, [selectedFunction, functions]);
 
   const resetFunction = () => {
     setFunctionName("new_function");
@@ -60,28 +95,35 @@ export default function FunctionEditorDialog() {
   };
 
   const handleComplete = () => {
-    const newFunction: SuiMoveNormalizedFunction & {
+    const newFunctionData: SuiMoveNormalizedFunction & {
       typeParameterNames: string[];
       parameterNames: string[];
       returnNames: string[];
     } = {
       isEntry: isEntry,
+      visibility: visibility,
+      typeParameters: typeParameters.map((t) => t.type),
+      typeParameterNames: typeParameters.map((t) => t.name),
       parameters: parameters.map((p) => p.type),
       parameterNames: parameters.map((p) => p.name),
       return: returns.map((r) => r.type),
       returnNames: parameters.map((p) => p.name),
-      visibility: visibility,
-      typeParameters: typeParameters.map((t) => t.type),
-      typeParameterNames: typeParameters.map((t) => t.name),
     };
-    const newSuiMoveFunction: SuiMoveFunction = {
-      function: newFunction,
+    const newSuiMoveFunctionData: SuiMoveFunction = {
+      function: newFunctionData,
       insideCode: [],
     };
 
     setFunctions((prev) => {
       const newFunctionMap = new Map(prev);
-      newFunctionMap.set(functionName, newSuiMoveFunction);
+      newFunctionMap.set(functionName, newSuiMoveFunctionData);
+      // 이전 function 이름이 있고, 새로운 이름과 다른 경우 (이름 변경)
+      if (selectedFunction && selectedFunction !== functionName) {
+        // 이전 function 데이터 삭제
+        newFunctionMap.delete(selectedFunction);
+      }
+
+      newFunctionMap.set(functionName, newSuiMoveFunctionData);
       return newFunctionMap;
     });
 
@@ -92,7 +134,10 @@ export default function FunctionEditorDialog() {
   return (
     <DialogContent className="lg:max-w-[900px] max-w-3xl max-h-[80vh] overflow-y-auto">
       <DialogHeader>
-        <DialogTitle>Create a New Function</DialogTitle>
+        <DialogTitle>
+          {selectedFunction ? "Update Function" : "Create a New Function"}
+        </DialogTitle>
+
         <DialogDescription>
           Define function properties, type parameters, arguments and return
           types.
@@ -270,8 +315,9 @@ export default function FunctionEditorDialog() {
                 <span className="text-blue-600 font-semibold min-w-[100px]">
                   {param.name}
                 </span>
-                <FunctionTypeSelect
-                  typeParameters={typeParameters.map((t) => t.type)}
+                <FunctionTypeSelector
+                  functionName={functionName}
+                  typeParameters={typeParameters}
                   defaultValue={param.type}
                   onChange={(type: SuiMoveNormalizedType) => {
                     setParameters((prev) =>
@@ -340,11 +386,12 @@ export default function FunctionEditorDialog() {
                 <span className="text-blue-600 font-semibold min-w-[100px]">
                   {r.name}
                 </span>
-                <FunctionTypeSelect
-                  typeParameters={typeParameters.map((t) => t.type)}
+                <FunctionTypeSelector
+                  functionName={functionName}
+                  typeParameters={typeParameters}
                   defaultValue={r.type}
                   onChange={(type: SuiMoveNormalizedType) => {
-                    setParameters((prev) =>
+                    setReturns((prev) =>
                       prev.map((f, i) => (i === index ? { ...f, type } : f))
                     );
                   }}

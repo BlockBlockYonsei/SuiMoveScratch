@@ -15,7 +15,7 @@ export function SideBarEditor({
   setMenu: (menu: "imports" | "structs" | "functions" | "code") => void;
 }) {
   return (
-    <Sidebar className="w-[350px] bg-blue-50 min-h-screen ">
+    <Sidebar className="bg-blue-50 min-h-screen ">
       <SidebarHeader>
         <SidebarHeader className="text-2xl font-bold">
           SuiMoveScratch
@@ -23,54 +23,48 @@ export function SideBarEditor({
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup>
+        <SidebarGroup className="space-y-1">
           <Button
             variant={menu === "imports" ? "default" : "ghost"}
             className={`${
               menu === "imports"
                 ? "bg-black text-white hover:bg-black/90"
                 : "text-gray-800 hover:bg-gray-100"
-            } cursor-pointer
+            } cursor-pointer py-6 text-lg font-semibold
               `}
             onClick={() => setMenu("imports")}
           >
             Imports
           </Button>
-        </SidebarGroup>
-        <SidebarGroup>
           <Button
             variant={menu === "structs" ? "default" : "ghost"}
             className={`${
               menu === "structs"
                 ? "bg-black text-white hover:bg-black/90"
                 : "text-gray-800 hover:bg-gray-100"
-            } cursor-pointer`}
+            } cursor-pointer py-6 text-lg font-semibold`}
             onClick={() => setMenu("structs")}
           >
             Structs
           </Button>
-        </SidebarGroup>
-        <SidebarGroup>
           <Button
             variant={menu === "functions" ? "default" : "ghost"}
             className={`${
               menu === "functions"
                 ? "bg-black text-white hover:bg-black/90"
                 : "text-gray-800 hover:bg-gray-100"
-            } cursor-pointer`}
+            } cursor-pointer py-6 text-lg font-semibold`}
             onClick={() => setMenu("functions")}
           >
             Functions
           </Button>
-        </SidebarGroup>
-        <SidebarGroup>
           <Button
             variant={menu === "code" ? "default" : "ghost"}
             className={`${
               menu === "code"
                 ? "bg-black text-white hover:bg-black/90"
                 : "text-gray-800 hover:bg-gray-100"
-            } cursor-pointer`}
+            } cursor-pointer py-6 text-lg font-semibold`}
             onClick={() => setMenu("code")}
           >
             Code

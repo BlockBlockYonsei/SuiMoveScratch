@@ -12,7 +12,7 @@ import {
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
-import StructTypeSelect from "@/pages/NoCodeMoveV2/structs/StructTypeSelect";
+import StructTypeSelector from "@/pages/NoCodeMoveV2/structs/StructTypeSelector";
 import { generateStructCode } from "@/pages/NoCodeMoveV2/utils/generateCode";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
@@ -218,10 +218,10 @@ export default function StructEditorDialog() {
                   className="text-gray-500 hover:text-gray-700 p-1 h-7 w-7 flex-shrink-0"
                   onClick={() => {
                     setTypeParameterNames((prev) =>
-                      prev.filter((_, i) => i !== index),
+                      prev.filter((_, i) => i !== index)
                     );
                     setTypeParameters((prev) =>
-                      prev.filter((_, i) => i !== index),
+                      prev.filter((_, i) => i !== index)
                     );
                   }}
                 >
@@ -272,12 +272,16 @@ export default function StructEditorDialog() {
                 <span className="text-blue-600 font-semibold min-w-[100px]">
                   {field.name}
                 </span>
-                <StructTypeSelect
-                  typeParameters={typeParameters}
+                <StructTypeSelector
+                  structName={structName}
+                  typeParameters={typeParameters.map((tp, i) => ({
+                    name: typeParameterNames[i],
+                    type: tp,
+                  }))}
                   defaultValue={field.type}
                   onChange={(type: SuiMoveNormalizedType) => {
                     setFields((prev) =>
-                      prev.map((f, i) => (i === index ? { ...f, type } : f)),
+                      prev.map((f, i) => (i === index ? { ...f, type } : f))
                     );
                   }}
                 />
