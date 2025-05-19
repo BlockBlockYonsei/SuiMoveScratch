@@ -51,7 +51,7 @@ export default function StructTypeSelector({
     if ("Struct" in defaultValue) {
       const { address, module, name } = defaultValue.Struct;
       if (address === "0x0" && module === "currentModule") {
-        return `local::${name}`;
+        return `currentModule::${name}`;
       }
       return `external::${address}::${module}::${name}`;
     }
