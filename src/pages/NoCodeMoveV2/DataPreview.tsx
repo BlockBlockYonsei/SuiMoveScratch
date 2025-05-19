@@ -5,14 +5,8 @@ import {
 } from "@/pages/NoCodeMoveV2/utils/generateCode";
 import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import ImportEditorDialog from "./imports/ImportEditorDialog";
-import StructEditorDialog from "./structs/StructEditorDialog";
-import FunctionEditorDialog from "./functions/FunctionEditorDialog";
 import StructCardList from "./structs/StructCardList";
 import FunctionCardList from "./functions/FunctionCardList";
-import { PlusIcon } from "lucide-react";
 import ImportPreview from "./imports/ImportPreview";
 
 export default function DataPreview({
@@ -20,13 +14,7 @@ export default function DataPreview({
 }: {
   menu: "imports" | "structs" | "functions" | "code";
 }) {
-  const {
-    imports,
-    structs,
-    functions,
-    setSelectedStruct,
-    setSelectedFunction,
-  } = useContext(SuiMoveModuleContext);
+  const { imports, structs, functions } = useContext(SuiMoveModuleContext);
 
   return (
     <div className="flex-1 p-5 space-y-6 text-sm font-mono">
@@ -38,29 +26,6 @@ export default function DataPreview({
       </button> */}
       <div className="flex justify-start items-center gap-4">
         <h1 className="text-2xl font-bold">{menu}</h1>
-
-        {menu !== "code" && (
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="cursor-pointer"
-                onClick={() => {
-                  if (menu === "structs") {
-                    setSelectedStruct(null);
-                  } else if (menu === "functions") {
-                    setSelectedFunction(null);
-                  }
-                }}
-              >
-                <PlusIcon />
-              </Button>
-            </DialogTrigger>
-            {menu === "imports" && <ImportEditorDialog />}
-            {menu === "structs" && <StructEditorDialog />}
-            {menu === "functions" && <FunctionEditorDialog />}
-          </Dialog>
-        )}
       </div>
 
       <pre className="bg-white p-4 rounded-md shadow whitespace-pre-wrap overflow-auto">

@@ -1,11 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SuiMoveFunction } from "@/types/move-syntax";
 import { X } from "lucide-react";
@@ -80,9 +74,6 @@ export default function FunctionCard({
         <CardTitle className="text-lg text-start font-bold text-pink-600 truncate">
           {functionName}
         </CardTitle>
-        {/* <CardDescription className="text-sm text-gray-500">
-          visibility: {fn.visibility}
-        </CardDescription> */}
       </CardHeader>
 
       <CardContent className="space-y-4 text-sm">
@@ -161,7 +152,6 @@ export default function FunctionCard({
             ))
           )}
         </div>
-        {/* <ManageFunctionDetail functionName={name} /> */}
       </CardContent>
     </Card>
   );
