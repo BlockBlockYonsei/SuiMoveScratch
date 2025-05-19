@@ -16,10 +16,13 @@ import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
 
 export default function StructTypeSelect({
+  structName,
   defaultValue,
   onChange,
+  typeParameters,
 }: {
-  typeParameters: SuiMoveStructTypeParameter[];
+  structName: string;
+  typeParameters: { name: string; type: SuiMoveStructTypeParameter }[];
   defaultValue?: SuiMoveNormalizedType | { abilities: string[] };
   onChange?: (type: SuiMoveNormalizedType) => void;
 }) {
@@ -63,7 +66,16 @@ export default function StructTypeSelect({
 
     if (kind === "primitive") {
       onChange(name as SuiMoveNormalizedType);
-    } else if (kind === "local") {
+    } else if (kind === "typeParameter") {
+      onChange({
+        Struct: {
+          address: "0x0",
+          module: "currentModule",
+          name: `${structName}::${name}`,
+          typeArguments: [],
+        },
+      });
+    } else if (kind === "currentModule") {
       onChange({
         Struct: {
           address: "0x0",
@@ -114,22 +126,28 @@ export default function StructTypeSelect({
         <Label className="px-2 text-xs text-muted-foreground">
           Type Parameters
         </Label>
-        {/* {typeParameters.map((_, i) => (
-          <SelectItem key={`T${i}`} value={`typeParam::${i}`}>
-            T{i}
-          </SelectItem>
-        ))} */}
+        <div className="grid grid-cols-2">
+          {typeParameters.map((tp) => (
+            <SelectItem
+              key={tp.name}
+              value={`typeParameter::${tp.name}`}
+              className="cursor-pointer hover:bg-gray-200"
+            >
+              {tp.name}
+            </SelectItem>
+          ))}
+        </div>
 
         <Separator className="my-2" />
 
         <Label className="px-2 text-xs text-muted-foreground">
           Current Structs
         </Label>
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-2">
           {[...structs.keys()].map((name) => (
             <SelectItem
               key={name}
-              value={`local::${name}`}
+              value={`currentModule::${name}`}
               className="cursor-pointer hover:bg-gray-200"
             >
               {name}

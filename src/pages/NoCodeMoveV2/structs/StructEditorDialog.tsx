@@ -273,7 +273,11 @@ export default function StructEditorDialog() {
                   {field.name}
                 </span>
                 <StructTypeSelect
-                  typeParameters={typeParameters}
+                  structName={structName}
+                  typeParameters={typeParameters.map((tp, i) => ({
+                    name: typeParameterNames[i],
+                    type: tp,
+                  }))}
                   defaultValue={field.type}
                   onChange={(type: SuiMoveNormalizedType) => {
                     setFields((prev) =>

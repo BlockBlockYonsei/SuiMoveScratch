@@ -316,7 +316,8 @@ export default function FunctionEditorDialog() {
                   {param.name}
                 </span>
                 <FunctionTypeSelect
-                  typeParameters={typeParameters.map((t) => t.type)}
+                  functionName={functionName}
+                  typeParameters={typeParameters}
                   defaultValue={param.type}
                   onChange={(type: SuiMoveNormalizedType) => {
                     setParameters((prev) =>
@@ -386,7 +387,8 @@ export default function FunctionEditorDialog() {
                   {r.name}
                 </span>
                 <FunctionTypeSelect
-                  typeParameters={typeParameters.map((t) => t.type)}
+                  functionName={functionName}
+                  typeParameters={typeParameters}
                   defaultValue={r.type}
                   onChange={(type: SuiMoveNormalizedType) => {
                     setReturns((prev) =>
