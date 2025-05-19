@@ -12,7 +12,7 @@ import {
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
-import StructTypeSelect from "@/pages/NoCodeMoveV2/structs/StructTypeSelect";
+import StructTypeSelector from "@/pages/NoCodeMoveV2/structs/StructTypeSelector";
 import { generateStructCode } from "@/pages/NoCodeMoveV2/utils/generateCode";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
@@ -272,7 +272,7 @@ export default function StructEditorDialog() {
                 <span className="text-blue-600 font-semibold min-w-[100px]">
                   {field.name}
                 </span>
-                <StructTypeSelect
+                <StructTypeSelector
                   structName={structName}
                   typeParameters={typeParameters.map((tp, i) => ({
                     name: typeParameterNames[i],

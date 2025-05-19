@@ -15,7 +15,7 @@ import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
 
-export default function StructTypeSelect({
+export default function StructTypeSelector({
   structName,
   defaultValue,
   onChange,

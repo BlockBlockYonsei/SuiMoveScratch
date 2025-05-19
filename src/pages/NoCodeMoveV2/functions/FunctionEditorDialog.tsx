@@ -25,7 +25,7 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import AbilitySelector from "../structs/AbilitySelector";
 import { X } from "lucide-react";
-import FunctionTypeSelect from "./FunctionTypeSelect";
+import FunctionTypeSelector from "./FunctionTypeSelector";
 import { generateFunctionCode } from "../utils/generateCode";
 
 export default function FunctionEditorDialog() {
@@ -315,7 +315,7 @@ export default function FunctionEditorDialog() {
                 <span className="text-blue-600 font-semibold min-w-[100px]">
                   {param.name}
                 </span>
-                <FunctionTypeSelect
+                <FunctionTypeSelector
                   functionName={functionName}
                   typeParameters={typeParameters}
                   defaultValue={param.type}
@@ -386,7 +386,7 @@ export default function FunctionEditorDialog() {
                 <span className="text-blue-600 font-semibold min-w-[100px]">
                   {r.name}
                 </span>
-                <FunctionTypeSelect
+                <FunctionTypeSelector
                   functionName={functionName}
                   typeParameters={typeParameters}
                   defaultValue={r.type}
