@@ -1,5 +1,5 @@
 import { SideBarEditor } from "@/pages/NoCodeMoveV2/SideBarEditor";
-import DataPreview from "@/pages/NoCodeMoveV2/DataPreview";
+import MainScreen from "@/pages/NoCodeMoveV2/MainScreen";
 import { SuiMoveModuleProvider } from "@/context/SuiMoveModuleContext";
 import { useEffect, useState } from "react";
 
@@ -26,7 +26,7 @@ export default function Main() {
       <SuiMoveModuleProvider>
         <div className="flex gap-4">
           <SideBarEditor menu={menu} setMenu={setMenu} />
-          <DataPreview menu={menu} />
+          <MainScreen menu={menu} />
         </div>
       </SuiMoveModuleProvider>
     </div>
