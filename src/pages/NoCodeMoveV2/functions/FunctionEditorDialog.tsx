@@ -36,9 +36,10 @@ export default function FunctionEditorDialog() {
   const [parameters, setParameters] = useState<
     { name: string; type: SuiMoveNormalizedType }[]
   >([]);
-  const [returns, setReturns] = useState<
-    { name: string; type: SuiMoveNormalizedType }[]
-  >([]);
+  // const [returns, setReturns] = useState<
+  //   { name: string; type: SuiMoveNormalizedType }[]
+  // >([]);
+  const [returns, setReturns] = useState<SuiMoveNormalizedType[]>([]);
   const [typeParameters, setTypeParameters] = useState<
     { name: string; type: SuiMoveAbilitySet }[]
   >([]);
@@ -68,12 +69,7 @@ export default function FunctionEditorDialog() {
             type: p,
           }))
         );
-        setReturns(
-          functionData.function.return.map((r, i) => ({
-            name: functionData.function.returnNames[i],
-            type: r,
-          }))
-        );
+        setReturns(functionData.function.return);
       }
     } else {
       // 새로운 struct 생성 시 초기화
@@ -98,7 +94,7 @@ export default function FunctionEditorDialog() {
     const newFunctionData: SuiMoveNormalizedFunction & {
       typeParameterNames: string[];
       parameterNames: string[];
-      returnNames: string[];
+      // returnNames: string[];
     } = {
       isEntry: isEntry,
       visibility: visibility,
@@ -106,8 +102,8 @@ export default function FunctionEditorDialog() {
       typeParameterNames: typeParameters.map((t) => t.name),
       parameters: parameters.map((p) => p.type),
       parameterNames: parameters.map((p) => p.name),
-      return: returns.map((r) => r.type),
-      returnNames: parameters.map((p) => p.name),
+      return: returns,
+      // returnNames: parameters.map((p) => p.name),
     };
     const newSuiMoveFunctionData: SuiMoveFunction = {
       function: newFunctionData,
@@ -343,37 +339,31 @@ export default function FunctionEditorDialog() {
           <div className="mb-4">
             <label className="block font-semibold mb-1">Returns</label>
             <div className="flex gap-2 mb-2">
-              <Input
+              {/* <Input
                 value={newReturnName}
                 placeholder="Returns name"
                 onChange={(e) => setNewReturnName(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    if (
-                      !newReturnName ||
-                      returns.some((p) => p.name === newReturnName)
-                    )
-                      return;
-                    setReturns((prev) => [
-                      ...prev,
-                      { name: newReturnName, type: "U64" },
-                    ]);
+                    // if (
+                    //   !newReturnName ||
+                    //   returns.some((p) => p.name === newReturnName)
+                    // )
+                    //   return;
+                    setReturns((prev) => [...prev, "U64"]);
                     setNewReturnName("");
                   }
                 }}
-              />
+              /> */}
               <Button
                 className="cursor-pointer"
                 onClick={() => {
-                  if (
-                    !newReturnName ||
-                    returns.some((p) => p.name === newReturnName)
-                  )
-                    return;
-                  setReturns([
-                    ...returns,
-                    { name: newReturnName, type: "U64" },
-                  ]);
+                  // if (
+                  //   !newReturnName ||
+                  //   returns.some((p) => p.name === newReturnName)
+                  // )
+                  //   return;
+                  setReturns([...returns, "U64"]);
                   setNewReturnName("");
                 }}
               >
@@ -382,17 +372,17 @@ export default function FunctionEditorDialog() {
             </div>
 
             {returns.map((r, index) => (
-              <div key={r.name} className="flex items-center gap-2 mb-2">
+              <div key={index} className="flex items-center gap-2 mb-2">
                 <span className="text-blue-600 font-semibold min-w-[100px]">
-                  {r.name}
+                  R{index}
                 </span>
                 <FunctionTypeSelector
                   functionName={functionName}
                   typeParameters={typeParameters}
-                  defaultValue={r.type}
+                  defaultValue={r}
                   onChange={(type: SuiMoveNormalizedType) => {
                     setReturns((prev) =>
-                      prev.map((f, i) => (i === index ? { ...f, type } : f))
+                      prev.map((f, i) => (i === index ? type : f))
                     );
                   }}
                 />
@@ -422,8 +412,8 @@ export default function FunctionEditorDialog() {
                 typeParameterNames: typeParameters.map((t) => t.name),
                 parameters: parameters.map((p) => p.type),
                 parameterNames: parameters.map((p) => p.name),
-                return: returns.map((r) => r.type),
-                returnNames: returns.map((r) => r.name),
+                return: returns,
+                // returnNames: returns.map((r) => r.name),
               },
               insideCode: [],
             })}
