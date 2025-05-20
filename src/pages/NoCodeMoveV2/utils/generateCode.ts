@@ -68,10 +68,16 @@ export function generateFunctionCode(
   name: string,
   func: SuiMoveFunction
 ): string {
-  const visibility = func.function.visibility.toLowerCase();
+  const visibility = func.function.visibility;
   const isEntry = func.function.isEntry;
   const entryKeyword = isEntry ? "entry " : "";
-  const visKeyword = visibility !== "private" ? `${visibility} ` : "";
+  // const visKeyword = visibility !== "private" ? `${visibility} ` : "";
+  const visKeyword =
+    visibility === "Public"
+      ? `public `
+      : visibility === "Friend"
+      ? "public (package) "
+      : "";
   const typeParams = func.function.typeParameters
     .map((tp: any, i: number) => {
       const name =
