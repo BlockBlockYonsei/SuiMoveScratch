@@ -46,7 +46,7 @@ export default function FunctionEditorDialog() {
 
   const [newParamName, setNewParamName] = useState("");
   const [newTypeParamName, setNewTypeParamName] = useState("");
-  const [newReturnName, setNewReturnName] = useState("");
+  // const [newReturnName, setNewReturnName] = useState("");
 
   const { functions, setFunctions, selectedFunction } =
     useContext(SuiMoveModuleContext);
@@ -147,7 +147,18 @@ export default function FunctionEditorDialog() {
             <label className="block mb-1 font-semibold">Function Name</label>
             <Input
               value={functionName}
-              onChange={(e) => setFunctionName(e.target.value)}
+              onChange={(e) => {
+                const raw = e.target.value;
+                if (raw.length > 0 && /^[\d_]/.test(raw)) {
+                  return; // 첫 글자가 숫자거나 _면 무시
+                }
+                const onlyAlphabet = e.target.value.replace(
+                  /[^a-zA-Z0-9_]/g,
+                  ""
+                );
+                // setNewParamName(onlyAlphabet.toLowerCase());
+                setFunctionName(onlyAlphabet.toLocaleLowerCase());
+              }}
             />
           </div>
           {/* Entry + Visibility */}
@@ -198,7 +209,20 @@ export default function FunctionEditorDialog() {
               <Input
                 placeholder="Type parameter name"
                 value={newTypeParamName}
-                onChange={(e) => setNewTypeParamName(e.target.value)}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  if (raw.length > 0 && /^\d/.test(raw)) {
+                    return; // 첫 글자가 숫자면 무시
+                  }
+                  const onlyAlphabet = e.target.value.replace(
+                    /[^a-zA-Z0-9]/g,
+                    ""
+                  );
+                  const firstLetterCapitalized =
+                    onlyAlphabet.charAt(0).toUpperCase() +
+                    onlyAlphabet.slice(1);
+                  setNewTypeParamName(firstLetterCapitalized);
+                }}
               />
               <Button
                 className="cursor-pointer"
@@ -271,7 +295,17 @@ export default function FunctionEditorDialog() {
               <Input
                 value={newParamName}
                 placeholder="Parameter name"
-                onChange={(e) => setNewParamName(e.target.value)}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  if (raw.length > 0 && /^[\d_]/.test(raw)) {
+                    return; // 첫 글자가 숫자거나 _면 무시
+                  }
+                  const onlyAlphabet = e.target.value.replace(
+                    /[^a-zA-Z0-9_]/g,
+                    ""
+                  );
+                  setNewParamName(onlyAlphabet.toLowerCase());
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     if (
@@ -364,7 +398,7 @@ export default function FunctionEditorDialog() {
                   // )
                   //   return;
                   setReturns([...returns, "U64"]);
-                  setNewReturnName("");
+                  // setNewReturnName("");
                 }}
               >
                 Add
