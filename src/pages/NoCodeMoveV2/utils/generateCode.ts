@@ -6,15 +6,22 @@ import {
   StructDataMap,
   FunctionDataMap,
 } from "@/types/move-syntax";
+import { SuiMoveNormalizedType } from "@mysten/sui/client";
 
-export function formatType(type: any): string {
-  if (typeof type === "string") return type;
+export function formatType(type: SuiMoveNormalizedType): string {
+  if (typeof type === "string") return type.toLowerCase();
   if ("Struct" in type) {
     const { name, typeArguments } = type.Struct;
     const args = typeArguments?.length
       ? `<${typeArguments.map(formatType).join(", ")}>`
       : "";
     return `${name}${args}`;
+  } else if ("Reference" in type) {
+    return `&${formatType(type.Reference)}`;
+  } else if ("MutableReference" in type) {
+    return `&mut ${formatType(type.MutableReference)}`;
+  } else if ("Vector" in type) {
+    return `vector<${formatType(type.Vector)}>`;
   }
   return "Unknown";
 }

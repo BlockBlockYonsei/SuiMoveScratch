@@ -36,10 +36,10 @@ export default function FunctionEditorDialog() {
   const [parameters, setParameters] = useState<
     { name: string; type: SuiMoveNormalizedType }[]
   >([]);
-  // const [returns, setReturns] = useState<
-  //   { name: string; type: SuiMoveNormalizedType }[]
-  // >([]);
-  const [returns, setReturns] = useState<SuiMoveNormalizedType[]>([]);
+  const [returns, setReturns] = useState<
+    { name: string; type: SuiMoveNormalizedType }[]
+  >([]);
+  // const [returns, setReturns] = useState<SuiMoveNormalizedType[]>([]);
   const [typeParameters, setTypeParameters] = useState<
     { name: string; type: SuiMoveAbilitySet }[]
   >([]);
@@ -69,7 +69,9 @@ export default function FunctionEditorDialog() {
             type: p,
           }))
         );
-        setReturns(functionData.function.return);
+        setReturns(
+          functionData.function.return.map((r) => ({ name: "", type: r }))
+        );
       }
     } else {
       // 새로운 struct 생성 시 초기화
@@ -102,7 +104,7 @@ export default function FunctionEditorDialog() {
       typeParameterNames: typeParameters.map((t) => t.name),
       parameters: parameters.map((p) => p.type),
       parameterNames: parameters.map((p) => p.name),
-      return: returns,
+      return: returns.map((r) => r.type),
       // returnNames: parameters.map((p) => p.name),
     };
     const newSuiMoveFunctionData: SuiMoveFunction = {
@@ -354,7 +356,10 @@ export default function FunctionEditorDialog() {
                       prev.map((f, i) => (i === index ? { ...f, type } : f))
                     );
                   }}
+                  setParameters={setParameters}
+                  index={index}
                 />
+
                 <Button
                   variant="ghost"
                   size="sm"
@@ -397,7 +402,8 @@ export default function FunctionEditorDialog() {
                   //   returns.some((p) => p.name === newReturnName)
                   // )
                   //   return;
-                  setReturns([...returns, "U64"]);
+                  // setReturns([...returns, "U64"]);
+                  setReturns([...returns, { name: "", type: "U64" }]);
                   // setNewReturnName("");
                 }}
               >
@@ -413,12 +419,14 @@ export default function FunctionEditorDialog() {
                 <FunctionTypeSelector
                   functionName={functionName}
                   typeParameters={typeParameters}
-                  defaultValue={r}
+                  defaultValue={r.type}
                   onChange={(type: SuiMoveNormalizedType) => {
                     setReturns((prev) =>
-                      prev.map((f, i) => (i === index ? type : f))
+                      prev.map((f, i) => (i === index ? { name: "", type } : f))
                     );
                   }}
+                  setParameters={setReturns}
+                  index={index}
                 />
                 <Button
                   variant="ghost"
@@ -446,7 +454,7 @@ export default function FunctionEditorDialog() {
                 typeParameterNames: typeParameters.map((t) => t.name),
                 parameters: parameters.map((p) => p.type),
                 parameterNames: parameters.map((p) => p.name),
-                return: returns,
+                return: returns.map((r) => r.type),
                 // returnNames: returns.map((r) => r.name),
               },
               insideCode: [],
