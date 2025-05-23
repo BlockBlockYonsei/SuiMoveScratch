@@ -14,6 +14,7 @@ import {
 import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
+import { PRIMITIVE_TYPES } from "@/Constants";
 
 export default function StructTypeSelector({
   structName,
@@ -27,18 +28,6 @@ export default function StructTypeSelector({
   onChange?: (type: SuiMoveNormalizedType) => void;
 }) {
   const { imports, structs, selectedStruct } = useContext(SuiMoveModuleContext);
-
-  const PRIMITIVE_TYPES: SuiMoveNormalizedType[] = [
-    "Bool",
-    "U8",
-    "U16",
-    "U32",
-    "U64",
-    "U128",
-    "U256",
-    "Address",
-    "Signer",
-  ];
 
   const convertTypeToSelectValue = (type: SuiMoveNormalizedType): string => {
     if (!selectedStruct) return "primitive:::U64";
