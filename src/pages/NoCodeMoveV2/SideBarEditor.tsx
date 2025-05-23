@@ -67,7 +67,7 @@ export function SideBarEditor({
             } cursor-pointer py-6 text-lg font-semibold`}
             onClick={() => setMenu("code")}
           >
-            Code
+            Code Preview
           </Button>
         </SidebarGroup>
       </SidebarContent>

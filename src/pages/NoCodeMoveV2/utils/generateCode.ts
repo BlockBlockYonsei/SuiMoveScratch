@@ -35,6 +35,7 @@ export function convertTypeToString(type: SuiMoveNormalizedType): string {
 
 export function generateImportsCode(imports: ImportDataMap): string {
   return Array.from(imports.entries())
+    .sort()
     .map(([_, data]) => {
       const pkgAlias = SUI_PACKAGE_ALIASES[data.address] || data.address;
       const importedStructNames = Object.keys(data.structs);

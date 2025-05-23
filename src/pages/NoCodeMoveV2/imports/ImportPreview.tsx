@@ -23,6 +23,7 @@ export default function ImportPreview() {
         </Dialog>
         {[...imports.entries()]
           .filter(([_, data]) => data.structs)
+          .sort()
           .map(([key, data]) => {
             const alias = SUI_PACKAGE_ALIASES[data.address] || data.address;
             const importedStructNames = Object.keys(data.structs);
