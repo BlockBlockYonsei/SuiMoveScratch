@@ -103,7 +103,7 @@ export default function StructCard({
             structData.fields.map((field) => (
               <div
                 key={field.name}
-                className="text-sm text-gray-800 flex items-center gap-2"
+                className="text-gray-800 flex items-center gap-2"
               >
                 <NameBox className="border-none">{field.name}</NameBox>:
                 <NameBox className="text-gray-500 border-emerald-300">

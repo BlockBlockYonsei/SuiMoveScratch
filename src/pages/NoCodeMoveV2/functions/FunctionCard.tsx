@@ -1,11 +1,10 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SuiMoveFunction } from "@/types/move-syntax";
 import { X } from "lucide-react";
 import { useContext } from "react";
-import { SuiMoveNormalizedType } from "@mysten/sui/client";
 import { formatType } from "../utils/generateCode";
+import NameBox from "../components/NameBox";
 
 export default function FunctionCard({
   functionName,
@@ -17,19 +16,6 @@ export default function FunctionCard({
   const fn = functionData.function;
   const { setFunctions } = useContext(SuiMoveModuleContext);
 
-  // const formatType = (type: SuiMoveNormalizedType): string => {
-  //   if (typeof type === "string") return type;
-  //   if ("Struct" in type && type.Struct) {
-  //     const { name, typeArguments } = type.Struct;
-  //     if (typeArguments && typeArguments.length > 0) {
-  //       return `${name}<${typeArguments
-  //         .map((t: any) => formatType(t))
-  //         .join(", ")}>`;
-  //     }
-  //     return name;
-  //   }
-  //   return JSON.stringify(type);
-  // };
   return (
     <Card className="relative">
       <CardHeader>
@@ -45,32 +31,29 @@ export default function FunctionCard({
         >
           <X size={20} />
         </button>
-        <div className="flex ">
-          <Button
-            disabled={!fn.isEntry}
-            variant={"outline"}
-            className={`${
-              fn.isEntry ? "text-pink-600" : "text-black"
-            } cursor-pointer text-xs px-1 font-semibold border-2 mr-2`}
-          >
-            {"[entry]"}
-          </Button>
-          <Button
-            variant={"outline"}
-            className={`${
-              fn.visibility === "Public"
-                ? "text-blue-500"
+        <div className="flex">
+          {fn.isEntry && (
+            <NameBox className="text-pink-500 font-semibold mr-2">
+              {"[entry]"}
+            </NameBox>
+          )}
+          {fn.visibility !== "Private" && (
+            <NameBox
+              className={`${
+                fn.visibility === "Public"
+                  ? "text-blue-500"
+                  : fn.visibility === "Friend"
+                  ? "text-yellow-400"
+                  : ""
+              } font-semibold`}
+            >
+              {fn.visibility === "Public"
+                ? "public"
                 : fn.visibility === "Friend"
-                ? "text-yellow-400"
-                : ""
-            } text-start text-xs font-semibold cursor-pointer`}
-          >
-            {fn.visibility === "Public"
-              ? "public"
-              : fn.visibility === "Friend"
-              ? "public (package)"
-              : "private"}{" "}
-          </Button>
+                ? "public (package)"
+                : ""}{" "}
+            </NameBox>
+          )}
         </div>
         <CardTitle className="text-lg text-start font-bold text-pink-600 truncate">
           {functionName}
@@ -89,20 +72,16 @@ export default function FunctionCard({
             functionData.function.typeParameters.map((param, idx) => (
               <div
                 key={idx}
-                className="text-sm text-gray-800 flex items-center justify-between"
+                className="text-sm text-gray-800 flex items-center gap-2"
               >
                 <span className="font-semibold">
                   {functionData.function.typeParameterNames[idx]}:
                 </span>
-                <span className="text-xs text-gray-500">
+                <span className="text-gray-500 flex gap-1 flex-wrap">
                   {param.abilities.map((a) => (
-                    <Button
-                      key={a}
-                      variant={"outline"}
-                      className="cursor-pointer text-xs px-1 font-semibold border-2"
-                    >
+                    <NameBox key={a} className="border-blue-300">
                       {a.toUpperCase()}
-                    </Button>
+                    </NameBox>
                   ))}
                 </span>
               </div>
@@ -122,11 +101,16 @@ export default function FunctionCard({
             functionData.function.parameters.map((param, i) => (
               <div
                 key={functionData.function.parameterNames[i]}
-                className="flex justify-between text-sm text-gray-800"
+                className="text-gray-800 flex items-center gap-2"
               >
-                <span>{functionData.function.parameterNames[i]}</span>
-                <span className="text-xs text-gray-500">
-                  {formatType(param)}
+                <NameBox className="border-none">
+                  {functionData.function.parameterNames[i]}:
+                </NameBox>
+                :
+                <span className="text-gray-500 flex gap-1 flex-wrap">
+                  <NameBox className="border-pink-300">
+                    {formatType(param)}
+                  </NameBox>
                 </span>
               </div>
             ))
@@ -144,12 +128,12 @@ export default function FunctionCard({
           ) : (
             functionData.function.return.map((r, i) => (
               <div
-                // key={functionData.function.returnNames[i]}
                 key={i}
                 className="flex justify-between text-sm text-gray-800"
               >
-                {/* <span>{functionData.function.returnNames[i]}</span> */}
-                <span className="text-xs text-gray-500">{formatType(r)}</span>
+                <NameBox className="border-emerald-300">
+                  {formatType(r)}
+                </NameBox>
               </div>
             ))
           )}
