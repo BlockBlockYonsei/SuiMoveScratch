@@ -4,6 +4,7 @@ import { SuiMoveStruct } from "@/types/move-syntax";
 import { SuiMoveNormalizedType } from "@mysten/sui/client";
 import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
+import NameBox from "../components/NameBox";
 
 export default function StructCard({
   structName,
@@ -114,20 +115,5 @@ export default function StructCard({
         </div>
       </CardContent>
     </Card>
-  );
-}
-
-function NameBox({
-  className,
-  children,
-  ...props
-}: React.ComponentProps<"button">) {
-  return (
-    <span
-      className={`border-1 rounded-md p-1 font-semibold ${className}`}
-      {...props}
-    >
-      {children}
-    </span>
   );
 }
