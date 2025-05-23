@@ -1,60 +1,60 @@
-import { SuiMoveFunction } from "@/types/move";
+import { SUI_PACKAGE_ALIASES } from "@/Constants";
+import {
+  ImportDataMap,
+  SuiMoveFunction,
+  SuiMoveStruct,
+  StructDataMap,
+  FunctionDataMap,
+} from "@/types/move-syntax";
+import { SuiMoveNormalizedType } from "@mysten/sui/client";
 
-const PACKAGE_ALIASES: Record<string, string> = {
-  "0x0000000000000000000000000000000000000000000000000000000000000001": "std",
-  "0x0000000000000000000000000000000000000000000000000000000000000002": "sui",
-};
-
-export function formatType(type: any): string {
-  console.log(type);
-  if (typeof type === "string") return type;
+export function formatType(type: SuiMoveNormalizedType): string {
+  if (typeof type === "string") return type.toLowerCase();
   if ("Struct" in type) {
-    const { address, module, name, typeArguments } = type.Struct;
+    const { name, typeArguments } = type.Struct;
     const args = typeArguments?.length
       ? `<${typeArguments.map(formatType).join(", ")}>`
       : "";
-    return `${PACKAGE_ALIASES[address] || address}::${module}::${name}${args}`;
+    return `${name}${args}`;
+  } else if ("Reference" in type) {
+    return `&${formatType(type.Reference)}`;
+  } else if ("MutableReference" in type) {
+    return `&mut ${formatType(type.MutableReference)}`;
+  } else if ("Vector" in type) {
+    return `vector<${formatType(type.Vector)}>`;
   }
   return "Unknown";
 }
 
-export function generateImportsCode(
-  imports: Record<string, Record<string, any>>
-): string {
-  return Object.entries(imports)
-    .map(([fullModuleName, data]) => {
-      const [pkg, module] = fullModuleName.split("::");
-      const alias = PACKAGE_ALIASES[pkg] || pkg;
+export function generateImportsCode(imports: ImportDataMap): string {
+  return Array.from(imports.entries())
+    .map(([_, data]) => {
+      const pkgAlias = SUI_PACKAGE_ALIASES[data.address] || data.address;
+      const importedStructNames = Object.keys(data.structs);
+      const importedNames = data.functions
+        ? ["Self", ...importedStructNames].join(", ")
+        : importedStructNames.join(", ");
 
-      const structs = data.structs ? Object.keys(data.structs).join(", ") : "";
-      const functions = data.functions
-        ? Object.keys(data.functions).join(", ")
-        : "";
-
-      if (structs || functions) {
-        const imports = [structs, functions].filter(Boolean).join(", ");
-        return `use ${alias}::${module}::{ ${imports} };`;
-      }
-      return "";
+      return `use ${pkgAlias}::${data.moduleName}::{ ${importedNames} };`;
     })
     .join("\n");
 }
 
 export function generateStructCode(
   name: string,
-  struct: any,
-  typeParameterNames?: string[]
+  struct: SuiMoveStruct
 ): string {
-  const abilities = (struct.abilities?.abilities || [])
-    .map((a: string) => a.toLowerCase())
-    .join(", ");
+  const abilities =
+    struct.abilities.abilities.length > 0
+      ? ` has ${struct.abilities.abilities
+          .map((ability: string) => ability.toLowerCase())
+          .join(", ")}`
+      : "";
 
   const typeParams = (struct.typeParameters || [])
     .map((tp: any, i: number) => {
       const phantom = tp.isPhantom ? "phantom " : "";
-      const paramName =
-        typeParameterNames?.[i] ??
-        (struct.typeParameters.length === 1 ? "T" : `T${i}`);
+      const paramName = struct.typeParameterNames?.[i] ?? `T${i}`;
       const abilities = tp.constraints?.abilities
         ?.map((a: string) => a.toLowerCase())
         .join(" + ");
@@ -68,20 +68,29 @@ export function generateStructCode(
     .map((f: any) => `  ${f.name}: ${formatType(f.type)},`)
     .join("\n");
 
-  return `public struct ${name}${generics} has ${abilities} {\n${fields}\n}`;
+  return `public struct ${name}${generics}${abilities} {\n${fields}\n}`;
 }
 
 export function generateFunctionCode(
   name: string,
   func: SuiMoveFunction
 ): string {
-  const visibility = func.function.visibility.toLowerCase();
+  const visibility = func.function.visibility;
   const isEntry = func.function.isEntry;
   const entryKeyword = isEntry ? "entry " : "";
-  const visKeyword = visibility !== "private" ? `${visibility} ` : "";
+  // const visKeyword = visibility !== "private" ? `${visibility} ` : "";
+  const visKeyword =
+    visibility === "Public"
+      ? `public `
+      : visibility === "Friend"
+      ? "public (package) "
+      : "";
   const typeParams = func.function.typeParameters
     .map((tp: any, i: number) => {
-      const name = func.function.typeParameters.length === 1 ? "T" : `T${i}`;
+      const name =
+        func.function.typeParameters.length === 1
+          ? `${func.function.typeParameterNames[i]}`
+          : `${func.function.typeParameterNames[i]}`;
       const abilities = tp.abilities
         ?.map((a: string) => a.toLowerCase())
         .join(" + ");
@@ -90,7 +99,10 @@ export function generateFunctionCode(
     .join(", ");
   const generics = typeParams ? `<${typeParams}>` : "";
   const parameters = func.function.parameters
-    .map((p: any, i: number) => `arg${i}: ${formatType(p)}`)
+    .map(
+      (p: any, i: number) =>
+        `${func.function.parameterNames[i]}: ${formatType(p)}`
+    )
     .join(", ");
 
   const returnType =
@@ -130,18 +142,18 @@ export function generateMoveCode({
   moduleName,
   address,
 }: {
-  imports: Record<string, Record<string, any>>;
-  structs: Record<string, any>;
-  functions: Record<string, any>;
+  imports: ImportDataMap;
+  structs: StructDataMap;
+  functions: FunctionDataMap;
   moduleName?: string;
   address?: string;
 }): string {
   const moduleHeader = `module ${address}::${moduleName};\n`;
   const importSection = generateImportsCode(imports);
-  const structSection = Object.entries(structs)
+  const structSection = Array.from(structs.entries())
     .map(([name, struct]) => generateStructCode(name, struct))
     .join("\n\n");
-  const functionSection = Object.entries(functions)
+  const functionSection = Array.from(functions.entries())
     .map(([name, func]) => generateFunctionCode(name, func))
     .join("\n\n");
 
@@ -158,9 +170,9 @@ export function generateMoveCode({
 }
 
 export function downloadMoveCode(
-  imports: Record<string, any>,
-  structs: Record<string, any>,
-  functions: Record<string, any>
+  imports: ImportDataMap,
+  structs: StructDataMap,
+  functions: FunctionDataMap
 ) {
   const code = generateMoveCode({ imports, structs, functions });
   const blob = new Blob([code], { type: "text/plain" });

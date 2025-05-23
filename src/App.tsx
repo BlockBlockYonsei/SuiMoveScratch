@@ -6,7 +6,7 @@ import {
 // import { getFullnodeUrl } from "@mysten/sui/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Routers from "./Routers";
-
+import { SidebarProvider } from "@/components/ui/sidebar";
 const { networkConfig } = createNetworkConfig({
   // localnet: { url: getFullnodeUrl("localnet") },
   // mainnet: { url: getFullnodeUrl("mainnet") },
@@ -18,9 +18,11 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
-        <WalletProvider>
-          <Routers />
-        </WalletProvider>
+        <SidebarProvider>
+          <WalletProvider preferredWallets={["suiet"]}>
+            <Routers />
+          </WalletProvider>
+        </SidebarProvider>
       </SuiClientProvider>
     </QueryClientProvider>
   );

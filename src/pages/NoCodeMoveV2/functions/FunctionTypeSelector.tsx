@@ -1,0 +1,279 @@
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { SuiMoveAbilitySet, SuiMoveNormalizedType } from "@mysten/sui/client";
+import { useContext } from "react";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
+import { SUI_PACKAGE_ALIASES } from "@/Constants";
+import { parseSuiMoveNormalizedType } from "@/pages/PackageViewer1/utils";
+
+export default function FunctionTypeSelect({
+  functionName,
+  defaultValue,
+  onChange,
+  typeParameters,
+  setParameters,
+  index,
+}: {
+  functionName: string;
+  typeParameters: { name: string; type: SuiMoveAbilitySet }[];
+  // defaultValue?: SuiMoveNormalizedType | { abilities: string[] };
+  defaultValue?: SuiMoveNormalizedType;
+  onChange?: (type: SuiMoveNormalizedType) => void;
+  setParameters: React.Dispatch<
+    React.SetStateAction<
+      {
+        name: string;
+        type: SuiMoveNormalizedType;
+      }[]
+    >
+  >;
+  index: number;
+}) {
+  const { imports, structs } = useContext(SuiMoveModuleContext);
+
+  const PRIMITIVE_TYPES: SuiMoveNormalizedType[] = [
+    "Bool",
+    "U8",
+    "U16",
+    "U32",
+    "U64",
+    "U128",
+    "U256",
+    "Address",
+    "Signer",
+  ];
+
+  const getDefaultValue = () => {
+    if (!defaultValue) return undefined;
+    if (typeof defaultValue === "string") {
+      return `primitive::${defaultValue}`;
+    }
+    // if ("abilities" in defaultValue) {
+    //   return `typeParam::${defaultValue.abilities.join(" + ")}`;
+    // }
+    if ("Struct" in defaultValue) {
+      const { address, module, name } = defaultValue.Struct;
+      if (address === "0x0" && module === "currentModule") {
+        return `currentModule::${name}`;
+      }
+      return `external::${address}::${module}::${name}`;
+    }
+    return undefined;
+  };
+
+  const handleSelect = (value: string) => {
+    if (!onChange) return;
+
+    const [kind, ...rest] = value.split("::");
+    const name = rest[rest.length - 1];
+
+    if (kind === "primitive") {
+      onChange(name as SuiMoveNormalizedType);
+    } else if (kind === "typeParameter") {
+      onChange({
+        Struct: {
+          address: "0x0",
+          module: "currentModule",
+          name: `${name}`,
+          typeArguments: [],
+        },
+      });
+    } else if (kind === "currentModule") {
+      onChange({
+        Struct: {
+          address: "0x0",
+          module: "currentModule",
+          name,
+          typeArguments: [],
+        },
+      });
+    } else if (kind === "external") {
+      const [pkg, module, name] = rest;
+      onChange({
+        Struct: {
+          address: pkg,
+          module: module,
+          name,
+          typeArguments: [],
+        },
+      });
+    }
+  };
+
+  return (
+    <div className="flex gap-2">
+      <Select onValueChange={handleSelect} defaultValue={getDefaultValue()}>
+        <SelectTrigger className="cursor-pointer">
+          <SelectValue placeholder="Select type..." />
+        </SelectTrigger>
+        <SelectContent className="max-h-80 max-w-98 overflow-y-auto grid grid-cols-4">
+          <Label className="px-2 text-xs text-muted-foreground">
+            Primitive Types
+          </Label>
+          <div className="grid grid-cols-4">
+            {PRIMITIVE_TYPES.map((type) => {
+              if (typeof type !== "string") return null;
+              return (
+                <SelectItem
+                  key={type}
+                  value={`primitive::${type}`}
+                  className="col-span-1 cursor-pointer hover:bg-gray-200"
+                >
+                  {type}
+                </SelectItem>
+              );
+            })}
+          </div>
+
+          <Separator className="my-2" />
+
+          <Label className="px-2 text-xs text-muted-foreground">
+            Type Parameters
+          </Label>
+          <div className="grid grid-cols-2">
+            {typeParameters.map((tp) => (
+              <SelectItem
+                key={tp.name}
+                value={`typeParameter::${tp.name}`}
+                className="cursor-pointer hover:bg-gray-200"
+              >
+                {tp.name}
+              </SelectItem>
+            ))}
+          </div>
+
+          <Separator className="my-2" />
+
+          <Label className="px-2 text-xs text-muted-foreground">
+            Current Structs
+          </Label>
+          <div className="grid grid-cols-2">
+            {[...structs.keys()].map((name) => (
+              <SelectItem
+                key={name}
+                value={`currentModule::${name}`}
+                className="cursor-pointer hover:bg-gray-200"
+              >
+                {name}
+              </SelectItem>
+            ))}
+          </div>
+          <Separator className="my-2" />
+
+          <Label className="px-2 text-xs text-muted-foreground">
+            Imported Structs
+          </Label>
+
+          {[...imports.entries()].map(([key, module]) => {
+            const [pkgAddress, moduleName] = key.split("::");
+            const alias = SUI_PACKAGE_ALIASES[pkgAddress] || pkgAddress;
+
+            if (Object.keys(module.structs).length === 0) return;
+
+            return (
+              <div key={moduleName}>
+                <div>
+                  {alias}::{moduleName}
+                </div>
+                <div className="grid grid-cols-2">
+                  {Object.keys(module.structs).map((structName) => {
+                    return (
+                      <SelectItem
+                        key={structName}
+                        value={`external::${pkgAddress}::${moduleName}::${structName}`}
+                        className="cursor-pointer hover:bg-gray-200 break-words whitespace-normal"
+                      >
+                        {structName}
+                      </SelectItem>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </SelectContent>
+      </Select>
+      {defaultValue && (
+        <Select
+          defaultValue={parseSuiMoveNormalizedType(defaultValue).prefix}
+          onValueChange={(value: string) => {
+            console.log("select", value);
+            if (value === "Value") {
+              setParameters((prev) =>
+                prev.map((f, i) =>
+                  i === index
+                    ? {
+                        ...f,
+                        type: parseSuiMoveNormalizedType(defaultValue).core,
+                      }
+                    : f
+                )
+              );
+            } else if (value === "Reference") {
+              setParameters((prev) =>
+                prev.map((f, i) =>
+                  i === index
+                    ? {
+                        ...f,
+                        type: {
+                          Reference:
+                            parseSuiMoveNormalizedType(defaultValue).core,
+                        },
+                      }
+                    : f
+                )
+              );
+            } else if (value === "MutableReference") {
+              setParameters((prev) =>
+                prev.map((f, i) =>
+                  i === index
+                    ? {
+                        ...f,
+                        type: {
+                          MutableReference:
+                            parseSuiMoveNormalizedType(defaultValue).core,
+                        },
+                      }
+                    : f
+                )
+              );
+            } else if (value === "Vector") {
+              setParameters((prev) =>
+                prev.map((f, i) =>
+                  i === index
+                    ? {
+                        ...f,
+                        type: {
+                          Vector: parseSuiMoveNormalizedType(defaultValue).core,
+                        },
+                      }
+                    : f
+                )
+              );
+            }
+          }}
+        >
+          <SelectTrigger className="cursor-pointer">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {["Value", "Reference", "MutableReference", "Vector"].map(
+              (valueType) => (
+                <SelectItem className="cursor-pointer" value={valueType}>
+                  {valueType}
+                </SelectItem>
+              )
+            )}
+          </SelectContent>
+        </Select>
+      )}
+    </div>
+  );
+}

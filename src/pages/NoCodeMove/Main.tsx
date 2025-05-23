@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import Imports from "./_Imports";
 import Structs from "./_Structs";
 import Functions from "./_Functions";
-import { SuiMoveFunction } from "@/types/move";
-import { downloadMoveCode } from "./utils/generateCode";
+import { SuiMoveFunction } from "@/types/move-syntax";
+import { downloadMoveCode } from "../NoCodeMoveV2/utils/generateCode";
 
 export default function Main() {
   const [imports, setImports] = useState<

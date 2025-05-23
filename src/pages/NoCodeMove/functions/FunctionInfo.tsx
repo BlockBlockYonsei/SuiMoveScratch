@@ -1,5 +1,5 @@
 import { SuiMoveVisibility } from "@mysten/sui/client";
-import { SuiMoveFunction } from "@/types/move";
+import { SuiMoveFunction } from "@/types/move-syntax";
 
 interface Props {
   functionName: string;
