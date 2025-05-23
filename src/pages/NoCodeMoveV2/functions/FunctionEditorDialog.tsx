@@ -39,14 +39,12 @@ export default function FunctionEditorDialog() {
   const [returns, setReturns] = useState<
     { name: string; type: SuiMoveNormalizedType }[]
   >([]);
-  // const [returns, setReturns] = useState<SuiMoveNormalizedType[]>([]);
   const [typeParameters, setTypeParameters] = useState<
     { name: string; type: SuiMoveAbilitySet }[]
   >([]);
 
   const [newParamName, setNewParamName] = useState("");
   const [newTypeParamName, setNewTypeParamName] = useState("");
-  // const [newReturnName, setNewReturnName] = useState("");
 
   const { functions, setFunctions, selectedFunction } =
     useContext(SuiMoveModuleContext);
@@ -105,7 +103,6 @@ export default function FunctionEditorDialog() {
       parameters: parameters.map((p) => p.type),
       parameterNames: parameters.map((p) => p.name),
       return: returns.map((r) => r.type),
-      // returnNames: parameters.map((p) => p.name),
     };
     const newSuiMoveFunctionData: SuiMoveFunction = {
       function: newFunctionData,
@@ -158,7 +155,6 @@ export default function FunctionEditorDialog() {
                   /[^a-zA-Z0-9_]/g,
                   ""
                 );
-                // setNewParamName(onlyAlphabet.toLowerCase());
                 setFunctionName(onlyAlphabet.toLocaleLowerCase());
               }}
             />
@@ -247,7 +243,6 @@ export default function FunctionEditorDialog() {
 
                   // 초기화
                   setNewTypeParamName("");
-                  // setNewTypeParamAbilities([]);
                 }}
               >
                 Add
@@ -378,33 +373,10 @@ export default function FunctionEditorDialog() {
           <div className="mb-4">
             <label className="block font-semibold mb-1">Returns</label>
             <div className="flex gap-2 mb-2">
-              {/* <Input
-                value={newReturnName}
-                placeholder="Returns name"
-                onChange={(e) => setNewReturnName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    // if (
-                    //   !newReturnName ||
-                    //   returns.some((p) => p.name === newReturnName)
-                    // )
-                    //   return;
-                    setReturns((prev) => [...prev, "U64"]);
-                    setNewReturnName("");
-                  }
-                }}
-              /> */}
               <Button
                 className="cursor-pointer"
                 onClick={() => {
-                  // if (
-                  //   !newReturnName ||
-                  //   returns.some((p) => p.name === newReturnName)
-                  // )
-                  //   return;
-                  // setReturns([...returns, "U64"]);
                   setReturns([...returns, { name: "", type: "U64" }]);
-                  // setNewReturnName("");
                 }}
               >
                 Add
@@ -455,7 +427,6 @@ export default function FunctionEditorDialog() {
                 parameters: parameters.map((p) => p.type),
                 parameterNames: parameters.map((p) => p.name),
                 return: returns.map((r) => r.type),
-                // returnNames: returns.map((r) => r.name),
               },
               insideCode: [],
             })}
