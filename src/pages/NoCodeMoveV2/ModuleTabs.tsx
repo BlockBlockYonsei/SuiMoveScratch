@@ -48,7 +48,7 @@ export default function ModuleTabs({
         </div>
       ) : (
         moduleNames.map((moduleName) => (
-          <div className="min-w-20 h-full">
+          <div key={moduleName} className="min-w-20 h-full">
             <TabsTrigger
               className="w-full bg-pink-300 rounded-sm cursor-pointer"
               value={moduleName}

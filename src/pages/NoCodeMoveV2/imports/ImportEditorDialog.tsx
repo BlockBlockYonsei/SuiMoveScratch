@@ -48,6 +48,7 @@ export default function ImportEditorDialog() {
       {/* 패키지를 선택한 후만 로딩/오류/리스트 표시 */}
       {Object.keys(SUI_PACKAGE_ALIASES).map((pkg) => (
         <ImportModuleSelector
+          key={pkg}
           className={`${selectedPkg === pkg ? "" : "hidden"}`}
           packageId={pkg}
         />
