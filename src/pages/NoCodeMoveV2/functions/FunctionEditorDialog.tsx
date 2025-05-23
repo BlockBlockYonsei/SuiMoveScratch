@@ -25,7 +25,7 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import AbilitySelector from "../components/AbilitySelector";
 import { X } from "lucide-react";
-import FunctionTypeSelector from "./FunctionTypeSelector";
+import TypeSelector from "../components/TypeSelector";
 import { generateFunctionCode } from "../utils/generateCode";
 
 export default function FunctionEditorDialog() {
@@ -72,7 +72,7 @@ export default function FunctionEditorDialog() {
         );
       }
     } else {
-      // 새로운 struct 생성 시 초기화
+      // 새로운 function 생성 시 초기화
       setFunctionName("new_function");
       setVisibility("Private");
       setTypeParameters([]);
@@ -91,6 +91,8 @@ export default function FunctionEditorDialog() {
   };
 
   const handleComplete = () => {
+    if (!functionName) return;
+
     const newFunctionData: SuiMoveNormalizedFunction & {
       typeParameterNames: string[];
       parameterNames: string[];
@@ -342,17 +344,15 @@ export default function FunctionEditorDialog() {
                 <span className="text-blue-600 font-semibold min-w-[100px]">
                   {param.name}
                 </span>
-                <FunctionTypeSelector
-                  functionName={functionName}
+                <TypeSelector
+                  nameKey={functionName}
                   typeParameters={typeParameters}
-                  defaultValue={param.type}
+                  defaultType={param.type}
                   onChange={(type: SuiMoveNormalizedType) => {
                     setParameters((prev) =>
                       prev.map((f, i) => (i === index ? { ...f, type } : f))
                     );
                   }}
-                  setParameters={setParameters}
-                  index={index}
                 />
 
                 <Button
@@ -388,17 +388,15 @@ export default function FunctionEditorDialog() {
                 <span className="text-blue-600 font-semibold min-w-[100px]">
                   R{index}
                 </span>
-                <FunctionTypeSelector
-                  functionName={functionName}
+                <TypeSelector
+                  nameKey={functionName}
                   typeParameters={typeParameters}
-                  defaultValue={r.type}
+                  defaultType={r.type}
                   onChange={(type: SuiMoveNormalizedType) => {
                     setReturns((prev) =>
-                      prev.map((f, i) => (i === index ? { name: "", type } : f))
+                      prev.map((r, i) => (i === index ? { ...r, type } : r))
                     );
                   }}
-                  setParameters={setReturns}
-                  index={index}
                 />
                 <Button
                   variant="ghost"

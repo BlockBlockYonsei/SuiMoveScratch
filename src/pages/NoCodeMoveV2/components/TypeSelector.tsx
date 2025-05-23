@@ -8,6 +8,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import {
+  SuiMoveAbilitySet,
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
@@ -16,15 +17,17 @@ import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
 import { PRIMITIVE_TYPES } from "@/Constants";
 
-export default function StructTypeSelector({
-  structName,
-  fieldType,
-  onChange,
+export default function TypeSelector({
+  nameKey,
+  defaultType,
   typeParameters,
+  onChange,
 }: {
-  structName: string;
-  typeParameters: { name: string; type: SuiMoveStructTypeParameter }[];
-  fieldType?: SuiMoveNormalizedType;
+  nameKey: string;
+  defaultType?: SuiMoveNormalizedType;
+  typeParameters:
+    | { name: string; type: SuiMoveStructTypeParameter }[]
+    | { name: string; type: SuiMoveAbilitySet }[];
   onChange?: (type: SuiMoveNormalizedType) => void;
 }) {
   const { imports, structs, selectedStruct } = useContext(SuiMoveModuleContext);
@@ -103,7 +106,7 @@ export default function StructTypeSelector({
         onChange(convertedType);
       }}
       defaultValue={
-        fieldType ? convertTypeToSelectValue(fieldType) : "primitive:::U64"
+        defaultType ? convertTypeToSelectValue(defaultType) : "primitive:::U64"
       }
     >
       <SelectTrigger className="cursor-pointer">
@@ -152,7 +155,7 @@ export default function StructTypeSelector({
         </Label>
         <div className="grid grid-cols-2">
           {[...structs.keys()]
-            .filter((name) => name !== structName)
+            .filter((name) => name !== nameKey)
             .map((name) => (
               <SelectItem
                 key={name}
