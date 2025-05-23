@@ -54,48 +54,54 @@ export default function StructTypeSelector({
     return "";
   };
 
-  const handleSelect = (value: string) => {
-    if (!onChange) return;
-
+  const convertSelectValueToType = (value: string): SuiMoveNormalizedType => {
     const [typeBoundary, rest] = value.split(":::");
     const [name, module, address, accessSymantic] = rest.split("::");
 
     if (typeBoundary === "primitive") {
-      onChange(name as SuiMoveNormalizedType);
+      return name as SuiMoveNormalizedType;
     } else if (typeBoundary === "typeParameter") {
-      onChange({
+      return {
         TypeParameter: typeParameters.findIndex((tp) => tp.name === name),
-      });
+      };
     } else if (typeBoundary === "moduleStruct") {
       if (!accessSymantic) {
-        onChange({
+        return {
           Struct: { address, module, name, typeArguments: [] },
-        });
+        };
       } else if (accessSymantic === "reference") {
-        onChange({
+        return {
           Reference: {
             Struct: { address, module, name, typeArguments: [] },
           },
-        });
+        };
       } else if (accessSymantic === "mutReference") {
-        onChange({
+        return {
           MutableReference: {
             Struct: { address, module, name, typeArguments: [] },
           },
-        });
+        };
       } else if (accessSymantic === "vector") {
-        onChange({
+        return {
           Vector: {
             Struct: { address, module, name, typeArguments: [] },
           },
-        });
+        };
       }
     }
+    return {
+      Struct: { address: "", module: "", name: "unknown", typeArguments: [] },
+    };
   };
 
   return (
     <Select
-      onValueChange={handleSelect}
+      onValueChange={(value: string) => {
+        if (!onChange) return;
+
+        const convertedType = convertSelectValueToType(value);
+        onChange(convertedType);
+      }}
       defaultValue={
         fieldType ? convertTypeToSelectValue(fieldType) : "primitive:::U64"
       }
@@ -150,7 +156,7 @@ export default function StructTypeSelector({
             .map((name) => (
               <SelectItem
                 key={name}
-                value={`moduleStruct:::${structName}::currentModule::0x0`}
+                value={`moduleStruct:::${name}::currentModule::0x0`}
                 className="cursor-pointer hover:bg-gray-200"
               >
                 {name}

@@ -3,7 +3,7 @@ import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SuiMoveFunction } from "@/types/move-syntax";
 import { X } from "lucide-react";
 import { useContext } from "react";
-import { formatType } from "../utils/generateCode";
+import { convertTypeToString } from "../utils/generateCode";
 import NameBox from "../components/NameBox";
 
 export default function FunctionCard({
@@ -109,7 +109,7 @@ export default function FunctionCard({
                 :
                 <span className="text-gray-500 flex gap-1 flex-wrap">
                   <NameBox className="border-pink-300">
-                    {formatType(param)}
+                    {convertTypeToString(param)}
                   </NameBox>
                 </span>
               </div>
@@ -132,7 +132,7 @@ export default function FunctionCard({
                 className="flex justify-between text-sm text-gray-800"
               >
                 <NameBox className="border-emerald-300">
-                  {formatType(r)}
+                  {convertTypeToString(r)}
                 </NameBox>
               </div>
             ))
