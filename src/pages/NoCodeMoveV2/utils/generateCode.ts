@@ -6,24 +6,30 @@ import {
   StructDataMap,
   FunctionDataMap,
 } from "@/types/move-syntax";
-import { SuiMoveNormalizedType } from "@mysten/sui/client";
+import {
+  SuiMoveNormalizedType,
+  SuiMoveStructTypeParameter,
+} from "@mysten/sui/client";
 
-export function formatType(type: SuiMoveNormalizedType): string {
-  if (typeof type === "string") return type.toLowerCase();
+export function convertTypeToString(type: SuiMoveNormalizedType): string {
+  if (typeof type === "string") return type;
   if ("Struct" in type) {
     const { name, typeArguments } = type.Struct;
     const args = typeArguments?.length
-      ? `<${typeArguments.map(formatType).join(", ")}>`
+      ? `<${typeArguments.map(convertTypeToString).join(", ")}>`
       : "";
     return `${name}${args}`;
+  } else if ("TypeParameter" in type) {
+    return type.TypeParameter.toString();
   } else if ("Reference" in type) {
-    return `&${formatType(type.Reference)}`;
+    return `&${convertTypeToString(type.Reference)}`;
   } else if ("MutableReference" in type) {
-    return `&mut ${formatType(type.MutableReference)}`;
+    return convertTypeToString(type);
   } else if ("Vector" in type) {
-    return `vector<${formatType(type.Vector)}>`;
+    return convertTypeToString(type);
   }
-  return "Unknown";
+
+  return "";
 }
 
 export function generateImportsCode(imports: ImportDataMap): string {
@@ -52,7 +58,7 @@ export function generateStructCode(
       : "";
 
   const typeParams = (struct.typeParameters || [])
-    .map((tp: any, i: number) => {
+    .map((tp: SuiMoveStructTypeParameter, i: number) => {
       const phantom = tp.isPhantom ? "phantom " : "";
       const paramName = struct.typeParameterNames?.[i] ?? `T${i}`;
       const abilities = tp.constraints?.abilities
@@ -65,7 +71,14 @@ export function generateStructCode(
   const generics = typeParams ? `<${typeParams}>` : "";
 
   const fields = (struct.fields || [])
-    .map((f: any) => `  ${f.name}: ${formatType(f.type)},`)
+    .map(
+      (f: { name: string; type: SuiMoveNormalizedType }) =>
+        `  ${f.name}: ${
+          typeof f.type === "object" && "TypeParameter" in f.type
+            ? struct.typeParameterNames[Number(convertTypeToString(f.type))]
+            : convertTypeToString(f.type)
+        },`
+    )
     .join("\n");
 
   return `public struct ${name}${generics}${abilities} {\n${fields}\n}`;
@@ -101,7 +114,7 @@ export function generateFunctionCode(
   const parameters = func.function.parameters
     .map(
       (p: any, i: number) =>
-        `${func.function.parameterNames[i]}: ${formatType(p)}`
+        `${func.function.parameterNames[i]}: ${convertTypeToString(p)}`
     )
     .join(", ");
 
@@ -110,8 +123,8 @@ export function generateFunctionCode(
       ? ""
       : `: ${
           func.function.return.length === 1
-            ? formatType(func.function.return[0])
-            : `(${func.function.return.map(formatType).join(", ")})`
+            ? convertTypeToString(func.function.return[0])
+            : `(${func.function.return.map(convertTypeToString).join(", ")})`
         }`;
 
   const insideCodeString = func.insideCode

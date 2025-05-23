@@ -337,7 +337,7 @@ export default function StructEditorDialog() {
                     name: typeParameterNames[i],
                     type: tp,
                   }))}
-                  defaultValue={field.type}
+                  fieldType={field.type}
                   onChange={(type: SuiMoveNormalizedType) => {
                     setFields((prev) =>
                       prev.map((f, i) => (i === index ? { ...f, type } : f))

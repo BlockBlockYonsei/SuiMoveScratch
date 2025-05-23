@@ -17,16 +17,16 @@ import { SUI_PACKAGE_ALIASES } from "@/Constants";
 
 export default function StructTypeSelector({
   structName,
-  defaultValue,
+  fieldType,
   onChange,
   typeParameters,
 }: {
   structName: string;
   typeParameters: { name: string; type: SuiMoveStructTypeParameter }[];
-  defaultValue?: SuiMoveNormalizedType | { abilities: string[] };
+  fieldType?: SuiMoveNormalizedType;
   onChange?: (type: SuiMoveNormalizedType) => void;
 }) {
-  const { imports, structs } = useContext(SuiMoveModuleContext);
+  const { imports, structs, selectedStruct } = useContext(SuiMoveModuleContext);
 
   const PRIMITIVE_TYPES: SuiMoveNormalizedType[] = [
     "Bool",
@@ -40,65 +40,77 @@ export default function StructTypeSelector({
     "Signer",
   ];
 
-  const getDefaultValue = () => {
-    if (!defaultValue) return undefined;
-    if (typeof defaultValue === "string") {
-      return `primitive::${defaultValue}`;
+  const convertTypeToSelectValue = (type: SuiMoveNormalizedType): string => {
+    if (!selectedStruct) return "primitive:::U64";
+
+    if (typeof type === "string") {
+      return `primitive:::${type}`;
+    } else if ("TypeParameter" in type) {
+      const currentStruct = structs.get(selectedStruct);
+      return currentStruct
+        ? `typeParameter:::${
+            currentStruct.typeParameterNames[type.TypeParameter]
+          }`
+        : "";
+    } else if ("Struct" in type) {
+      const { address, module, name } = type.Struct;
+      return `moduleStruct:::${name}::${module}::${address}`;
+    } else if ("Reference" in type) {
+      return `${convertTypeToSelectValue(type.Reference)}::reference`;
+    } else if ("MutableReference" in type) {
+      return `${convertTypeToSelectValue(type.MutableReference)}::mutReference`;
+    } else if ("Vector" in type) {
+      return `${convertTypeToSelectValue(type.Vector)}::vector`;
     }
-    if ("abilities" in defaultValue) {
-      return `typeParam::${defaultValue.abilities.join(" + ")}`;
-    }
-    if ("Struct" in defaultValue) {
-      const { address, module, name } = defaultValue.Struct;
-      if (address === "0x0" && module === "currentModule") {
-        return `currentModule::${name}`;
-      }
-      return `external::${address}::${module}::${name}`;
-    }
-    return undefined;
+    return "";
   };
 
   const handleSelect = (value: string) => {
     if (!onChange) return;
 
-    const [kind, ...rest] = value.split("::");
-    const name = rest[rest.length - 1];
+    const [typeBoundary, rest] = value.split(":::");
+    const [name, module, address, accessSymantic] = rest.split("::");
 
-    if (kind === "primitive") {
+    if (typeBoundary === "primitive") {
       onChange(name as SuiMoveNormalizedType);
-    } else if (kind === "typeParameter") {
+    } else if (typeBoundary === "typeParameter") {
       onChange({
-        Struct: {
-          address: "0x0",
-          module: "currentModule",
-          name: `${structName}::${name}`,
-          typeArguments: [],
-        },
+        TypeParameter: typeParameters.findIndex((tp) => tp.name === name),
       });
-    } else if (kind === "currentModule") {
-      onChange({
-        Struct: {
-          address: "0x0",
-          module: "currentModule",
-          name,
-          typeArguments: [],
-        },
-      });
-    } else if (kind === "external") {
-      const [pkg, module, name] = rest;
-      onChange({
-        Struct: {
-          address: pkg,
-          module: module,
-          name,
-          typeArguments: [],
-        },
-      });
+    } else if (typeBoundary === "moduleStruct") {
+      if (!accessSymantic) {
+        onChange({
+          Struct: { address, module, name, typeArguments: [] },
+        });
+      } else if (accessSymantic === "reference") {
+        onChange({
+          Reference: {
+            Struct: { address, module, name, typeArguments: [] },
+          },
+        });
+      } else if (accessSymantic === "mutReference") {
+        onChange({
+          MutableReference: {
+            Struct: { address, module, name, typeArguments: [] },
+          },
+        });
+      } else if (accessSymantic === "vector") {
+        onChange({
+          Vector: {
+            Struct: { address, module, name, typeArguments: [] },
+          },
+        });
+      }
     }
   };
 
   return (
-    <Select onValueChange={handleSelect} defaultValue={getDefaultValue()}>
+    <Select
+      onValueChange={handleSelect}
+      defaultValue={
+        fieldType ? convertTypeToSelectValue(fieldType) : "primitive:::U64"
+      }
+    >
       <SelectTrigger className="cursor-pointer">
         <SelectValue placeholder="Select type..." />
       </SelectTrigger>
@@ -112,7 +124,7 @@ export default function StructTypeSelector({
             return (
               <SelectItem
                 key={type}
-                value={`primitive::${type}`}
+                value={`primitive:::${type}`}
                 className="col-span-1 cursor-pointer hover:bg-gray-200"
               >
                 {type}
@@ -130,7 +142,7 @@ export default function StructTypeSelector({
           {typeParameters.map((tp) => (
             <SelectItem
               key={tp.name}
-              value={`typeParameter::${tp.name}`}
+              value={`typeParameter:::${tp.name}`}
               className="cursor-pointer hover:bg-gray-200"
             >
               {tp.name}
@@ -141,7 +153,7 @@ export default function StructTypeSelector({
         <Separator className="my-2" />
 
         <Label className="px-2 text-xs text-muted-foreground">
-          Current Structs
+          Current Module Structs
         </Label>
         <div className="grid grid-cols-2">
           {[...structs.keys()]
@@ -149,17 +161,18 @@ export default function StructTypeSelector({
             .map((name) => (
               <SelectItem
                 key={name}
-                value={`currentModule::${name}`}
+                value={`moduleStruct:::${structName}::currentModule::0x0`}
                 className="cursor-pointer hover:bg-gray-200"
               >
                 {name}
               </SelectItem>
             ))}
         </div>
+
         <Separator className="my-2" />
 
         <Label className="px-2 text-xs text-muted-foreground">
-          Imported Structs
+          Imported Module Structs
         </Label>
 
         {[...imports.entries()].map(([key, module]) => {
@@ -178,7 +191,7 @@ export default function StructTypeSelector({
                   return (
                     <SelectItem
                       key={structName}
-                      value={`external::${pkgAddress}::${moduleName}::${structName}`}
+                      value={`moduleStruct:::${structName}::${moduleName}::${pkgAddress}`}
                       className="cursor-pointer hover:bg-gray-200 break-words whitespace-normal"
                     >
                       {structName}
