@@ -219,39 +219,63 @@ export default function StructEditorDialog() {
 
             {/* 추가된 타입 파라미터 목록 */}
             {typeParameterNames.map((name, index) => (
-              <div key={name} className="flex items-center gap-2 mb-2">
-                <span className="text-blue-600 font-semibold min-w-[100px]">
-                  {name}
-                </span>
-                <AbilitySelector
-                  abilities={typeParameters[index].constraints.abilities}
-                  onChange={(newAbilities) => {
+              <div
+                key={name}
+                className="flex justify-between items-center gap-2 mb-2"
+              >
+                <button
+                  className={`${
+                    typeParameters[index].isPhantom
+                      ? "text-purple-500 border-purple-500"
+                      : ""
+                  } border-2 font-semibold cursor-pointer rounded-md p-1 transition-all`}
+                  onClick={() => {
+                    // setNewTypeParamIsPhantom((prev) => !prev);
                     setTypeParameters((prev) => {
                       const newParams = [...prev];
                       newParams[index] = {
                         ...newParams[index],
-                        constraints: { abilities: newAbilities },
+                        // constraints: { abilities: newAbilities },
+                        isPhantom: !newParams[index].isPhantom,
                       };
                       return newParams;
                     });
                   }}
-                  className="flex-1"
-                />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-gray-500 hover:text-gray-700 p-1 h-7 w-7 flex-shrink-0"
-                  onClick={() => {
-                    setTypeParameterNames((prev) =>
-                      prev.filter((_, i) => i !== index)
-                    );
-                    setTypeParameters((prev) =>
-                      prev.filter((_, i) => i !== index)
-                    );
-                  }}
                 >
-                  <X className="h-4 w-4" />
-                </Button>
+                  {/* Phantom */}
+                  <span className="text-blue-600 font-semibold">{name}</span>
+                </button>
+                <div className="flex">
+                  <AbilitySelector
+                    abilities={typeParameters[index].constraints.abilities}
+                    onChange={(newAbilities) => {
+                      setTypeParameters((prev) => {
+                        const newParams = [...prev];
+                        newParams[index] = {
+                          ...newParams[index],
+                          constraints: { abilities: newAbilities },
+                        };
+                        return newParams;
+                      });
+                    }}
+                    className="flex-1"
+                  />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-gray-500 hover:text-gray-700 p-1 h-7 w-7 flex-shrink-0"
+                    onClick={() => {
+                      setTypeParameterNames((prev) =>
+                        prev.filter((_, i) => i !== index)
+                      );
+                      setTypeParameters((prev) =>
+                        prev.filter((_, i) => i !== index)
+                      );
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             ))}
           </div>

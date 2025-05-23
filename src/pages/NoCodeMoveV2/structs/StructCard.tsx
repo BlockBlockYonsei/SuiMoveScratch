@@ -76,16 +76,26 @@ export default function StructCard({
                 key={idx}
                 className="text-sm text-gray-800 flex items-center gap-2"
               >
-                <NameBox className="border-none">
-                  {structData.typeParameterNames[idx]}:
+                <NameBox
+                  className={`${
+                    param.isPhantom ? "text-purple-500" : ""
+                  } border-none`}
+                >
+                  {structData.typeParameterNames[idx]}
                 </NameBox>
                 :
                 <span className="text-gray-500 flex gap-1 flex-wrap">
-                  {param.constraints.abilities.map((a) => (
-                    <NameBox key={a} className="border-blue-300">
-                      {a.toUpperCase()}
-                    </NameBox>
-                  ))}
+                  {param.constraints.abilities.length > 0 ? (
+                    param.constraints.abilities.map((a) => (
+                      <NameBox key={a} className="border-blue-300">
+                        {a.toUpperCase()}
+                      </NameBox>
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-500 border rounded-sm w-14">
+                      None
+                    </p>
+                  )}
                 </span>
               </div>
             ))
