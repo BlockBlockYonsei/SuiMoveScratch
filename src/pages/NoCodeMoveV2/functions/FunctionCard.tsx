@@ -5,6 +5,7 @@ import { SuiMoveFunction } from "@/types/move-syntax";
 import { X } from "lucide-react";
 import { useContext } from "react";
 import { SuiMoveNormalizedType } from "@mysten/sui/client";
+import { formatType } from "../utils/generateCode";
 
 export default function FunctionCard({
   functionName,
@@ -16,19 +17,19 @@ export default function FunctionCard({
   const fn = functionData.function;
   const { setFunctions } = useContext(SuiMoveModuleContext);
 
-  const formatType = (type: SuiMoveNormalizedType): string => {
-    if (typeof type === "string") return type;
-    if ("Struct" in type && type.Struct) {
-      const { name, typeArguments } = type.Struct;
-      if (typeArguments && typeArguments.length > 0) {
-        return `${name}<${typeArguments
-          .map((t: any) => formatType(t))
-          .join(", ")}>`;
-      }
-      return name;
-    }
-    return JSON.stringify(type);
-  };
+  // const formatType = (type: SuiMoveNormalizedType): string => {
+  //   if (typeof type === "string") return type;
+  //   if ("Struct" in type && type.Struct) {
+  //     const { name, typeArguments } = type.Struct;
+  //     if (typeArguments && typeArguments.length > 0) {
+  //       return `${name}<${typeArguments
+  //         .map((t: any) => formatType(t))
+  //         .join(", ")}>`;
+  //     }
+  //     return name;
+  //   }
+  //   return JSON.stringify(type);
+  // };
   return (
     <Card className="relative">
       <CardHeader>
@@ -143,10 +144,11 @@ export default function FunctionCard({
           ) : (
             functionData.function.return.map((r, i) => (
               <div
-                key={functionData.function.returnNames[i]}
+                // key={functionData.function.returnNames[i]}
+                key={i}
                 className="flex justify-between text-sm text-gray-800"
               >
-                <span>{functionData.function.returnNames[i]}</span>
+                {/* <span>{functionData.function.returnNames[i]}</span> */}
                 <span className="text-xs text-gray-500">{formatType(r)}</span>
               </div>
             ))

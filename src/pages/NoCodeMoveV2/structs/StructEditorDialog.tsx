@@ -143,7 +143,19 @@ export default function StructEditorDialog() {
             <label className="block font-semibold mb-1">Struct Name</label>
             <Input
               value={structName}
-              onChange={(e) => setStructName(e.target.value)}
+              onChange={(e) => {
+                const raw = e.target.value;
+                if (raw.length > 0 && /^\d/.test(raw)) {
+                  return; // 첫 글자가 숫자면 무시
+                }
+                const onlyAlphabet = e.target.value.replace(
+                  /[^a-zA-Z0-9]/g,
+                  ""
+                );
+                const firstLetterCapitalized =
+                  onlyAlphabet.charAt(0).toUpperCase() + onlyAlphabet.slice(1);
+                setStructName(firstLetterCapitalized);
+              }}
             />
           </div>
 
@@ -160,7 +172,20 @@ export default function StructEditorDialog() {
               <Input
                 placeholder="Type parameter name"
                 value={newTypeParamName}
-                onChange={(e) => setNewTypeParamName(e.target.value)}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  if (raw.length > 0 && /^\d/.test(raw)) {
+                    return; // 첫 글자가 숫자면 무시
+                  }
+                  const onlyAlphabet = e.target.value.replace(
+                    /[^a-zA-Z0-9]/g,
+                    ""
+                  );
+                  const firstLetterCapitalized =
+                    onlyAlphabet.charAt(0).toUpperCase() +
+                    onlyAlphabet.slice(1);
+                  setNewTypeParamName(firstLetterCapitalized);
+                }}
               />
               <Button
                 className="cursor-pointer"
@@ -238,7 +263,17 @@ export default function StructEditorDialog() {
               <Input
                 value={newFieldName}
                 placeholder="Field name"
-                onChange={(e) => setNewFieldName(e.target.value)}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  if (raw.length > 0 && /^[\d_]/.test(raw)) {
+                    return; // 첫 글자가 숫자거나 _면 무시
+                  }
+                  const onlyAlphabet = e.target.value.replace(
+                    /[^a-zA-Z0-9_]/g,
+                    ""
+                  );
+                  setNewFieldName(onlyAlphabet.toLowerCase());
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     if (

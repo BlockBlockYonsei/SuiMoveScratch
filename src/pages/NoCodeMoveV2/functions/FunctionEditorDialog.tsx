@@ -39,13 +39,14 @@ export default function FunctionEditorDialog() {
   const [returns, setReturns] = useState<
     { name: string; type: SuiMoveNormalizedType }[]
   >([]);
+  // const [returns, setReturns] = useState<SuiMoveNormalizedType[]>([]);
   const [typeParameters, setTypeParameters] = useState<
     { name: string; type: SuiMoveAbilitySet }[]
   >([]);
 
   const [newParamName, setNewParamName] = useState("");
   const [newTypeParamName, setNewTypeParamName] = useState("");
-  const [newReturnName, setNewReturnName] = useState("");
+  // const [newReturnName, setNewReturnName] = useState("");
 
   const { functions, setFunctions, selectedFunction } =
     useContext(SuiMoveModuleContext);
@@ -69,10 +70,7 @@ export default function FunctionEditorDialog() {
           }))
         );
         setReturns(
-          functionData.function.return.map((r, i) => ({
-            name: functionData.function.returnNames[i],
-            type: r,
-          }))
+          functionData.function.return.map((r) => ({ name: "", type: r }))
         );
       }
     } else {
@@ -98,7 +96,7 @@ export default function FunctionEditorDialog() {
     const newFunctionData: SuiMoveNormalizedFunction & {
       typeParameterNames: string[];
       parameterNames: string[];
-      returnNames: string[];
+      // returnNames: string[];
     } = {
       isEntry: isEntry,
       visibility: visibility,
@@ -107,7 +105,7 @@ export default function FunctionEditorDialog() {
       parameters: parameters.map((p) => p.type),
       parameterNames: parameters.map((p) => p.name),
       return: returns.map((r) => r.type),
-      returnNames: parameters.map((p) => p.name),
+      // returnNames: parameters.map((p) => p.name),
     };
     const newSuiMoveFunctionData: SuiMoveFunction = {
       function: newFunctionData,
@@ -151,7 +149,18 @@ export default function FunctionEditorDialog() {
             <label className="block mb-1 font-semibold">Function Name</label>
             <Input
               value={functionName}
-              onChange={(e) => setFunctionName(e.target.value)}
+              onChange={(e) => {
+                const raw = e.target.value;
+                if (raw.length > 0 && /^[\d_]/.test(raw)) {
+                  return; // 첫 글자가 숫자거나 _면 무시
+                }
+                const onlyAlphabet = e.target.value.replace(
+                  /[^a-zA-Z0-9_]/g,
+                  ""
+                );
+                // setNewParamName(onlyAlphabet.toLowerCase());
+                setFunctionName(onlyAlphabet.toLocaleLowerCase());
+              }}
             />
           </div>
           {/* Entry + Visibility */}
@@ -202,7 +211,20 @@ export default function FunctionEditorDialog() {
               <Input
                 placeholder="Type parameter name"
                 value={newTypeParamName}
-                onChange={(e) => setNewTypeParamName(e.target.value)}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  if (raw.length > 0 && /^\d/.test(raw)) {
+                    return; // 첫 글자가 숫자면 무시
+                  }
+                  const onlyAlphabet = e.target.value.replace(
+                    /[^a-zA-Z0-9]/g,
+                    ""
+                  );
+                  const firstLetterCapitalized =
+                    onlyAlphabet.charAt(0).toUpperCase() +
+                    onlyAlphabet.slice(1);
+                  setNewTypeParamName(firstLetterCapitalized);
+                }}
               />
               <Button
                 className="cursor-pointer"
@@ -275,7 +297,17 @@ export default function FunctionEditorDialog() {
               <Input
                 value={newParamName}
                 placeholder="Parameter name"
-                onChange={(e) => setNewParamName(e.target.value)}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  if (raw.length > 0 && /^[\d_]/.test(raw)) {
+                    return; // 첫 글자가 숫자거나 _면 무시
+                  }
+                  const onlyAlphabet = e.target.value.replace(
+                    /[^a-zA-Z0-9_]/g,
+                    ""
+                  );
+                  setNewParamName(onlyAlphabet.toLowerCase());
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     if (
@@ -324,7 +356,10 @@ export default function FunctionEditorDialog() {
                       prev.map((f, i) => (i === index ? { ...f, type } : f))
                     );
                   }}
+                  setParameters={setParameters}
+                  index={index}
                 />
+
                 <Button
                   variant="ghost"
                   size="sm"
@@ -343,38 +378,33 @@ export default function FunctionEditorDialog() {
           <div className="mb-4">
             <label className="block font-semibold mb-1">Returns</label>
             <div className="flex gap-2 mb-2">
-              <Input
+              {/* <Input
                 value={newReturnName}
                 placeholder="Returns name"
                 onChange={(e) => setNewReturnName(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    if (
-                      !newReturnName ||
-                      returns.some((p) => p.name === newReturnName)
-                    )
-                      return;
-                    setReturns((prev) => [
-                      ...prev,
-                      { name: newReturnName, type: "U64" },
-                    ]);
+                    // if (
+                    //   !newReturnName ||
+                    //   returns.some((p) => p.name === newReturnName)
+                    // )
+                    //   return;
+                    setReturns((prev) => [...prev, "U64"]);
                     setNewReturnName("");
                   }
                 }}
-              />
+              /> */}
               <Button
                 className="cursor-pointer"
                 onClick={() => {
-                  if (
-                    !newReturnName ||
-                    returns.some((p) => p.name === newReturnName)
-                  )
-                    return;
-                  setReturns([
-                    ...returns,
-                    { name: newReturnName, type: "U64" },
-                  ]);
-                  setNewReturnName("");
+                  // if (
+                  //   !newReturnName ||
+                  //   returns.some((p) => p.name === newReturnName)
+                  // )
+                  //   return;
+                  // setReturns([...returns, "U64"]);
+                  setReturns([...returns, { name: "", type: "U64" }]);
+                  // setNewReturnName("");
                 }}
               >
                 Add
@@ -382,9 +412,9 @@ export default function FunctionEditorDialog() {
             </div>
 
             {returns.map((r, index) => (
-              <div key={r.name} className="flex items-center gap-2 mb-2">
+              <div key={index} className="flex items-center gap-2 mb-2">
                 <span className="text-blue-600 font-semibold min-w-[100px]">
-                  {r.name}
+                  R{index}
                 </span>
                 <FunctionTypeSelector
                   functionName={functionName}
@@ -392,9 +422,11 @@ export default function FunctionEditorDialog() {
                   defaultValue={r.type}
                   onChange={(type: SuiMoveNormalizedType) => {
                     setReturns((prev) =>
-                      prev.map((f, i) => (i === index ? { ...f, type } : f))
+                      prev.map((f, i) => (i === index ? { name: "", type } : f))
                     );
                   }}
+                  setParameters={setReturns}
+                  index={index}
                 />
                 <Button
                   variant="ghost"
@@ -423,7 +455,7 @@ export default function FunctionEditorDialog() {
                 parameters: parameters.map((p) => p.type),
                 parameterNames: parameters.map((p) => p.name),
                 return: returns.map((r) => r.type),
-                returnNames: returns.map((r) => r.name),
+                // returnNames: returns.map((r) => r.name),
               },
               insideCode: [],
             })}
