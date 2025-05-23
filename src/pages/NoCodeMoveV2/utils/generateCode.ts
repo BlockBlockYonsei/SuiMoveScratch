@@ -17,7 +17,7 @@ export function convertTypeToString(type: SuiMoveNormalizedType): string {
   if ("Struct" in type) {
     const { name, typeArguments } = type.Struct;
     const args = typeArguments?.length
-      ? `<${typeArguments.map(convertTypeToString).join(", ")}>`
+      ? `<${typeArguments.map((t) => `T${convertTypeToString(t)}`).join(", ")}>`
       : "";
     return `${name}${args}`;
   } else if ("TypeParameter" in type) {
@@ -25,9 +25,9 @@ export function convertTypeToString(type: SuiMoveNormalizedType): string {
   } else if ("Reference" in type) {
     return `&${convertTypeToString(type.Reference)}`;
   } else if ("MutableReference" in type) {
-    return convertTypeToString(type);
+    return `&mut ${convertTypeToString(type.MutableReference)}`;
   } else if ("Vector" in type) {
-    return convertTypeToString(type);
+    return `vector<${convertTypeToString(type.Vector)}>`;
   }
 
   return "";
@@ -137,17 +137,19 @@ export function generateFunctionCode(
   const insideCodeString = func.insideCode
     .map((code) => {
       if (code.return.length > 0) {
-        return `  let ${
-          code.return.length === 1
-            ? `${code.parameters.map((p) => p).join(", ")}`
-            : `(${code.parameters.map((p) => p).join(", ")}`
-        }${code.return.length === 1 ? "" : ")"} = ${
+        return `  let (${code.return
+          .map((r, i) => {
+            return `${code.returnVariableNames[i]}: ${convertTypeToString(r)}`;
+          })
+          .join(", ")})${code.return.length === 1 ? "" : ")"} = ${
           code.functionName
-        }(${code.parameters.map((p) => p).join(", ")})`;
+        }(${code.parameters
+          .map((p, i) => `${code.argumentNames[i]}: ${convertTypeToString(p)}`)
+          .join(", ")});`;
       } else {
         return `  ${code.functionName}(${code.parameters
-          .map((p) => p)
-          .join(", ")})`;
+          .map((p) => convertTypeToString(p))
+          .join(", ")});`;
       }
     })
     .join("\n");
