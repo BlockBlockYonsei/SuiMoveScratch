@@ -70,13 +70,30 @@ export default function FunctionSelector({
             return (
               <SelectItem
                 key={type}
-                value={`primitive:::${type}`}
+                value={`primitive::primitive::${type}`}
                 className="col-span-1 cursor-pointer hover:bg-gray-200"
               >
                 {type}
               </SelectItem>
             );
           })}
+        </div>
+
+        <Separator className="my-2" />
+
+        <Label className="px-2 text-xs text-muted-foreground">
+          Current Module Structs
+        </Label>
+        <div className="grid grid-cols-2">
+          {[...structs.keys()].map((name) => (
+            <SelectItem
+              key={name}
+              value={`0x0::currentModuleStruct::${name}`}
+              className="cursor-pointer hover:bg-gray-200"
+            >
+              {name}
+            </SelectItem>
+          ))}
         </div>
 
         <Separator className="my-2" />
@@ -90,7 +107,7 @@ export default function FunctionSelector({
             .map((name) => (
               <SelectItem
                 key={name}
-                value={`0x0::currentModule::${name}`}
+                value={`0x0::currentModuleFunction::${name}`}
                 className="cursor-pointer hover:bg-gray-200"
               >
                 {name}

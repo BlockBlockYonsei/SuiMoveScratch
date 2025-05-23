@@ -1,6 +1,7 @@
 import {
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
+  SuiMoveNormalizedType,
 } from "@mysten/sui/client";
 
 export type ImportDataMap = Map<string, ImportedSuiMoveModule>;
@@ -28,7 +29,12 @@ export type SuiMoveFunction = {
     typeParameterNames: string[];
   };
   // insideCode: Map<string, FunctionInsideCodeLine>;
-  insideCode: FunctionInsideCodeLine[];
+  insideCode: (
+    | FunctionInsideCodeLine
+    // | { [structName: string]: SuiMoveNormalizedStruct }
+    | { struct: { structName: string } & SuiMoveStruct }
+    | SuiMoveNormalizedType
+  )[];
 };
 
 export interface FunctionInsideCodeLine extends SuiMoveNormalizedFunction {

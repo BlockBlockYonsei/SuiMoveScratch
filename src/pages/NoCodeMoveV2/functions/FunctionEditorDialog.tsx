@@ -20,7 +20,11 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { FunctionInsideCodeLine, SuiMoveFunction } from "@/types/move-syntax";
+import {
+  FunctionInsideCodeLine,
+  SuiMoveFunction,
+  SuiMoveStruct,
+} from "@/types/move-syntax";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import AbilitySelector from "../components/AbilitySelector";
@@ -47,7 +51,14 @@ export default function FunctionEditorDialog() {
   // const [insideCodes, setInsideCodes] = useState<
   //   Map<string, FunctionInsideCodeLine>
   // >(new Map());
-  const [insideCodes, setInsideCodes] = useState<FunctionInsideCodeLine[]>([]);
+  const [insideCodes, setInsideCodes] = useState<
+    (
+      | FunctionInsideCodeLine
+      // | { [structName: string]: SuiMoveNormalizedStruct }
+      | { struct: { structName: string } & SuiMoveStruct }
+      | SuiMoveNormalizedType
+    )[]
+  >([]);
 
   const [newInsideCodeFunctionName, setNewInsideCodeFunctionName] =
     useState("");
@@ -55,7 +66,7 @@ export default function FunctionEditorDialog() {
   const [newParamName, setNewParamName] = useState("");
   const [newTypeParamName, setNewTypeParamName] = useState("");
 
-  const { imports, functions, setFunctions, selectedFunction } =
+  const { imports, structs, functions, setFunctions, selectedFunction } =
     useContext(SuiMoveModuleContext);
 
   useEffect(() => {
@@ -455,18 +466,31 @@ export default function FunctionEditorDialog() {
             className="cursor-pointer w-90"
             onClick={() => {
               setInsideCodes((prev) => {
-                const [pkg, module, functionName] =
+                const [pkg, module, name] =
                   newInsideCodeFunctionName.split("::");
 
-                const importedModule = imports.get(`${pkg}::${module}`);
+                if (pkg === "primitive") {
+                  return [...prev, name as SuiMoveNormalizedType];
+                }
+                if (pkg === "0x0" && module === "currentModuleStruct") {
+                  const selectedStruct = structs.get(name);
+                  if (!selectedStruct) return prev;
+                  return [
+                    ...prev,
+                    {
+                      struct: { ...selectedStruct, structName: name },
+                    },
+                  ];
+                }
 
-                if (pkg === "0x0") {
-                  const selectedFunction = functions.get(functionName);
+                const importedModule = imports.get(`${pkg}::${module}`);
+                if (pkg === "0x0" && module === "currentModuleFunction") {
+                  const selectedFunction = functions.get(name);
                   if (!selectedFunction) return prev;
                   return [
                     ...prev,
                     {
-                      functionName,
+                      functionName: name,
                       visibility: selectedFunction.function.visibility,
                       isEntry: selectedFunction.function.isEntry,
                       typeParameters: selectedFunction.function.typeParameters,
@@ -488,12 +512,11 @@ export default function FunctionEditorDialog() {
                 }
 
                 if (importedModule && importedModule.functions) {
-                  const selectedFunction =
-                    importedModule.functions[functionName];
+                  const selectedFunction = importedModule.functions[name];
                   return [
                     ...prev,
                     {
-                      functionName: `${module}::${functionName}`,
+                      functionName: `${module}::${name}`,
                       visibility: selectedFunction.visibility,
                       isEntry: selectedFunction.isEntry,
                       typeParameters: selectedFunction.typeParameters,
@@ -510,7 +533,6 @@ export default function FunctionEditorDialog() {
                       ),
                     } as FunctionInsideCodeLine,
                   ];
-                } else {
                 }
 
                 return prev;
