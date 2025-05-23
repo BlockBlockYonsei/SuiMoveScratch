@@ -24,7 +24,7 @@ export default function StructPreview() {
   };
 
   return (
-    <div className="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-2">
+    <div className="space-y-2 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-2">
       {Array.from(structs.entries()).map(([structName, structData]) => (
         <Dialog key={structName}>
           <DialogTrigger

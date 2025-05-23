@@ -1,14 +1,7 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { X } from "lucide-react";
 import { SuiMoveStruct } from "@/types/move-syntax";
 import { SuiMoveNormalizedType } from "@mysten/sui/client";
-import { Button } from "@/components/ui/button";
 import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 
@@ -51,24 +44,22 @@ export default function StructCard({
           <X size={20} />
         </button>
 
-        <CardTitle className="text-xl text-start font-bold text-emerald-600 truncate">
-          {structName}
+        <CardTitle className="flex gap-2 flex-wrap items-center">
+          <span className="text-xl text-start font-bold text-emerald-600">
+            {structName}
+          </span>
+          <span>
+            {structData.abilities.abilities.length > 0 && (
+              <span className="flex gap-1 flex-wrap">
+                {structData.abilities.abilities.map((a) => (
+                  <NameBox className="border-pink-300 text-gray-500">
+                    {a.toUpperCase()}
+                  </NameBox>
+                ))}
+              </span>
+            )}
+          </span>
         </CardTitle>
-        <CardDescription className="text-start">
-          {structData.abilities.abilities.length > 0 && (
-            <span>
-              {structData.abilities.abilities.map((a) => (
-                <Button
-                  key={a}
-                  variant={"outline"}
-                  className="cursor-pointer text-xs px-2 font-semibold border-2 py-1"
-                >
-                  {a.toUpperCase()}
-                </Button>
-              ))}
-            </span>
-          )}
-        </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-4">
@@ -82,30 +73,24 @@ export default function StructCard({
             structData.typeParameters.map((param, idx) => (
               <div
                 key={idx}
-                className="text-sm text-gray-800 flex items-center justify-between"
+                className="text-sm text-gray-800 flex items-center gap-2"
               >
-                <span
-                  className={`${
-                    !param.isPhantom ? "text-purple-500" : ""
-                  } font-semibold`}
-                >
+                <NameBox className="border-none">
                   {structData.typeParameterNames[idx]}:
-                </span>
-                <span className="text-xs text-gray-500">
+                </NameBox>
+                :
+                <span className="text-gray-500 flex gap-1 flex-wrap">
                   {param.constraints.abilities.map((a) => (
-                    <Button
-                      key={a}
-                      variant={"outline"}
-                      className="cursor-pointer text-xs px-1 font-semibold border-2"
-                    >
+                    <NameBox key={a} className="border-blue-300">
                       {a.toUpperCase()}
-                    </Button>
+                    </NameBox>
                   ))}
                 </span>
               </div>
             ))
           )}
         </div>
+
         <div>
           <CardTitle className="font-semibold text-sm text-start text-muted-foreground mb-1">
             Fields
@@ -117,17 +102,32 @@ export default function StructCard({
             structData.fields.map((field) => (
               <div
                 key={field.name}
-                className="flex justify-between text-sm text-gray-800"
+                className="text-sm text-gray-800 flex items-center gap-2"
               >
-                <span>{field.name}</span>
-                <span className="text-xs text-gray-500">
+                <NameBox className="border-none">{field.name}</NameBox>:
+                <NameBox className="text-gray-500 border-emerald-300">
                   {formatType(field.type)}
-                </span>
+                </NameBox>
               </div>
             ))
           )}
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+function NameBox({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<"button">) {
+  return (
+    <span
+      className={`border-1 rounded-md p-1 font-semibold ${className}`}
+      {...props}
+    >
+      {children}
+    </span>
   );
 }
