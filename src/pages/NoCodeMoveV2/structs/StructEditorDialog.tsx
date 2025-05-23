@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import {
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -14,7 +15,6 @@ import {
 } from "@mysten/sui/client";
 import TypeSelector from "../components/TypeSelector";
 import { generateStructCode } from "@/pages/NoCodeMoveV2/utils/generateCode";
-import { DialogClose } from "@radix-ui/react-dialog";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SuiMoveStruct } from "@/types/move-syntax";
 import { X } from "lucide-react";
@@ -140,7 +140,7 @@ export default function StructEditorDialog() {
         <section className="col-span-6">
           {/* Struct Name */}
           <div className="mb-4">
-            <label className="block font-semibold mb-1">Struct Name</label>
+            <p className="block font-semibold mb-1">Struct Name</p>
             <Input
               value={structName}
               onChange={(e) => {
@@ -161,13 +161,13 @@ export default function StructEditorDialog() {
 
           {/* Abilities */}
           <div className="mb-4">
-            <label className="block font-semibold mb-1">Abilities</label>
+            <p className="block font-semibold mb-1">Abilities</p>
             <AbilitySelector abilities={abilities} onChange={setAbilities} />
           </div>
 
           {/* Type Parameters */}
           <div className="mb-4">
-            <label className="block font-semibold mb-1">Type Parameters</label>
+            <p className="block font-semibold mb-1">Type Parameters</p>
             <div className="flex gap-2 mb-2">
               <Input
                 placeholder="Type parameter name"
@@ -282,7 +282,7 @@ export default function StructEditorDialog() {
 
           {/* Fields */}
           <div className="mb-4">
-            <label className="block font-semibold mb-1">Fields</label>
+            <p className="block font-semibold mb-1">Fields</p>
             <div className="flex gap-2 mb-2">
               <Input
                 value={newFieldName}
@@ -373,8 +373,8 @@ export default function StructEditorDialog() {
         </section>
       </div>
 
-      <DialogClose>
-        <Button className="cursor-pointer w-90" onClick={handleComplete}>
+      <DialogClose asChild>
+        <Button onClick={handleComplete} className="cursor-pointer w-90">
           Complete
         </Button>
       </DialogClose>
