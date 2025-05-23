@@ -69,9 +69,8 @@ export default function ImportModuleSelector({ className, packageId }: Props) {
               </li>
             </DialogClose>
             {Object.keys(moduleData.structs).map((structName) => (
-              <DialogClose>
+              <DialogClose key={structName}>
                 <li
-                  key={structName}
                   onClick={() => {
                     const importKey = packageId + "::" + moduleName;
 

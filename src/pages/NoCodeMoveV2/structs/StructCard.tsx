@@ -1,10 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { X } from "lucide-react";
 import { SuiMoveStruct } from "@/types/move-syntax";
-import { SuiMoveNormalizedType } from "@mysten/sui/client";
 import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import NameBox from "../components/NameBox";
+import { convertTypeToString } from "../utils/generateCode";
 
 export default function StructCard({
   structName,
@@ -14,20 +14,6 @@ export default function StructCard({
   structData: SuiMoveStruct;
 }) {
   const { setStructs } = useContext(SuiMoveModuleContext);
-
-  const formatType = (type: SuiMoveNormalizedType): string => {
-    if (typeof type === "string") return type;
-    if ("Struct" in type && type.Struct) {
-      const { name, typeArguments } = type.Struct;
-      if (typeArguments && typeArguments.length > 0) {
-        return `${name}<${typeArguments
-          .map((t: any) => formatType(t))
-          .join(", ")}>`;
-      }
-      return name;
-    }
-    return JSON.stringify(type);
-  };
 
   return (
     <Card className="relative">
@@ -53,7 +39,7 @@ export default function StructCard({
             {structData.abilities.abilities.length > 0 && (
               <span className="flex gap-1 flex-wrap">
                 {structData.abilities.abilities.map((a) => (
-                  <NameBox className="border-pink-300 text-gray-500">
+                  <NameBox key={a} className="border-pink-300 text-gray-500">
                     {a.toUpperCase()}
                   </NameBox>
                 ))}
@@ -117,7 +103,12 @@ export default function StructCard({
               >
                 <NameBox className="border-none">{field.name}</NameBox>:
                 <NameBox className="text-gray-500 border-emerald-300">
-                  {formatType(field.type)}
+                  {typeof field.type === "object" &&
+                  "TypeParameter" in field.type
+                    ? structData.typeParameterNames[
+                        Number(convertTypeToString(field.type))
+                      ]
+                    : convertTypeToString(field.type)}
                 </NameBox>
               </div>
             ))

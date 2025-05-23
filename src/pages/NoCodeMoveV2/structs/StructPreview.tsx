@@ -9,20 +9,6 @@ import { PlusIcon } from "lucide-react";
 export default function StructPreview() {
   const { structs, setSelectedStruct } = useContext(SuiMoveModuleContext);
 
-  const formatType = (type: any): string => {
-    if (typeof type === "string") return type;
-    if (type.Struct) {
-      const { name, typeArguments } = type.Struct;
-      if (typeArguments && typeArguments.length > 0) {
-        return `${name}<${typeArguments
-          .map((t: any) => formatType(t))
-          .join(", ")}>`;
-      }
-      return name;
-    }
-    return JSON.stringify(type);
-  };
-
   return (
     <div className="space-y-2 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-2">
       {Array.from(structs.entries()).map(([structName, structData]) => (

@@ -3,7 +3,7 @@ import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SuiMoveFunction } from "@/types/move-syntax";
 import { X } from "lucide-react";
 import { useContext } from "react";
-import { formatType } from "../utils/generateCode";
+import { convertTypeToString } from "../utils/generateCode";
 import NameBox from "../components/NameBox";
 
 export default function FunctionCard({
@@ -109,7 +109,11 @@ export default function FunctionCard({
                 :
                 <span className="text-gray-500 flex gap-1 flex-wrap">
                   <NameBox className="border-pink-300">
-                    {formatType(param)}
+                    {typeof param === "object" && "TypeParameter" in param
+                      ? functionData.function.typeParameterNames[
+                          Number(convertTypeToString(param))
+                        ]
+                      : convertTypeToString(param)}
                   </NameBox>
                 </span>
               </div>
@@ -126,16 +130,17 @@ export default function FunctionCard({
           {functionData.function.return.length === 0 ? (
             <p className="text-sm text-gray-500 border rounded-sm">None</p>
           ) : (
-            functionData.function.return.map((r, i) => (
-              <div
-                key={i}
-                className="flex justify-between text-sm text-gray-800"
-              >
-                <NameBox className="border-emerald-300">
-                  {formatType(r)}
+            <div className="flex gap-2 flex-wrap">
+              {functionData.function.return.map((r, i) => (
+                <NameBox key={i} className="border-emerald-300">
+                  {typeof r === "object" && "TypeParameter" in r
+                    ? functionData.function.typeParameterNames[
+                        Number(convertTypeToString(r))
+                      ]
+                    : convertTypeToString(r)}
                 </NameBox>
-              </div>
-            ))
+              ))}
+            </div>
           )}
         </div>
       </CardContent>

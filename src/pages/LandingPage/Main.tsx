@@ -1,15 +1,6 @@
 import { useEffect, useState } from "react";
 
-import {
-  Code2,
-  Download,
-  Github,
-  Twitter,
-  Linkedin,
-  Menu,
-  Check,
-  LucideIcon,
-} from "lucide-react";
+import { Code2, Download, Menu, Check, LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface Feature {
@@ -17,25 +8,20 @@ interface Feature {
   icon: LucideIcon;
 }
 
-interface Stat {
-  value: string;
-  label: string;
-}
+// interface Stat {
+//   value: string;
+//   label: string;
+// }
 
-interface FooterLink {
-  text: string;
-  href: string;
-}
+// interface FooterLink {
+//   text: string;
+//   href: string;
+// }
 
-interface SocialLink {
-  icon: LucideIcon;
-  href: string;
-}
-
-interface FooterSectionProps {
-  title: string;
-  links: FooterLink[];
-}
+// interface FooterSectionProps {
+//   title: string;
+//   links: FooterLink[];
+// }
 
 const features: Feature[] = [
   { text: "No Coding Required", icon: Check },
@@ -43,58 +29,83 @@ const features: Feature[] = [
   { text: "Production Ready", icon: Check },
 ];
 
-const stats: Stat[] = [
-  { value: "3,500+", label: "Active Developers" },
-  { value: "45+", label: "Countries" },
-  { value: "$2.5M+", label: "Ecosystem Funding" },
-];
+// const stats: Stat[] = [
+//   { value: "3,500+", label: "Active Sui Developers" },
+//   { value: "45+", label: "Countries" },
+//   { value: "$2.5M+", label: "Ecosystem Funding" },
+// ];
 
-const footerLinks = {
-  product: [
-    { text: "Features", href: "#" },
-    { text: "Roadmap", href: "#" },
-    { text: "Pricing", href: "#" },
-    { text: "Documentation", href: "#" },
-  ],
-  resources: [
-    { text: "Tutorials", href: "#" },
-    { text: "API Reference", href: "#" },
-    { text: "Community", href: "#" },
-    { text: "Blog", href: "#" },
-  ],
-  company: [
-    { text: "About Us", href: "#" },
-    { text: "Careers", href: "#" },
-    { text: "Contact", href: "#" },
-    { text: "Press Kit", href: "#" },
-  ],
+// const footerLinks = {
+//   product: [
+//     { text: "Features", href: "#" },
+//     { text: "Roadmap", href: "#" },
+//     { text: "Pricing", href: "#" },
+//     { text: "Documentation", href: "#" },
+//   ],
+//   resources: [
+//     { text: "Tutorials", href: "#" },
+//     { text: "API Reference", href: "#" },
+//     { text: "Community", href: "#" },
+//     { text: "Blog", href: "#" },
+//   ],
+//   company: [
+//     { text: "About Us", href: "#" },
+//     { text: "Careers", href: "#" },
+//     { text: "Contact", href: "#" },
+//     { text: "Press Kit", href: "#" },
+//   ],
+// };
+
+const socialLinks = {
+  git: {
+    icon: (
+      <img
+        className="w-5"
+        src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWdpdGh1Yi1pY29uIGx1Y2lkZS1naXRodWIiPjxwYXRoIGQ9Ik0xNSAyMnYtNGE0LjggNC44IDAgMCAwLTEtMy41YzMgMCA2LTIgNi01LjUuMDgtMS4yNS0uMjctMi40OC0xLTMuNS4yOC0xLjE1LjI4LTIuMzUgMC0zLjUgMCAwLTEgMC0zIDEuNS0yLjY0LS41LTUuMzYtLjUtOCAwQzYgMiA1IDIgNSAyYy0uMyAxLjE1LS4zIDIuMzUgMCAzLjVBNS40MDMgNS40MDMgMCAwIDAgNCA5YzAgMy41IDMgNS41IDYgNS41LS4zOS40OS0uNjggMS4wNS0uODUgMS42NS0uMTcuNi0uMjIgMS4yMy0uMTUgMS44NXY0Ii8+PHBhdGggZD0iTTkgMThjLTQuNTEgMi01LTItNy0yIi8+PC9zdmc+"
+      />
+    ),
+    href: "https://github.com/BlockBlockYonsei/SuiMoveScratch",
+  },
+  twitter: {
+    icon: (
+      <img
+        className="w-5"
+        src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXR3aXR0ZXItaWNvbiBsdWNpZGUtdHdpdHRlciI+PHBhdGggZD0iTTIyIDRzLS43IDIuMS0yIDMuNGMxLjYgMTAtOS40IDE3LjMtMTggMTEuNiAyLjIuMSA0LjQtLjYgNi0yQzMgMTUuNS41IDkuNiAzIDVjMi4yIDIuNiA1LjYgNC4xIDkgNC0uOS00LjIgNC02LjYgNy0zLjggMS4xIDAgMy0xLjIgMy0xLjJ6Ii8+PC9zdmc+"
+      />
+    ),
+    href: "https://x.com/suimovescratch",
+  },
+  presentaion: {
+    icon: (
+      <img
+        className="w-5"
+        src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXByZXNlbnRhdGlvbi1pY29uIGx1Y2lkZS1wcmVzZW50YXRpb24iPjxwYXRoIGQ9Ik0yIDNoMjAiLz48cGF0aCBkPSJNMjEgM3YxMWEyIDIgMCAwIDEtMiAySDVhMiAyIDAgMCAxLTItMlYzIi8+PHBhdGggZD0ibTcgMjEgNS01IDUgNSIvPjwvc3ZnPg=="
+      />
+    ),
+
+    href: "#",
+  },
 };
 
-const socialLinks: SocialLink[] = [
-  { icon: Github, href: "#" },
-  { icon: Twitter, href: "#" },
-  { icon: Linkedin, href: "#" },
-];
-
-const FooterSection = ({ title, links }: FooterSectionProps) => (
-  <div>
-    <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
-      {title}
-    </h3>
-    <ul className="space-y-2 text-gray-600 dark:text-gray-300">
-      {links.map((link) => (
-        <li key={link.text}>
-          <a
-            href={link.href}
-            className="hover:text-purple-600 dark:hover:text-purple-400 transition"
-          >
-            {link.text}
-          </a>
-        </li>
-      ))}
-    </ul>
-  </div>
-);
+// const FooterSection = ({ title, links }: FooterSectionProps) => (
+//   <div>
+//     <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
+//       {title}
+//     </h3>
+//     <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+//       {links.map((link) => (
+//         <li key={link.text}>
+//           <a
+//             href={link.href}
+//             className="hover:text-purple-600 dark:hover:text-purple-400 transition"
+//           >
+//             {link.text}
+//           </a>
+//         </li>
+//       ))}
+//     </ul>
+//   </div>
+// );
 
 interface HeaderProps {
   isMobileMenuOpen: boolean;
@@ -105,14 +116,14 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen }: HeaderProps) => (
   <header className="sticky top-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
     <div className="container mx-auto px-4">
       <div className="flex justify-between items-center h-16">
-        <div className="flex items-center space-x-2">
+        <a href="/" className="cursor-pointer flex items-center space-x-2">
           <div className="h-8 w-8 bg-gradient-to-br from-purple-600 to-blue-500 rounded-md flex items-center justify-center text-white">
             <Code2 size={20} />
           </div>
           <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500">
             SuiMoveScratch
           </span>
-        </div>
+        </a>
 
         <button
           className="md:hidden text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400"
@@ -196,15 +207,19 @@ const HeroSection = ({ isVisible }: HeroSectionProps) => (
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           <Link
-            to="/"
+            to="/nocodemove"
             className="px-6 py-3 rounded-md bg-purple-600 hover:bg-purple-700 text-white font-medium transition-colors"
           >
             Start Building
           </Link>
-          <button className="px-6 py-3 rounded-md border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium transition-colors flex items-center justify-center space-x-2">
-            <Github size={20} />
-            <span>View on GitHub</span>
-          </button>
+          <a
+            href="https://github.com/BlockBlockYonsei/SuiMoveScratch"
+            target="_blank"
+            className="px-6 py-3 rounded-md border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium transition-colors flex items-center justify-center space-x-2"
+          >
+            {socialLinks.git.icon}
+            View on GitHub
+          </a>
         </div>
         <div className="flex justify-center items-center space-x-8 text-sm text-gray-500 dark:text-gray-400">
           {features.map((feature, index) => (
@@ -239,20 +254,26 @@ const CTASection = ({ isVisible }: CTASectionProps) => (
           Sui blockchain with SuiMoveScratch.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <button className="px-8 py-3 bg-white text-purple-600 font-medium rounded-lg hover:bg-gray-100 transition-colors">
+          {/* <button className="px-8 py-3 bg-white text-purple-600 font-medium rounded-lg hover:bg-gray-100 transition-colors">
             Get Started
-          </button>
-          <button className="px-8 py-3 bg-transparent border border-white text-white font-medium rounded-lg hover:bg-white/10 transition-colors">
+          </button> */}
+          <Link
+            to="/nocodemove"
+            className="px-8 py-3 bg-white text-purple-600 font-medium rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            Start Building
+          </Link>
+          {/* <button className="px-8 py-3 bg-transparent border border-white text-white font-medium rounded-lg hover:bg-white/10 transition-colors">
             Register for Hackathon
-          </button>
+          </button> */}
         </div>
         <div className="mt-12 flex flex-wrap justify-center gap-x-12 gap-y-6">
-          {stats.map((stat, index) => (
+          {/* {stats.map((stat, index) => (
             <div key={index}>
               <div className="text-2xl font-bold">{stat.value}</div>
               <div className="text-purple-200">{stat.label}</div>
             </div>
-          ))}
+          ))} */}
         </div>
       </div>
     </div>
@@ -277,22 +298,24 @@ const Footer = () => (
             tools.
           </p>
           <div className="flex space-x-4">
-            {socialLinks.map((link, index) => (
+            {Object.entries(socialLinks).map(([service, info]) => (
               <a
-                key={index}
-                href={link.href}
+                key={service}
+                href={info.href}
+                target="_blank"
                 className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
               >
-                <link.icon className="h-6 w-6" />
+                {/* <link.icon className="h-6 w-6" /> */}
+                {info.icon}
               </a>
             ))}
           </div>
         </div>
-        <FooterSection title="Product" links={footerLinks.product} />
-        <FooterSection title="Resources" links={footerLinks.resources} />
-        <FooterSection title="Company" links={footerLinks.company} />
+        {/* <FooterSection title="Product" links={footerLinks.product} />
+        <FooterSection title="Resources" links={footerLinks.resources} /> */}
+        {/* <FooterSection title="Company" links={footerLinks.company} /> */}
       </div>
-      <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 flex flex-col md:flex-row justify-between items-center">
+      {/* <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 flex flex-col md:flex-row justify-between items-center">
         <div className="text-gray-600 dark:text-gray-300 text-sm mb-4 md:mb-0">
           © 2023 SuiMoveScratch. All rights reserved.
         </div>
@@ -316,7 +339,7 @@ const Footer = () => (
             Cookie Policy
           </a>
         </div>
-      </div>
+      </div> */}
     </div>
   </footer>
 );
