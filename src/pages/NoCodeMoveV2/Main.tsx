@@ -57,7 +57,12 @@ export default function Main() {
             defaultValue={currentTab}
           >
             {moduleNames.length === 0 ? (
-              <div className="text-white text-2xl min-w-80 rounded-md text-center">
+              <div
+                className=" cursor-pointer text-white text-2xl min-w-80 rounded-md text-center"
+                onClick={() => {
+                  setIsEditing((prev) => !prev);
+                }}
+              >
                 Create New Module
               </div>
             ) : (
@@ -89,7 +94,17 @@ export default function Main() {
                   className="absolute w-50 h-10 bg-white border-2 border-black rounded-sm"
                   ref={inputRef}
                   value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
+                  onChange={(e) => {
+                    const raw = e.target.value;
+                    if (raw.length > 0 && /^[\d_]/.test(raw)) {
+                      return; // 첫 글자가 숫자거나 _면 무시
+                    }
+                    const onlyAlphabet = e.target.value.replace(
+                      /[^a-zA-Z0-9_]/g,
+                      ""
+                    );
+                    setInputValue(onlyAlphabet.toLowerCase());
+                  }}
                   onBlur={() => {
                     setIsEditing(false);
                     setInputValue("");
