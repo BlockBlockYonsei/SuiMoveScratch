@@ -17,8 +17,6 @@ export default defineConfig({
     },
   },
   server: {
-    allowedHosts: [
-      "5173-blockblocky-suimovescra-qhsfrjf8czp.ws-us118.gitpod.io",
-    ],
+    allowedHosts: ["suimovescratch.onrender.com"],
   },
 });
