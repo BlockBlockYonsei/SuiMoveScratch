@@ -6,7 +6,7 @@ import StructCard from "./StructCard";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 
-export default function StructCardList() {
+export default function StructPreview() {
   const { structs, setSelectedStruct } = useContext(SuiMoveModuleContext);
 
   const formatType = (type: any): string => {

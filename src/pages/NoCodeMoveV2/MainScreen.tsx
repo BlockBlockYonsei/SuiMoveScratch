@@ -1,9 +1,9 @@
-import StructCardList from "./structs/StructCardList";
-import FunctionCardList from "./functions/FunctionCardList";
+import StructPreview from "./structs/StructPreview";
+import FunctionPreview from "./functions/FunctionPreview";
 import ImportPreview from "./imports/ImportPreview";
 import CodePreview from "./CodePreview";
 
-export default function DataPreview({
+export default function MainScreen({
   menu,
 }: {
   menu: "imports" | "structs" | "functions" | "code";
@@ -22,8 +22,8 @@ export default function DataPreview({
 
       <pre className="bg-white p-4 rounded-md shadow whitespace-pre-wrap overflow-auto">
         {menu === "imports" && <ImportPreview />}
-        {menu === "structs" && <StructCardList />}
-        {menu === "functions" && <FunctionCardList />}
+        {menu === "structs" && <StructPreview />}
+        {menu === "functions" && <FunctionPreview />}
 
         {menu === "code" && <CodePreview />}
       </pre>

@@ -138,7 +138,7 @@ export default function StructEditorDialog() {
 
       <div className="lg:grid lg:grid-cols-12 lg:gap-8">
         <section className="col-span-6">
-          {/* Struct 이름 */}
+          {/* Struct Name */}
           <div className="mb-4">
             <label className="block font-semibold mb-1">Struct Name</label>
             <Input

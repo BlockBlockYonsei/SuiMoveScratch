@@ -6,7 +6,7 @@ import FunctionEditorDialog from "./FunctionEditorDialog";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 
-export default function FunctionCardList() {
+export default function FunctionPreview() {
   const { functions, setSelectedFunction } = useContext(SuiMoveModuleContext);
   return (
     <div className="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-2">
