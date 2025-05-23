@@ -9,7 +9,7 @@ import { PlusIcon } from "lucide-react";
 export default function FunctionPreview() {
   const { functions, setSelectedFunction } = useContext(SuiMoveModuleContext);
   return (
-    <div className="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-2">
+    <div className="space-y-2 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-2">
       {[...functions.entries()].map(([functionName, data]) => {
         return (
           <Dialog key={functionName}>
