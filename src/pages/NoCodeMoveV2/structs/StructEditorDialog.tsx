@@ -18,7 +18,7 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SuiMoveStruct } from "@/types/move-syntax";
 import { X } from "lucide-react";
-import AbilitySelector from "./AbilitySelector";
+import AbilitySelector from "../components/AbilitySelector";
 
 export default function StructEditorDialog() {
   const [structName, setStructName] = useState("MyStruct");

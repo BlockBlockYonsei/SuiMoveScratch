@@ -23,7 +23,7 @@ import {
 import { SuiMoveFunction } from "@/types/move-syntax";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-import AbilitySelector from "../structs/AbilitySelector";
+import AbilitySelector from "../components/AbilitySelector";
 import { X } from "lucide-react";
 import FunctionTypeSelector from "./FunctionTypeSelector";
 import { generateFunctionCode } from "../utils/generateCode";
