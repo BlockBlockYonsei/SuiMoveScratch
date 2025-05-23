@@ -144,15 +144,17 @@ export default function StructTypeSelector({
           Current Structs
         </Label>
         <div className="grid grid-cols-2">
-          {[...structs.keys()].map((name) => (
-            <SelectItem
-              key={name}
-              value={`currentModule::${name}`}
-              className="cursor-pointer hover:bg-gray-200"
-            >
-              {name}
-            </SelectItem>
-          ))}
+          {[...structs.keys()]
+            .filter((name) => name !== structName)
+            .map((name) => (
+              <SelectItem
+                key={name}
+                value={`currentModule::${name}`}
+                className="cursor-pointer hover:bg-gray-200"
+              >
+                {name}
+              </SelectItem>
+            ))}
         </div>
         <Separator className="my-2" />
 
