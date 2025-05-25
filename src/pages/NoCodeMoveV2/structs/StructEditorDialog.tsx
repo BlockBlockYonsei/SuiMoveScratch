@@ -77,15 +77,15 @@ export default function StructEditorDialog() {
       }
 
       if (selectedStruct.structName === structName) {
-        newStructMap.delete(selectedStruct.structName);
         newStructMap.set(structName, newStructData);
         return newStructMap;
       }
 
+      // 이전 struct 이름이 있고, 새로운 이름과 다른 경우 (이름 변경)
       newStructMap.delete(selectedStruct.structName);
       newStructMap.set(structName, newStructData);
 
-      // 이전 struct 이름이 있고, 새로운 이름과 다른 경우 (이름 변경)
+      // 다른 Struct Field에 해당 Struct가 쓰였다면 함께 이름 변경해줌
       newStructMap.forEach((structData) => {
         const updatedFields = structData.fields.map((field) => {
           if (
