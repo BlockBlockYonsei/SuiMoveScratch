@@ -13,7 +13,8 @@ import {
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
 import { useContext } from "react";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
+// import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
 import { PRIMITIVE_TYPES } from "@/Constants";
 
@@ -38,7 +39,7 @@ export default function TypeSelector({
     if (typeof type === "string") {
       return `primitive:::${type}`;
     } else if ("TypeParameter" in type) {
-      const currentStruct = structs.get(selectedStruct);
+      const currentStruct = structs.get(selectedStruct.structName);
       return currentStruct
         ? `typeParameter:::${
             currentStruct.typeParameterNames[type.TypeParameter]
@@ -173,33 +174,39 @@ export default function TypeSelector({
           Imported Module Structs
         </Label>
 
-        {[...imports.entries()].map(([key, module]) => {
-          const [pkgAddress, moduleName] = key.split("::");
-          const alias = SUI_PACKAGE_ALIASES[pkgAddress] || pkgAddress;
+        {Object.entries(imports)
+          .flatMap(([packageAddress, modulesMap]) =>
+            Array.from(modulesMap.entries()).map(
+              ([moduleName, data]) =>
+                [packageAddress, moduleName, data] as const
+            )
+          )
+          .map(([packageAddress, moduleName, data]) => {
+            const alias = SUI_PACKAGE_ALIASES[packageAddress] || packageAddress;
 
-          if (Object.keys(module.structs).length === 0) return;
+            if (Object.keys(data.structs).length === 0) return;
 
-          return (
-            <div key={moduleName}>
-              <div>
-                {alias}::{moduleName}
+            return (
+              <div key={moduleName}>
+                <div>
+                  {alias}::{moduleName}
+                </div>
+                <div className="grid grid-cols-2">
+                  {Object.keys(data.structs).map((structName) => {
+                    return (
+                      <SelectItem
+                        key={structName}
+                        value={`moduleStruct:::${structName}::${moduleName}::${packageAddress}`}
+                        className="cursor-pointer hover:bg-gray-200 break-words whitespace-normal"
+                      >
+                        {structName}
+                      </SelectItem>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="grid grid-cols-2">
-                {Object.keys(module.structs).map((structName) => {
-                  return (
-                    <SelectItem
-                      key={structName}
-                      value={`moduleStruct:::${structName}::${moduleName}::${pkgAddress}`}
-                      className="cursor-pointer hover:bg-gray-200 break-words whitespace-normal"
-                    >
-                      {structName}
-                    </SelectItem>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
       </SelectContent>
     </Select>
   );
