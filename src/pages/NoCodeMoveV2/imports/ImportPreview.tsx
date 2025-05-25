@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
 import { PlusIcon } from "lucide-react";
 import { useContext } from "react";
 import ImportEditorDialog from "./ImportEditorDialog";
@@ -21,29 +21,33 @@ export default function ImportPreview() {
           </DialogTrigger>
           <ImportEditorDialog />
         </Dialog>
-        {[...imports.entries()]
-          .filter(([_, data]) => data.structs)
+        {Object.entries(imports)
           .sort()
-          .map(([key, data]) => {
-            const alias = SUI_PACKAGE_ALIASES[data.address] || data.address;
-            const importedStructNames = Object.keys(data.structs);
+          .map(([packageAddress, data]) => {
+            const alias = SUI_PACKAGE_ALIASES[packageAddress] || packageAddress;
 
             return (
-              <Card key={key} className="border flex py-3">
+              <Card key={packageAddress} className="border flex py-3">
                 <CardHeader>
-                  <CardTitle>
-                    <span className="text-blue-500">use </span>
-                    <span>
-                      {alias}
-                      ::{data.moduleName} &#123;{" "}
-                    </span>
-                    <span className="text-emerald-500 font-semibold cursor-pointer">
-                      {data.functions
-                        ? ["Self", ...importedStructNames].join(", ")
-                        : importedStructNames.join(", ")}
-                    </span>{" "}
-                    &#125;;
-                  </CardTitle>
+                  {[...data.entries()].map(([moduleName, moduleData]) => {
+                    return (
+                      <CardTitle key={moduleName}>
+                        <span className="text-blue-500">use </span>
+                        <span>
+                          {alias}
+                          ::{moduleName} &#123;{" "}
+                        </span>
+                        <span className="text-emerald-500 font-semibold cursor-pointer">
+                          {moduleData.functions
+                            ? ["Self", ...Object.keys(moduleData.structs)].join(
+                                ", "
+                              )
+                            : Object.keys(moduleData.structs).join(", ")}
+                        </span>{" "}
+                        &#125;;
+                      </CardTitle>
+                    );
+                  })}
                 </CardHeader>
               </Card>
             );

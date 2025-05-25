@@ -1,5 +1,8 @@
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-import { ImportDataMap, ImportedSuiMoveModule } from "@/types/move-syntax";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
+import {
+  ImportedModuleData,
+  ImportedSuiMoveModule,
+} from "@/types/move-syntax2";
 import { useSuiClientQuery } from "@mysten/dapp-kit";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { useContext } from "react";
@@ -44,23 +47,23 @@ export default function ImportModuleSelector({ className, packageId }: Props) {
             <DialogClose>
               <li
                 onClick={() => {
-                  const importKey = packageId + "::" + moduleName;
-
-                  setImports((prev: ImportDataMap) => {
-                    const newImportMap = new Map(prev);
-                    const current = prev.get(importKey) || {
+                  setImports((prev: ImportedModuleData) => {
+                    const newImportMap = new Map(prev[packageId]);
+                    const current = newImportMap.get(moduleName) || {
                       address: packageId,
                       moduleName,
                       structs: {},
                     };
 
-                    const newImportData = {
+                    newImportMap.set(moduleName, {
                       ...current,
-                      functions: data[moduleName].exposedFunctions,
-                    } as ImportedSuiMoveModule;
-                    newImportMap.set(importKey, newImportData);
+                      functions: moduleData.exposedFunctions,
+                    } as ImportedSuiMoveModule);
 
-                    return newImportMap;
+                    return {
+                      ...prev,
+                      [packageId]: newImportMap,
+                    };
                   });
                 }}
                 className="px-4 py-1 text-emerald-600 hover:bg-blue-50 cursor-pointer rounded transition"
@@ -72,24 +75,26 @@ export default function ImportModuleSelector({ className, packageId }: Props) {
               <DialogClose key={structName}>
                 <li
                   onClick={() => {
-                    const importKey = packageId + "::" + moduleName;
-
-                    setImports((prev: ImportDataMap) => {
-                      const newImportMap = new Map(prev);
-                      const current = prev.get(importKey) || {
+                    setImports((prev: ImportedModuleData) => {
+                      const newImportMap = new Map(prev[packageId]);
+                      const current = newImportMap.get(moduleName) || {
                         address: packageId,
                         moduleName,
                         structs: {},
                       };
-                      const newImportData = {
+
+                      newImportMap.set(moduleName, {
                         ...current,
                         structs: {
                           ...current.structs,
-                          [structName]: data[moduleName].structs[structName],
+                          [structName]: moduleData.structs[structName],
                         },
-                      } as ImportedSuiMoveModule;
-                      newImportMap.set(importKey, newImportData);
-                      return newImportMap;
+                      } as ImportedSuiMoveModule);
+
+                      return {
+                        ...prev,
+                        [packageId]: newImportMap,
+                      };
                     });
                   }}
                   className={`px-4 py-1 text-emerald-600 hover:bg-blue-50 ${"cursor-pointer"} rounded transition`}
