@@ -2,7 +2,7 @@ import {
   generateImportsCode,
   generateStructCode,
   generateFunctionCode,
-} from "@/pages/NoCodeMoveV2/utils/generateCode";
+} from "@/lib/generateCode";
 import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 export default function CodePreview() {

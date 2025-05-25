@@ -3,7 +3,7 @@ import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SuiMoveFunction } from "@/types/move-syntax";
 import { X } from "lucide-react";
 import { useContext } from "react";
-import { convertTypeToString } from "../utils/generateCode";
+import { convertTypeToString } from "../../../lib/generateCode";
 import NameBox from "../components/NameBox";
 
 export default function FunctionCard({

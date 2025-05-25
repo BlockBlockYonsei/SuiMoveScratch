@@ -4,7 +4,7 @@ import { SuiMoveStruct } from "@/types/move-syntax";
 import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
 import NameBox from "../components/NameBox";
-import { convertTypeToString } from "../utils/generateCode";
+import { convertTypeToString } from "../../../lib/generateCode";
 
 export default function StructCard({
   structName,

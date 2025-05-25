@@ -30,7 +30,7 @@ import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import AbilitySelector from "../components/AbilitySelector";
 import { X } from "lucide-react";
 import TypeSelector from "../components/TypeSelector";
-import { generateFunctionCode } from "../utils/generateCode";
+import { generateFunctionCode } from "../../../lib/generateCode";
 import FunctionSelector from "../components/FunctionSelector";
 
 export default function FunctionEditorDialog() {

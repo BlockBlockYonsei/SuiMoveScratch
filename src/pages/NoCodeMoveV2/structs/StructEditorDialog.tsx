@@ -9,7 +9,7 @@ import {
 
 import { SuiMoveStruct } from "@/types/move-syntax2";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
-import { generateStructCode } from "@/pages/NoCodeMoveV2/utils/generateCode";
+import { generateStructCode } from "@/lib/generateCode";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
