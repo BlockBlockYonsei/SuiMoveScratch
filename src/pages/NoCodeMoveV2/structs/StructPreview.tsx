@@ -1,7 +1,7 @@
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import StructEditorDialog from "./StructEditorDialog";
 import { useContext } from "react";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
 import StructCard from "./StructCard";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
@@ -15,7 +15,7 @@ export default function StructPreview() {
         <Dialog key={structName}>
           <DialogTrigger
             className="cursor-pointer rounded-md"
-            onClick={() => setSelectedStruct(structName)}
+            onClick={() => setSelectedStruct(structData)}
           >
             <StructCard structName={structName} structData={structData} />
           </DialogTrigger>
@@ -28,7 +28,7 @@ export default function StructPreview() {
             variant="outline"
             className="cursor-pointer h-full text-9xl"
             onClick={() => {
-              setSelectedStruct(null);
+              setSelectedStruct(undefined);
             }}
           >
             <PlusIcon />

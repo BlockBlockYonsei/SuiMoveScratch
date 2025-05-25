@@ -2,6 +2,7 @@ import {
   ImportedModuleData,
   ModuleFunctionData,
   ModuleStructData,
+  SuiMoveStruct,
 } from "@/types/move-syntax2";
 import { createContext, useState } from "react";
 
@@ -14,8 +15,10 @@ interface Value {
   setStructs: React.Dispatch<React.SetStateAction<ModuleStructData>>;
   functions: ModuleFunctionData;
   setFunctions: React.Dispatch<React.SetStateAction<ModuleFunctionData>>;
-  selectedStruct: string | null;
-  setSelectedStruct: React.Dispatch<React.SetStateAction<string | null>>;
+  selectedStruct: SuiMoveStruct | undefined;
+  setSelectedStruct: React.Dispatch<
+    React.SetStateAction<SuiMoveStruct | undefined>
+  >;
   selectedFunction: string | null;
   setSelectedFunction: React.Dispatch<React.SetStateAction<string | null>>;
 }
@@ -29,7 +32,7 @@ export const SuiMoveModuleContext = createContext<Value>({
   setStructs: () => {},
   functions: new Map(),
   setFunctions: () => {},
-  selectedStruct: null,
+  selectedStruct: undefined,
   setSelectedStruct: () => {},
   selectedFunction: null,
   setSelectedFunction: () => {},
@@ -46,7 +49,7 @@ export const SuiMoveModuleProvider = ({
   const [structs, setStructs] = useState<ModuleStructData>(new Map());
   const [functions, setFunctions] = useState<ModuleFunctionData>(new Map());
 
-  const [selectedStruct, setSelectedStruct] = useState<string | null>(null);
+  const [selectedStruct, setSelectedStruct] = useState<SuiMoveStruct>();
   const [selectedFunction, setSelectedFunction] = useState<string | null>(null);
 
   return (

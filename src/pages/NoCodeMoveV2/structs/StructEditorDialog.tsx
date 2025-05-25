@@ -1,4 +1,17 @@
 import { useContext, useEffect, useState } from "react";
+import { X } from "lucide-react";
+import {
+  SuiMoveAbility,
+  SuiMoveNormalizedField,
+  SuiMoveNormalizedType,
+  SuiMoveStructTypeParameter,
+} from "@mysten/sui/client";
+
+import { SuiMoveStruct } from "@/types/move-syntax2";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
+import { generateStructCode } from "@/pages/NoCodeMoveV2/utils/generateCode";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input"; // 추가된 input이 있다면
 import {
   DialogClose,
   DialogContent,
@@ -6,22 +19,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input"; // 추가된 input이 있다면
-import {
-  SuiMoveAbility,
-  SuiMoveNormalizedType,
-  SuiMoveStructTypeParameter,
-} from "@mysten/sui/client";
-import TypeSelector from "../components/TypeSelector";
-import { generateStructCode } from "@/pages/NoCodeMoveV2/utils/generateCode";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-import { SuiMoveStruct } from "@/types/move-syntax";
-import { X } from "lucide-react";
+
 import AbilitySelector from "../components/AbilitySelector";
+import TypeSelector from "../components/TypeSelector";
 
 export default function StructEditorDialog() {
-  const [structName, setStructName] = useState("MyStruct");
+  const [structName, setStructName] = useState("NewStruct");
   const [abilities, setAbilities] = useState<SuiMoveAbility[]>([]);
   const [typeParameters, setTypeParameters] = useState<
     SuiMoveStructTypeParameter[]
@@ -37,80 +40,81 @@ export default function StructEditorDialog() {
     SuiMoveAbility[]
   >([]);
 
-  const { structs, setStructs, selectedStruct } =
+  const { moduleName, structs, setStructs, selectedStruct } =
     useContext(SuiMoveModuleContext);
 
   useEffect(() => {
     if (selectedStruct) {
-      const structData = structs.get(selectedStruct);
-      if (structData) {
-        setStructName(selectedStruct);
-        setAbilities(structData.abilities.abilities);
-        setTypeParameters(structData.typeParameters);
-        setTypeParameterNames(structData.typeParameterNames);
-        setFields(structData.fields);
-      }
+      setStructName(selectedStruct.structName);
+      setAbilities(selectedStruct.abilities.abilities);
+      setTypeParameters(selectedStruct.typeParameters);
+      setTypeParameterNames(selectedStruct.typeParameterNames);
+      setFields(selectedStruct.fields);
     } else {
-      // 새로운 struct 생성 시 초기화
-      setStructName("MyStruct");
-      setAbilities([]);
-      setTypeParameters([]);
-      setTypeParameterNames([]);
-      setFields([]);
+      resetState();
     }
   }, [selectedStruct, structs]);
 
   const handleComplete = () => {
     if (!structName) return;
 
-    const newStructData = {
-      abilities: { abilities },
-      fields,
-      typeParameters,
-      typeParameterNames,
-    } as SuiMoveStruct;
-
     setStructs((prev) => {
       const newStructMap = new Map(prev);
 
-      // 이전 struct 이름이 있고, 새로운 이름과 다른 경우 (이름 변경)
-      if (selectedStruct && selectedStruct !== structName) {
-        // 이전 struct 데이터 삭제
-        newStructMap.delete(selectedStruct);
+      const newStructData: SuiMoveStruct = {
+        address: "0x0",
+        moduleName: moduleName,
+        structName: structName,
+        abilities: { abilities },
+        fields,
+        typeParameters,
+        typeParameterNames,
+      };
 
-        // 다른 struct들의 필드 타입 업데이트
-        newStructMap.forEach((structData, structKey) => {
-          const updatedFields = structData.fields.map((field) => {
-            if (
-              field.type &&
-              typeof field.type === "object" &&
-              "Struct" in field.type
-            ) {
-              const structType = field.type.Struct;
-              if (structType.name === selectedStruct) {
-                return {
-                  ...field,
-                  type: {
-                    ...field.type,
-                    Struct: {
-                      ...structType,
-                      name: structName,
-                    },
-                  },
-                };
-              }
-            }
-            return field;
-          });
-
-          newStructMap.set(structKey, {
-            ...structData,
-            fields: updatedFields,
-          });
-        });
+      if (!selectedStruct) {
+        newStructMap.set(structName, newStructData);
+        return newStructMap;
       }
 
+      if (selectedStruct.structName === structName) {
+        newStructMap.delete(selectedStruct.structName);
+        newStructMap.set(structName, newStructData);
+        return newStructMap;
+      }
+
+      newStructMap.delete(selectedStruct.structName);
       newStructMap.set(structName, newStructData);
+
+      // 이전 struct 이름이 있고, 새로운 이름과 다른 경우 (이름 변경)
+      newStructMap.forEach((structData) => {
+        const updatedFields = structData.fields.map((field) => {
+          if (
+            field.type &&
+            typeof field.type === "object" &&
+            "Struct" in field.type &&
+            field.type.Struct.name === selectedStruct.structName
+          ) {
+            const updatedField: SuiMoveNormalizedField = {
+              name: field.name,
+              type: {
+                Struct: {
+                  ...field.type.Struct,
+                  name: structName,
+                },
+              },
+            };
+            return updatedField;
+          }
+
+          return field;
+        });
+
+        newStructMap.set(structData.structName, {
+          ...structData,
+          fields: updatedFields,
+        } as SuiMoveStruct);
+      });
+
       return newStructMap;
     });
 
@@ -118,7 +122,7 @@ export default function StructEditorDialog() {
   };
 
   const resetState = () => {
-    setStructName("MyStruct");
+    setStructName("NewStruct");
     setAbilities([]);
     setFields([]);
     setTypeParameterNames([]);

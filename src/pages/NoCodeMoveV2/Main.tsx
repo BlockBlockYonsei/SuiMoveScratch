@@ -1,12 +1,15 @@
 import { SideBarEditor } from "@/pages/NoCodeMoveV2/SideBarEditor";
 import MainScreen from "@/pages/NoCodeMoveV2/MainScreen";
-import { SuiMoveModuleProvider } from "@/context/SuiMoveModuleContext2";
-import { useEffect, useState } from "react";
+import {
+  SuiMoveModuleContext,
+  SuiMoveModuleProvider,
+} from "@/context/SuiMoveModuleContext2";
+import { useContext, useEffect, useState } from "react";
 import { Tabs } from "@/components/ui/tabs";
 import ModuleTabs from "./ModuleTabs";
 
 export default function Main() {
-  const [currentTab, setCurrentTab] = useState("");
+  const [currentModule, setCurrentModule] = useState("");
   const [moduleNames, setModuleNames] = useState<string[]>([]);
   const [menu, setMenu] = useState<
     "imports" | "structs" | "functions" | "code"
@@ -30,25 +33,25 @@ export default function Main() {
       <div className="flex ">
         <SideBarEditor menu={menu} setMenu={setMenu} />
         <Tabs
-          onValueChange={setCurrentTab}
-          value={currentTab}
+          onValueChange={setCurrentModule}
+          value={currentModule}
           className="flex-1 p-4"
         >
           <ModuleTabs
             moduleNames={moduleNames}
             setModuleNames={setModuleNames}
-            currentTab={currentTab}
-            setCurrentTab={setCurrentTab}
+            currentTab={currentModule}
+            setCurrentTab={setCurrentModule}
           />
 
-          {moduleNames.map((m) => (
+          {moduleNames.map((moduleName) => (
             <div
-              key={m}
-              hidden={m !== currentTab}
+              key={moduleName}
+              hidden={moduleName !== currentModule}
               className="bg-gray-50 rounded-md p-2"
             >
               <SuiMoveModuleProvider>
-                <MainScreen menu={menu} />
+                <MainScreen moduleName={moduleName} menu={menu} />
               </SuiMoveModuleProvider>
             </div>
           ))}

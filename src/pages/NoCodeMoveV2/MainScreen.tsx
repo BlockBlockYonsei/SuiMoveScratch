@@ -2,12 +2,22 @@ import StructPreview from "./structs/StructPreview";
 import FunctionPreview from "./functions/FunctionPreview";
 import ImportPreview from "./imports/ImportPreview";
 import CodePreview from "./CodePreview";
+import { useContext, useEffect } from "react";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
 
 export default function MainScreen({
   menu,
+  moduleName,
 }: {
   menu: "imports" | "structs" | "functions" | "code";
+  moduleName: string;
 }) {
+  const { setModuleName } = useContext(SuiMoveModuleContext);
+
+  useEffect(() => {
+    setModuleName(moduleName);
+  }, [moduleName]);
+
   return (
     <div className="flex-1 space-y-6 text-sm font-mono">
       {/* <button

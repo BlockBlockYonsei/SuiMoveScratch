@@ -20,6 +20,7 @@ export interface ImportedSuiMoveModule {
   };
 }
 
+// key : structName
 export type ModuleStructData = Map<string, SuiMoveStruct>;
 
 export interface SuiMoveStruct extends SuiMoveNormalizedStruct {
