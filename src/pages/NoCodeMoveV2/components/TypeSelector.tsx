@@ -1,3 +1,13 @@
+import { useContext } from "react";
+import {
+  SuiMoveAbilitySet,
+  SuiMoveNormalizedType,
+  SuiMoveStructTypeParameter,
+} from "@mysten/sui/client";
+
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
+import { SUI_PACKAGE_ALIASES, PRIMITIVE_TYPES } from "@/Constants";
+
 import {
   Select,
   SelectContent,
@@ -7,16 +17,6 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import {
-  SuiMoveAbilitySet,
-  SuiMoveNormalizedType,
-  SuiMoveStructTypeParameter,
-} from "@mysten/sui/client";
-import { useContext } from "react";
-// import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
-import { SUI_PACKAGE_ALIASES } from "@/Constants";
-import { PRIMITIVE_TYPES } from "@/Constants";
 
 export default function TypeSelector({
   nameKey,

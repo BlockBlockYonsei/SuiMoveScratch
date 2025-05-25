@@ -11,7 +11,7 @@ import { SuiMoveStruct } from "@/types/move-syntax2";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
 import { generateStructCode } from "@/pages/NoCodeMoveV2/utils/generateCode";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input"; // 추가된 input이 있다면
+import { Input } from "@/components/ui/input";
 import {
   DialogClose,
   DialogContent,
@@ -234,12 +234,10 @@ export default function StructEditorDialog() {
                       : ""
                   } border-2 font-semibold cursor-pointer rounded-md p-1 transition-all`}
                   onClick={() => {
-                    // setNewTypeParamIsPhantom((prev) => !prev);
                     setTypeParameters((prev) => {
                       const newParams = [...prev];
                       newParams[index] = {
                         ...newParams[index],
-                        // constraints: { abilities: newAbilities },
                         isPhantom: !newParams[index].isPhantom,
                       };
                       return newParams;
