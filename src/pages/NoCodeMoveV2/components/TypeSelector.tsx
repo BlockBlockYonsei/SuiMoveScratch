@@ -25,6 +25,7 @@ export default function TypeSelector({
   defaultType,
   typeParameters,
   onChange,
+  st,
 }: {
   nameKey: string;
   defaultType?: SuiMoveNormalizedType;
@@ -32,6 +33,7 @@ export default function TypeSelector({
     | { name: string; type: SuiMoveStructTypeParameter }[]
     | { name: string; type: SuiMoveAbilitySet }[];
   onChange?: (type: SuiMoveNormalizedType) => void;
+  st: "struct" | "function";
 }) {
   const [selectedType, setSelectedType] = useState<SuiMoveNormalizedType>();
   const [dataAccess, setDataAccess] = useState<
@@ -222,35 +224,39 @@ export default function TypeSelector({
             })}
         </SelectContent>
       </Select>
-      <Select
-        onValueChange={(value: "Value" | "Reference" | "Mutable Reference") => {
-          if (!onChange) return;
-          if (!selectedType) return;
+      {st === "function" && (
+        <Select
+          onValueChange={(
+            value: "Value" | "Reference" | "Mutable Reference"
+          ) => {
+            if (!onChange) return;
+            if (!selectedType) return;
 
-          setDataAccess(value);
-        }}
-        value={dataAccess}
-      >
-        <SelectTrigger className="cursor-pointer">
-          <SelectValue placeholder="Select type..." />
-        </SelectTrigger>
-        <SelectContent>
-          <Label className="px-2 text-xs text-muted-foreground">
-            Data Access Type
-          </Label>
-          <div>
-            {["Value", "Reference", "Mutable Reference"].map((item) => (
-              <SelectItem
-                key={item}
-                value={item}
-                className="col-span-1 cursor-pointer hover:bg-gray-200"
-              >
-                {item}
-              </SelectItem>
-            ))}
-          </div>
-        </SelectContent>
-      </Select>
+            setDataAccess(value);
+          }}
+          value={dataAccess}
+        >
+          <SelectTrigger className="cursor-pointer">
+            <SelectValue placeholder="Select type..." />
+          </SelectTrigger>
+          <SelectContent>
+            <Label className="px-2 text-xs text-muted-foreground">
+              Data Access Type
+            </Label>
+            <div>
+              {["Value", "Reference", "Mutable Reference"].map((item) => (
+                <SelectItem
+                  key={item}
+                  value={item}
+                  className="col-span-1 cursor-pointer hover:bg-gray-200"
+                >
+                  {item}
+                </SelectItem>
+              ))}
+            </div>
+          </SelectContent>
+        </Select>
+      )}
       <Select
         onValueChange={(value: "Single Value" | "Vector") => {
           if (!onChange) return;

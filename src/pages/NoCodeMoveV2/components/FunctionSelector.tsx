@@ -83,7 +83,7 @@ export default function FunctionSelector({
                       : ""
                   } {\n${struct.fields
                     .map((f, i) => `    ${f.name}: field${i}`)
-                    .join("\n")}\n  }`,
+                    .join("\n")}\n   }`,
                 })}
                 className="cursor-pointer hover:bg-gray-200"
               >
@@ -151,7 +151,9 @@ export default function FunctionSelector({
                             returnNames: functionData.parameters.map(
                               (_, i) => `R${i}`
                             ),
-                            typeParameterNames: [],
+                            typeParameterNames: functionData.parameters.map(
+                              (_, i) => `T${i}`
+                            ),
                             typeArguments: functionData.typeParameters.map(
                               (_) => "U64"
                             ),

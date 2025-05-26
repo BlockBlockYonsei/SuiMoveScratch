@@ -388,6 +388,7 @@ export default function FunctionEditorDialog() {
                       prev.map((f, i) => (i === index ? { ...f, type } : f))
                     );
                   }}
+                  st="function"
                 />
 
                 <Button
@@ -432,6 +433,7 @@ export default function FunctionEditorDialog() {
                       prev.map((r, i) => (i === index ? { ...r, type } : r))
                     );
                   }}
+                  st="function"
                 />
                 <Button
                   variant="ghost"

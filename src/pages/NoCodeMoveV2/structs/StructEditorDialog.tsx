@@ -380,6 +380,7 @@ export default function StructEditorDialog() {
                       prev.map((f, i) => (i === index ? { ...f, type } : f))
                     );
                   }}
+                  st="struct"
                 />
                 <Button
                   variant="ghost"

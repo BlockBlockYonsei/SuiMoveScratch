@@ -101,7 +101,7 @@ export function generateFunctionCode(func: SuiMoveFunction): string {
 
   const parameters = func.parameters
     .map(
-      (p: any, i: number) =>
+      (p: SuiMoveNormalizedType, i: number) =>
         `${func.parameterNames[i]}: ${parseStructNameFromSuiMoveNomalizedType(
           p,
           func.typeParameterNames
@@ -121,11 +121,12 @@ export function generateFunctionCode(func: SuiMoveFunction): string {
   const insideCodeString = func.insideCode
     .map((line) => {
       if ("variableName" in line) {
-        return `  let ${
-          line.variableName
-        }: ${parseStructNameFromSuiMoveNomalizedType(
-          line.type
-        ).toLowerCase()} = ${line.value};`;
+        if (typeof line.type === "string") {
+          return `  let ${line.variableName}: ${line.type.toLowerCase()} = ${
+            line.value
+          };`;
+        }
+        return `  let ${line.variableName} = ${line.value};`;
       } else if ("functionName" in line) {
         return `  ${
           line.return.length > 0
