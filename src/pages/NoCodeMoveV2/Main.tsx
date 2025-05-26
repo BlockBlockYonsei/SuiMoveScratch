@@ -9,8 +9,8 @@ export default function Main() {
   const [currentModule, setCurrentModule] = useState("");
   const [moduleNames, setModuleNames] = useState<string[]>([]);
   const [menu, setMenu] = useState<
-    "imports" | "structs" | "functions" | "code"
-  >("imports");
+    "Imports" | "Structs" | "Functions" | "CodePreview"
+  >("Imports");
 
   useEffect(() => {
     const handleBeforeUnload = (e: any) => {

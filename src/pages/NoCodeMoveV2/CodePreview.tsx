@@ -3,27 +3,43 @@
 //   generateStructCode,
 //   generateFunctionCode,
 // } from "@/lib/generateCode";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
+import { Button } from "@/components/ui/button";
+
+import { createHighlighter } from "shiki";
+
 export default function CodePreview() {
-  // const { imports, structs, functions } = useContext(SuiMoveModuleContext);
+  const { moduleName, imports, structs, functions } =
+    useContext(SuiMoveModuleContext);
+
+  const [code, setCode] = useState("");
+
+  useEffect(() => {
+    const createCode = async () => {
+      const highlighter = await createHighlighter({
+        langs: ["move"],
+        themes: ["nord"],
+      });
+
+      const code1 = highlighter.codeToHtml(
+        `
+        module exclusuive::collection;`,
+        {
+          lang: "move",
+          theme: "nord",
+        }
+      );
+      setCode(code1);
+    };
+
+    createCode();
+  }, [moduleName, imports, structs, functions]);
+
   return (
     <div>
       {/* <code>{generateImportsCode(imports)}</code> */}
-      <br /> <br />
-      <code>
-        {/* {Array.from(structs.entries())
-          .map(([structName, structData]) =>
-            generateStructCode(structName, structData)
-          )
-          .join("\n\n")} */}
-      </code>
-      <br /> <br />
-      <code>
-        {/* {Array.from(functions.entries())
-          .map(([name, f]) => generateFunctionCode(name, f))
-          .join("\n\n")} */}
-      </code>
+      <code dangerouslySetInnerHTML={{ __html: code }} />
     </div>
   );
 }

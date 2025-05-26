@@ -11,8 +11,8 @@ export function SideBarEditor({
   menu,
   setMenu,
 }: {
-  menu: "imports" | "structs" | "functions" | "code";
-  setMenu: (menu: "imports" | "structs" | "functions" | "code") => void;
+  menu: "Imports" | "Structs" | "Functions" | "CodePreview";
+  setMenu: (menu: "Imports" | "Structs" | "Functions" | "CodePreview") => void;
 }) {
   return (
     <Sidebar className="bg-blue-50 min-h-screen ">
@@ -25,49 +25,67 @@ export function SideBarEditor({
       <SidebarContent>
         <SidebarGroup className="space-y-1">
           <Button
-            variant={menu === "imports" ? "default" : "ghost"}
+            variant={menu === "Imports" ? "default" : "ghost"}
             className={`${
-              menu === "imports"
+              menu === "Imports"
                 ? "bg-black text-white hover:bg-black/90"
                 : "text-gray-800 hover:bg-gray-100"
             } cursor-pointer py-6 text-lg font-semibold
               `}
-            onClick={() => setMenu("imports")}
+            onClick={() => setMenu("Imports")}
           >
             Imports
           </Button>
           <Button
-            variant={menu === "structs" ? "default" : "ghost"}
+            variant={menu === "Structs" ? "default" : "ghost"}
             className={`${
-              menu === "structs"
+              menu === "Structs"
                 ? "bg-black text-white hover:bg-black/90"
                 : "text-gray-800 hover:bg-gray-100"
             } cursor-pointer py-6 text-lg font-semibold`}
-            onClick={() => setMenu("structs")}
+            onClick={() => setMenu("Structs")}
           >
             Structs
           </Button>
           <Button
-            variant={menu === "functions" ? "default" : "ghost"}
+            variant={menu === "Functions" ? "default" : "ghost"}
             className={`${
-              menu === "functions"
+              menu === "Functions"
                 ? "bg-black text-white hover:bg-black/90"
                 : "text-gray-800 hover:bg-gray-100"
             } cursor-pointer py-6 text-lg font-semibold`}
-            onClick={() => setMenu("functions")}
+            onClick={() => setMenu("Functions")}
           >
             Functions
           </Button>
           <Button
-            variant={menu === "code" ? "default" : "ghost"}
+            variant={menu === "CodePreview" ? "default" : "ghost"}
             className={`${
-              menu === "code"
+              menu === "CodePreview"
                 ? "bg-black text-white hover:bg-black/90"
                 : "text-gray-800 hover:bg-gray-100"
             } cursor-pointer py-6 text-lg font-semibold`}
-            onClick={() => setMenu("code")}
+            onClick={() => setMenu("CodePreview")}
           >
-            Code Preview
+            CodePreview Preview
+          </Button>
+          <Button
+            // variant={menu === "CodePreview" ? "default" : "ghost"}
+            variant={"ghost"}
+            className={`active:bg-black active:text-white hover:bg-gray-100
+            cursor-pointer py-6 text-lg font-semibold`}
+            // onClick={() => setMenu("CodePreview")}
+          >
+            Save Code
+          </Button>
+          <Button
+            // variant={menu === "CodePreview" ? "default" : "ghost"}
+            variant={"ghost"}
+            className={`active:bg-black active:text-white hover:bg-gray-100
+            cursor-pointer py-6 text-lg font-semibold`}
+            // onClick={() => setMenu("CodePreview")}
+          >
+            Download Code
           </Button>
         </SidebarGroup>
       </SidebarContent>

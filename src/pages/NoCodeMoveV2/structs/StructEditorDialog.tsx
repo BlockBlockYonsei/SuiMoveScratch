@@ -9,7 +9,7 @@ import {
 
 import { SuiMoveStruct } from "@/types/move-syntax2";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
-import { generateStructCode } from "@/lib/generateCode";
+// import { generateStructCode } from "@/lib/generateCode";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -364,12 +364,12 @@ export default function StructEditorDialog() {
         <section className="col-span-6">
           <div className="mt-4">
             <pre className="text-sm bg-gray-100 p-4 rounded whitespace-pre-wrap overflow-y-auto">
-              {generateStructCode(structName, {
+              {/* {generateStructCode(structName, {
                 abilities: { abilities },
                 typeParameters,
                 fields,
                 typeParameterNames,
-              })}
+              })} */}
             </pre>
           </div>
         </section>

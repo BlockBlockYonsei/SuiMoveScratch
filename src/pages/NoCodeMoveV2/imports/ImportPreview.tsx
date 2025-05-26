@@ -21,13 +21,14 @@ export default function ImportPreview() {
           </DialogTrigger>
           <ImportEditorDialog />
         </Dialog>
-        {Object.entries(imports)
-          .sort()
-          .map(([packageAddress, data]) => {
-            const alias = SUI_PACKAGE_ALIASES[packageAddress] || packageAddress;
+        <Card className="border flex py-3">
+          {Object.entries(imports)
+            .sort()
+            .map(([packageAddress, data]) => {
+              const alias =
+                SUI_PACKAGE_ALIASES[packageAddress] || packageAddress;
 
-            return (
-              <Card key={packageAddress} className="border flex py-3">
+              return (
                 <CardHeader>
                   {[...data.entries()].map(([moduleName, moduleData]) => {
                     return (
@@ -49,9 +50,9 @@ export default function ImportPreview() {
                     );
                   })}
                 </CardHeader>
-              </Card>
-            );
-          })}{" "}
+              );
+            })}{" "}
+        </Card>
       </div>
     </div>
   );
