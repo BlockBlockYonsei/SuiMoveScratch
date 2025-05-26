@@ -15,16 +15,16 @@ export default function FunctionPreview() {
           <Dialog key={functionName}>
             <DialogTrigger
               className="cursor-pointer rounded-md"
-              onClick={() => setSelectedFunction(functionName)}
+              onClick={() => setSelectedFunction(data)}
             >
-              {/* <FunctionCard functionName={functionName} functionData={data} /> */}
+              <FunctionCard functionName={functionName} functionData={data} />
             </DialogTrigger>
             <FunctionEditorDialog />
           </Dialog>
         );
       })}
       <Dialog>
-        <DialogTrigger asChild onClick={() => setSelectedFunction(null)}>
+        <DialogTrigger asChild onClick={() => setSelectedFunction(undefined)}>
           <Button variant="outline" className="cursor-pointer h-full text-9xl">
             <PlusIcon />
           </Button>

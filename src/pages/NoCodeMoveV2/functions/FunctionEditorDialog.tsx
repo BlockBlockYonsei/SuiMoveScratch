@@ -3,16 +3,11 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import {
   SuiMoveAbilitySet,
-  SuiMoveNormalizedFunction,
   SuiMoveNormalizedType,
   SuiMoveVisibility,
 } from "@mysten/sui/client";
 
-import {
-  FunctionInsideCodeLine,
-  SuiMoveFunction,
-  SuiMoveStruct,
-} from "@/types/move-syntax";
+import { FunctionInsideCodeLine, SuiMoveFunction } from "@/types/move-syntax2";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
 import {
   DialogContent,
@@ -51,14 +46,7 @@ export default function FunctionEditorDialog() {
   // const [insideCodes, setInsideCodes] = useState<
   //   Map<string, FunctionInsideCodeLine>
   // >(new Map());
-  const [insideCodes, setInsideCodes] = useState<
-    (
-      | FunctionInsideCodeLine
-      // | { [structName: string]: SuiMoveNormalizedStruct }
-      | { struct: { structName: string } & SuiMoveStruct }
-      | SuiMoveNormalizedType
-    )[]
-  >([]);
+  const [insideCodes, setInsideCodes] = useState<FunctionInsideCodeLine[]>([]);
 
   const [newInsideCodeFunctionName, setNewInsideCodeFunctionName] =
     useState("");
@@ -66,47 +54,42 @@ export default function FunctionEditorDialog() {
   const [newParamName, setNewParamName] = useState("");
   const [newTypeParamName, setNewTypeParamName] = useState("");
 
-  const { imports, structs, functions, setFunctions, selectedFunction } =
-    useContext(SuiMoveModuleContext);
+  const {
+    moduleName,
+    imports,
+    structs,
+    functions,
+    setFunctions,
+    selectedFunction,
+  } = useContext(SuiMoveModuleContext);
 
   useEffect(() => {
     console.log("imports", imports);
   }, [imports]);
 
-  // useEffect(() => {
-  //   if (selectedFunction) {
-  //     const functionData = functions.get(selectedFunction);
-  //     if (functionData) {
-  //       setFunctionName(selectedFunction);
-  //       setVisibility(functionData.function.visibility);
-  //       setTypeParameters(
-  //         functionData.function.typeParameters.map((tp, i) => ({
-  //           name: functionData.function.typeParameterNames[i],
-  //           type: tp,
-  //         }))
-  //       );
-  //       setParameters(
-  //         functionData.function.parameters.map((p, i) => ({
-  //           name: functionData.function.parameterNames[i],
-  //           type: p,
-  //         }))
-  //       );
-  //       setReturns(
-  //         functionData.function.return.map((r) => ({ name: "", type: r }))
-  //       );
-  //       setInsideCodes(functionData.insideCode);
-  //     }
-  //   } else {
-  //     // 새로운 function 생성 시 초기화
-  //     // setFunctionName("new_function");
-  //     // setVisibility("Private");
-  //     // setTypeParameters([]);
-  //     // setParameters([]);
-  //     // setReturns([]);
-  //     // setInsideCodes(new Map());
-  //     resetFunction();
-  //   }
-  // }, [selectedFunction, functions]);
+  useEffect(() => {
+    if (selectedFunction) {
+      setFunctionName(selectedFunction.functionName);
+      setVisibility(selectedFunction.visibility);
+      setTypeParameters(
+        selectedFunction.typeParameters.map((tp, i) => ({
+          name: selectedFunction.typeParameterNames[i],
+          type: tp,
+        }))
+      );
+      setParameters(
+        selectedFunction.parameters.map((p, i) => ({
+          name: selectedFunction.parameterNames[i],
+          type: p,
+        }))
+      );
+      setReturns(selectedFunction.return.map((r) => ({ name: "", type: r })));
+      setInsideCodes(selectedFunction.insideCode);
+    } else {
+      // 새로운 function 생성 시 초기화
+      resetFunction();
+    }
+  }, [selectedFunction, functions]);
 
   const resetFunction = () => {
     setFunctionName("new_function");
@@ -121,36 +104,32 @@ export default function FunctionEditorDialog() {
   const handleComplete = () => {
     if (!functionName) return;
 
-    const newFunctionData: SuiMoveNormalizedFunction & {
-      typeParameterNames: string[];
-      parameterNames: string[];
-      // returnNames: string[];
-    } = {
+    const newFunctionData: SuiMoveFunction = {
+      address: "0x0",
+      moduleName: moduleName,
+      functionName: functionName,
       isEntry: isEntry,
       visibility: visibility,
-      typeParameters: typeParameters.map((t) => t.type),
-      typeParameterNames: typeParameters.map((t) => t.name),
       parameters: parameters.map((p) => p.type),
       parameterNames: parameters.map((p) => p.name),
+      typeParameters: typeParameters.map((t) => t.type),
+      typeParameterNames: typeParameters.map((t) => t.name),
       return: returns.map((r) => r.type),
-    };
-    const newSuiMoveFunctionData: SuiMoveFunction = {
-      function: newFunctionData,
       insideCode: insideCodes,
     };
 
-    // setFunctions((prev) => {
-    //   const newFunctionMap = new Map(prev);
-    //   newFunctionMap.set(functionName, newSuiMoveFunctionData);
-    //   // 이전 function 이름이 있고, 새로운 이름과 다른 경우 (이름 변경)
-    //   if (selectedFunction && selectedFunction !== functionName) {
-    //     // 이전 function 데이터 삭제
-    //     newFunctionMap.delete(selectedFunction);
-    //   }
+    setFunctions((prev) => {
+      const newFunctionMap = new Map(prev);
+      newFunctionMap.set(functionName, newFunctionData);
+      // 이전 function 이름이 있고, 새로운 이름과 다른 경우 (이름 변경)
+      if (selectedFunction) {
+        // 이전 function 데이터 삭제
+        newFunctionMap.delete(selectedFunction.functionName);
+      }
 
-    //   newFunctionMap.set(functionName, newSuiMoveFunctionData);
-    //   return newFunctionMap;
-    // });
+      newFunctionMap.set(functionName, newFunctionData);
+      return newFunctionMap;
+    });
 
     resetFunction();
     // Optionally reset all states

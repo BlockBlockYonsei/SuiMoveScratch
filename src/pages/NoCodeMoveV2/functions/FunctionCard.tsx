@@ -1,10 +1,11 @@
 import { useContext } from "react";
 import { X } from "lucide-react";
 
-import { SuiMoveFunction } from "@/types/move-syntax";
+import { SuiMoveFunction } from "@/types/move-syntax2";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import NameBox from "../components/NameBox";
+import { convertSuiMoveNomalizedTypeToString } from "@/lib/suiMoveType";
 
 export default function FunctionCard({
   functionName,
@@ -13,7 +14,6 @@ export default function FunctionCard({
   functionName: string;
   functionData: SuiMoveFunction;
 }) {
-  const fn = functionData.function;
   const { setFunctions } = useContext(SuiMoveModuleContext);
 
   return (
@@ -32,24 +32,24 @@ export default function FunctionCard({
           <X size={20} />
         </button>
         <div className="flex">
-          {fn.isEntry && (
+          {functionData.isEntry && (
             <NameBox className="text-pink-500 font-semibold mr-2">
               {"[entry]"}
             </NameBox>
           )}
-          {fn.visibility !== "Private" && (
+          {functionData.visibility !== "Private" && (
             <NameBox
               className={`${
-                fn.visibility === "Public"
+                functionData.visibility === "Public"
                   ? "text-blue-500"
-                  : fn.visibility === "Friend"
+                  : functionData.visibility === "Friend"
                   ? "text-yellow-400"
                   : ""
               } font-semibold`}
             >
-              {fn.visibility === "Public"
+              {functionData.visibility === "Public"
                 ? "public"
-                : fn.visibility === "Friend"
+                : functionData.visibility === "Friend"
                 ? "public (package)"
                 : ""}{" "}
             </NameBox>
@@ -66,16 +66,16 @@ export default function FunctionCard({
           <CardTitle className="font-semibold text-sm text-start text-muted-foreground mb-1">
             Type Parameters
           </CardTitle>
-          {functionData.function.typeParameters.length === 0 ? (
+          {functionData.typeParameters.length === 0 ? (
             <p className="text-sm text-gray-500 border rounded-sm">None</p>
           ) : (
-            functionData.function.typeParameters.map((param, idx) => (
+            functionData.typeParameters.map((param, idx) => (
               <div
                 key={idx}
                 className="text-sm text-gray-800 flex items-center gap-2"
               >
                 <span className="font-semibold">
-                  {functionData.function.typeParameterNames[idx]}:
+                  {functionData.typeParameterNames[idx]}:
                 </span>
                 <span className="text-gray-500 flex gap-1 flex-wrap">
                   {param.abilities.map((a) => (
@@ -95,25 +95,26 @@ export default function FunctionCard({
             Parameters
           </CardTitle>
 
-          {functionData.function.parameters.length === 0 ? (
+          {functionData.parameters.length === 0 ? (
             <p className="text-sm text-gray-500 border rounded-sm">None</p>
           ) : (
-            functionData.function.parameters.map((param, i) => (
+            functionData.parameters.map((param, i) => (
               <div
-                key={functionData.function.parameterNames[i]}
+                key={functionData.parameterNames[i]}
                 className="text-gray-800 flex items-center gap-2"
               >
                 <NameBox className="border-none">
-                  {functionData.function.parameterNames[i]}:
+                  {functionData.parameterNames[i]}:
                 </NameBox>
                 :
                 <span className="text-gray-500 flex gap-1 flex-wrap">
                   <NameBox className="border-pink-300">
-                    {/* {typeof param === "object" && "TypeParameter" in param
-                      ? functionData.function.typeParameterNames[
-                          Number(convertTypeToString(param))
+                    {/* {convertSuiMoveNomalizedTypeToString(param)} */}
+                    {typeof param === "object" && "TypeParameter" in param
+                      ? functionData.typeParameterNames[
+                          Number(convertSuiMoveNomalizedTypeToString(param))
                         ]
-                      : convertTypeToString(param)} */}
+                      : convertSuiMoveNomalizedTypeToString(param)}
                   </NameBox>
                 </span>
               </div>
@@ -127,17 +128,17 @@ export default function FunctionCard({
             Returns
           </CardTitle>
 
-          {functionData.function.return.length === 0 ? (
+          {functionData.return.length === 0 ? (
             <p className="text-sm text-gray-500 border rounded-sm">None</p>
           ) : (
             <div className="flex gap-2 flex-wrap">
-              {functionData.function.return.map((r, i) => (
+              {functionData.return.map((r, i) => (
                 <NameBox key={i} className="border-emerald-300">
-                  {/* {typeof r === "object" && "TypeParameter" in r
-                    ? functionData.function.typeParameterNames[
-                        Number(convertTypeToString(r))
+                  {typeof r === "object" && "TypeParameter" in r
+                    ? functionData.typeParameterNames[
+                        Number(convertSuiMoveNomalizedTypeToString(r))
                       ]
-                    : convertTypeToString(r)} */}
+                    : convertSuiMoveNomalizedTypeToString(r)}
                 </NameBox>
               ))}
             </div>

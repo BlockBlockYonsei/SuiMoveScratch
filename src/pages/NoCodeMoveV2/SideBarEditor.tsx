@@ -24,6 +24,7 @@ export function SideBarEditor({
 
       <SidebarContent>
         <SidebarGroup className="space-y-1">
+          <hr />
           <Button
             variant={menu === "Imports" ? "default" : "ghost"}
             className={`${
@@ -69,6 +70,9 @@ export function SideBarEditor({
           >
             CodePreview Preview
           </Button>
+
+          <hr />
+
           <Button
             // variant={menu === "CodePreview" ? "default" : "ghost"}
             variant={"ghost"}

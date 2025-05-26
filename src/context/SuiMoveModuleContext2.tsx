@@ -2,6 +2,7 @@ import {
   ImportedModuleData,
   ModuleFunctionData,
   ModuleStructData,
+  SuiMoveFunction,
   SuiMoveStruct,
 } from "@/types/move-syntax2";
 import { createContext, useState } from "react";
@@ -19,8 +20,10 @@ interface Value {
   setSelectedStruct: React.Dispatch<
     React.SetStateAction<SuiMoveStruct | undefined>
   >;
-  selectedFunction: string | null;
-  setSelectedFunction: React.Dispatch<React.SetStateAction<string | null>>;
+  selectedFunction: SuiMoveFunction | undefined;
+  setSelectedFunction: React.Dispatch<
+    React.SetStateAction<SuiMoveFunction | undefined>
+  >;
 }
 
 export const SuiMoveModuleContext = createContext<Value>({
@@ -34,7 +37,7 @@ export const SuiMoveModuleContext = createContext<Value>({
   setFunctions: () => {},
   selectedStruct: undefined,
   setSelectedStruct: () => {},
-  selectedFunction: null,
+  selectedFunction: undefined,
   setSelectedFunction: () => {},
 });
 
@@ -50,7 +53,7 @@ export const SuiMoveModuleProvider = ({
   const [functions, setFunctions] = useState<ModuleFunctionData>(new Map());
 
   const [selectedStruct, setSelectedStruct] = useState<SuiMoveStruct>();
-  const [selectedFunction, setSelectedFunction] = useState<string | null>(null);
+  const [selectedFunction, setSelectedFunction] = useState<SuiMoveFunction>();
 
   return (
     <SuiMoveModuleContext.Provider
