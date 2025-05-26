@@ -130,7 +130,7 @@ export function generateFunctionCode(func: SuiMoveFunction): string {
       } else if ("functionName" in line) {
         return `  ${
           line.return.length > 0
-            ? "let (" + line.return.map((_, i) => `R${i}`).join(", ") + ") = "
+            ? "let (" + line.returnNames.join(", ") + ") = "
             : ""
         }${line.functionName}${
           line.typeParameters.length > 0

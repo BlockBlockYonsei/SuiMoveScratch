@@ -146,10 +146,10 @@ export default function FunctionSelector({
                             moduleName,
                             functionName,
                             parameterNames: functionData.parameters.map(
-                              (_, i) => `P${i}`
+                              (_, i) => `arg${i}`
                             ),
                             returnNames: functionData.parameters.map(
-                              (_, i) => `R${i}`
+                              (_, i) => `var${i}`
                             ),
                             typeParameterNames: functionData.parameters.map(
                               (_, i) => `T${i}`
