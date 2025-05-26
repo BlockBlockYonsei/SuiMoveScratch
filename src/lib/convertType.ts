@@ -38,3 +38,23 @@ export function convertSuiMoveNomalizedTypeToString(
   }
   return "";
 }
+
+export function parseStructNameFromSuiMoveNomalizedType(
+  type: SuiMoveNormalizedType
+): string {
+  if (typeof type === "string") {
+    return `${type}`;
+  } else if ("Reference" in type) {
+    return `&${convertSuiMoveNomalizedTypeToString(type.Reference)}`;
+  } else if ("MutableReference" in type) {
+    return convertSuiMoveNomalizedTypeToString(type.MutableReference);
+  } else if ("Vector" in type) {
+    return convertSuiMoveNomalizedTypeToString(type.Vector);
+  } else if ("Struct" in type) {
+    const { name } = type.Struct;
+    return name;
+  } else if ("TypeParameter" in type) {
+    return type.TypeParameter.toString();
+  }
+  return "";
+}

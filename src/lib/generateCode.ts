@@ -4,7 +4,10 @@ import {
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
-import { convertSuiMoveNomalizedTypeToString } from "./convertType";
+import {
+  convertSuiMoveNomalizedTypeToString,
+  parseStructNameFromSuiMoveNomalizedType,
+} from "./convertType";
 
 export function generateModuleDeclaration({
   packageName,
@@ -66,7 +69,7 @@ export function generateStructCode(struct: SuiMoveStruct): string {
             ? struct.typeParameterNames[
                 Number(convertSuiMoveNomalizedTypeToString(f.type))
               ]
-            : convertSuiMoveNomalizedTypeToString(f.type).toLowerCase()
+            : parseStructNameFromSuiMoveNomalizedType(f.type)
         },`
     )
     .join("\n");

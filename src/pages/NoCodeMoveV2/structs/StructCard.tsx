@@ -3,7 +3,10 @@ import { X } from "lucide-react";
 
 import { SuiMoveStruct } from "@/types/move-type";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-import { convertSuiMoveNomalizedTypeToString } from "@/lib/convertType";
+import {
+  convertSuiMoveNomalizedTypeToString,
+  parseStructNameFromSuiMoveNomalizedType,
+} from "@/lib/convertType";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import NameBox from "../components/NameBox";
 
@@ -109,7 +112,7 @@ export default function StructCard({
                     ? structData.typeParameterNames[
                         Number(convertSuiMoveNomalizedTypeToString(field.type))
                       ]
-                    : convertSuiMoveNomalizedTypeToString(field.type)}
+                    : parseStructNameFromSuiMoveNomalizedType(field.type)}
                 </NameBox>
               </div>
             ))
