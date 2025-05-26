@@ -17,11 +17,8 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import {
-  convertSuiMoveNomalizedTypeStringToType,
-  convertSuiMoveNomalizedTypeToString,
-  convertSuiMoveStructToSuiMoveNomalizedType,
-} from "@/lib/suiMoveType";
+import { convertSuiMoveStructToSuiMoveNomalizedType } from "@/lib/suiMoveType";
+import { SuiMoveStruct } from "@/types/move-syntax2";
 
 export default function TypeSelector({
   nameKey,
@@ -43,12 +40,10 @@ export default function TypeSelector({
       onValueChange={(value: string) => {
         if (!onChange) return;
 
-        const convertedType = convertSuiMoveNomalizedTypeStringToType(value);
+        const convertedType = JSON.parse(value);
         onChange(convertedType);
       }}
-      defaultValue={
-        defaultType ? convertSuiMoveNomalizedTypeToString(defaultType) : "U64"
-      }
+      defaultValue={defaultType ? JSON.stringify(defaultType) : "U64"}
     >
       <SelectTrigger className="cursor-pointer">
         <SelectValue placeholder="Select type..." />
@@ -63,7 +58,7 @@ export default function TypeSelector({
             return (
               <SelectItem
                 key={type}
-                value={convertSuiMoveNomalizedTypeToString(type)}
+                value={JSON.stringify(type as SuiMoveNormalizedType)}
                 className="col-span-1 cursor-pointer hover:bg-gray-200"
               >
                 {type}
@@ -81,7 +76,9 @@ export default function TypeSelector({
           {typeParameters.map((tp, index) => (
             <SelectItem
               key={tp.name}
-              value={`TP${index.toString()}`}
+              value={JSON.stringify({
+                TypeParameter: index,
+              } as SuiMoveNormalizedType)}
               className="cursor-pointer hover:bg-gray-200"
             >
               {tp.name}
@@ -96,16 +93,15 @@ export default function TypeSelector({
         </Label>
         <div className="grid grid-cols-2">
           {[...structs.values()]
-            // .filter((name) => name !== nameKey)
             .filter((struct) => struct.structName !== nameKey)
             .map((struct) => (
               <SelectItem
                 key={struct.structName}
-                value={
-                  convertSuiMoveNomalizedTypeToString(
-                    convertSuiMoveStructToSuiMoveNomalizedType(struct)
-                  ).split("::")[2]
-                }
+                value={JSON.stringify(
+                  convertSuiMoveStructToSuiMoveNomalizedType(
+                    struct
+                  ) as SuiMoveNormalizedType
+                )}
                 className="cursor-pointer hover:bg-gray-200"
               >
                 {struct.structName}
@@ -137,11 +133,19 @@ export default function TypeSelector({
                   {alias}::{moduleName}
                 </div>
                 <div className="grid grid-cols-2">
-                  {Object.keys(data.structs).map((structName) => {
+                  {Object.entries(data.structs).map(([structName, struct]) => {
                     return (
                       <SelectItem
                         key={structName}
-                        value={structName}
+                        value={JSON.stringify(
+                          convertSuiMoveStructToSuiMoveNomalizedType({
+                            ...struct,
+                            address: packageAddress,
+                            moduleName,
+                            structName,
+                            typeParameterNames: [],
+                          } as SuiMoveStruct) as SuiMoveNormalizedType
+                        )}
                         className="cursor-pointer hover:bg-gray-200 break-words whitespace-normal"
                       >
                         {structName}
