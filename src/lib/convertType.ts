@@ -14,31 +14,6 @@ export function convertSuiMoveStructToSuiMoveNomalizedType(
   };
 }
 
-export function convertSuiMoveNomalizedTypeToString(
-  type: SuiMoveNormalizedType
-): string {
-  if (typeof type === "string") {
-    return `${type}`;
-  } else if ("Reference" in type) {
-    return `&${convertSuiMoveNomalizedTypeToString(type.Reference)}`;
-  } else if ("MutableReference" in type) {
-    return `&mut ${convertSuiMoveNomalizedTypeToString(type.MutableReference)}`;
-  } else if ("Vector" in type) {
-    return `vector<${convertSuiMoveNomalizedTypeToString(type.Vector)}>`;
-  } else if ("Struct" in type) {
-    const { address, module, name, typeArguments } = type.Struct;
-    const typeArgsString = typeArguments?.length
-      ? `<${typeArguments
-          .map((t) => convertSuiMoveNomalizedTypeToString(t))
-          .join(", ")}>`
-      : "";
-    return `${address}::${module}::${name}${typeArgsString}`;
-  } else if ("TypeParameter" in type) {
-    return type.TypeParameter.toString();
-  }
-  return "";
-}
-
 export function parseStructNameFromSuiMoveNomalizedType(
   type: SuiMoveNormalizedType,
   typeParameterNames?: string[]
