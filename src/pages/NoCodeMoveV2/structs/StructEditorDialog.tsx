@@ -160,7 +160,7 @@ export default function StructEditorDialog() {
   };
 
   return (
-    <DialogContent className="lg:max-w-[900px] max-h-[80vh] overflow-y-auto">
+    <DialogContent className="sm:max-w-[600px] lg:max-w-[1000px] max-h-[80vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>
           {selectedStruct ? "Update Struct" : "Create a New Struct"}

@@ -164,7 +164,7 @@ export default function FunctionEditorDialog() {
   };
 
   return (
-    <DialogContent className="lg:max-w-[900px] max-w-3xl max-h-[80vh] overflow-y-auto">
+    <DialogContent className="sm:max-w-[600px] lg:max-w-[1000px] max-h-[80vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>
           {selectedFunction ? "Update Function" : "Create a New Function"}
@@ -177,7 +177,7 @@ export default function FunctionEditorDialog() {
       </DialogHeader>
 
       <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-        <section className="col-span-6">
+        <section className="col-span-6 ">
           {/* Name */}
           <div className="mb-2">
             <label className="block mb-1 font-semibold">Function Name</label>
@@ -450,7 +450,7 @@ export default function FunctionEditorDialog() {
 
         <section className="col-span-6">
           {/* Preview */}
-          <pre className="shiki overflow-x-auto rounded p-4 bg-[#2e3440ff] text-white text-sm">
+          <pre className="shiki max-w-[550px] overflow-x-auto rounded p-4 bg-[#2e3440ff] text-white text-sm">
             <code dangerouslySetInnerHTML={{ __html: previewCode }} />
           </pre>
           <FunctionSelector
