@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { FunctionInsideCodeLine } from "@/types/move-type";
+import { FunctionInsideCodeLine, SuiMoveStruct } from "@/types/move-type";
 import { SuiMoveNormalizedType } from "@mysten/sui/client";
 import { convertSuiMoveStructToSuiMoveNomalizedType } from "@/lib/convertType";
 
@@ -92,6 +92,62 @@ export default function FunctionSelector({
             );
           })}
         </div>
+
+        <Label className="px-2 text-xs text-muted-foreground">
+          Imported Module Structs
+        </Label>
+
+        {Object.entries(imports)
+          .flatMap(([packageAddress, modulesMap]) =>
+            Array.from(modulesMap.entries()).map(
+              ([moduleName, data]) =>
+                [packageAddress, moduleName, data] as const
+            )
+          )
+          .map(([packageAddress, moduleName, data]) => {
+            const alias = SUI_PACKAGE_ALIASES[packageAddress] || packageAddress;
+
+            if (Object.keys(data.structs).length === 0) return;
+
+            return (
+              <div key={moduleName}>
+                <div>
+                  {alias}::{moduleName}
+                </div>
+                <div className="grid grid-cols-2">
+                  {Object.entries(data.structs).map(([structName, struct]) => {
+                    return (
+                      <SelectItem
+                        key={structName}
+                        value={JSON.stringify({
+                          type: convertSuiMoveStructToSuiMoveNomalizedType({
+                            ...struct,
+                            address: packageAddress,
+                            moduleName,
+                            structName,
+                            typeParameterNames: [],
+                          } as SuiMoveStruct) as SuiMoveNormalizedType,
+                          variableName: structName,
+                          value: `${structName}${
+                            struct.typeParameters.length > 0
+                              ? `<${struct.typeParameters
+                                  .map((_, i) => `T${i}`)
+                                  .join(", ")}>`
+                              : ""
+                          } {\n${struct.fields
+                            .map((f, i) => `    ${f.name}: field${i}`)
+                            .join("\n")}\n   }`,
+                        })}
+                        className="cursor-pointer hover:bg-gray-200 break-words whitespace-normal"
+                      >
+                        {structName}
+                      </SelectItem>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
 
         <Separator className="my-2" />
 
