@@ -42,15 +42,38 @@ export default function TypeSelector({
   );
   const { imports, structs } = useContext(SuiMoveModuleContext);
 
-  useEffect(() => {
-    if (defaultType) {
-      setSelectedType(defaultType);
+  const getValueType = (type: SuiMoveNormalizedType): SuiMoveNormalizedType => {
+    if (typeof type === "string") {
+      return type;
+    } else if ("TypeParameter" in type) {
+      return type;
+    } else if ("Struct" in type) {
+      return type;
+    } else if ("Reference" in type) {
+      setDataAccess("Reference");
+      return getValueType(type.Reference);
+    } else if ("MutableReference" in type) {
+      setDataAccess("Mutable Reference");
+      return getValueType(type.MutableReference);
+    } else if ("Vector" in type) {
+      setDataType("Vector");
+      return getValueType(type.Vector);
     }
-  }, []);
+    return type;
+  };
 
   useEffect(() => {
+    if (!defaultType) return;
+
     setDataAccess("Value");
     setDataType("Single Value");
+
+    setSelectedType(getValueType(defaultType));
+  }, [defaultType]);
+
+  useEffect(() => {
+    if (!selectedType) return;
+    getValueType(selectedType);
   }, [selectedType]);
 
   useEffect(() => {
@@ -81,7 +104,7 @@ export default function TypeSelector({
           setSelectedType(convertedType);
           onChange(convertedType);
         }}
-        defaultValue={defaultType ? JSON.stringify(defaultType) : "U64"}
+        value={selectedType ? JSON.stringify(selectedType) : "U64"}
       >
         <SelectTrigger className="cursor-pointer">
           <SelectValue placeholder="Select type..." />
@@ -205,13 +228,6 @@ export default function TypeSelector({
           if (!selectedType) return;
 
           setDataAccess(value);
-          if (value === "Value") {
-            onChange(selectedType);
-          } else if (value === "Reference") {
-            onChange({ Reference: selectedType });
-          } else if (value === "Mutable Reference") {
-            onChange({ MutableReference: selectedType });
-          }
         }}
         value={dataAccess}
       >
@@ -241,13 +257,6 @@ export default function TypeSelector({
           if (!selectedType) return;
 
           setDataType(value);
-
-          setDataType(value);
-          if (value === "Single Value") {
-            onChange(selectedType);
-          } else if (value === "Vector") {
-            onChange({ Vector: selectedType });
-          }
         }}
         value={dataType}
       >
