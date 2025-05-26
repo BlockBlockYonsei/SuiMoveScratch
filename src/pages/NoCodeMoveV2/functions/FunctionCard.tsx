@@ -1,9 +1,9 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-import { SuiMoveFunction } from "@/types/move-syntax";
-import { X } from "lucide-react";
 import { useContext } from "react";
-import { convertTypeToString } from "../../../lib/generateCode";
+import { X } from "lucide-react";
+
+import { SuiMoveFunction } from "@/types/move-syntax";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import NameBox from "../components/NameBox";
 
 export default function FunctionCard({
@@ -109,11 +109,11 @@ export default function FunctionCard({
                 :
                 <span className="text-gray-500 flex gap-1 flex-wrap">
                   <NameBox className="border-pink-300">
-                    {typeof param === "object" && "TypeParameter" in param
+                    {/* {typeof param === "object" && "TypeParameter" in param
                       ? functionData.function.typeParameterNames[
                           Number(convertTypeToString(param))
                         ]
-                      : convertTypeToString(param)}
+                      : convertTypeToString(param)} */}
                   </NameBox>
                 </span>
               </div>
@@ -133,11 +133,11 @@ export default function FunctionCard({
             <div className="flex gap-2 flex-wrap">
               {functionData.function.return.map((r, i) => (
                 <NameBox key={i} className="border-emerald-300">
-                  {typeof r === "object" && "TypeParameter" in r
+                  {/* {typeof r === "object" && "TypeParameter" in r
                     ? functionData.function.typeParameterNames[
                         Number(convertTypeToString(r))
                       ]
-                    : convertTypeToString(r)}
+                    : convertTypeToString(r)} */}
                 </NameBox>
               ))}
             </div>

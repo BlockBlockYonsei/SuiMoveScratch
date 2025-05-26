@@ -1,4 +1,19 @@
 import { useContext, useEffect, useState } from "react";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { X } from "lucide-react";
+import {
+  SuiMoveAbilitySet,
+  SuiMoveNormalizedFunction,
+  SuiMoveNormalizedType,
+  SuiMoveVisibility,
+} from "@mysten/sui/client";
+
+import {
+  FunctionInsideCodeLine,
+  SuiMoveFunction,
+  SuiMoveStruct,
+} from "@/types/move-syntax";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
 import {
   DialogContent,
   DialogDescription,
@@ -8,29 +23,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  SuiMoveAbilitySet,
-  SuiMoveNormalizedFunction,
-  SuiMoveNormalizedType,
-  SuiMoveVisibility,
-} from "@mysten/sui/client";
-import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import {
-  FunctionInsideCodeLine,
-  SuiMoveFunction,
-  SuiMoveStruct,
-} from "@/types/move-syntax";
-import { DialogClose } from "@radix-ui/react-dialog";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import AbilitySelector from "../components/AbilitySelector";
-import { X } from "lucide-react";
 import TypeSelector from "../components/TypeSelector";
-import { generateFunctionCode } from "../../../lib/generateCode";
 import FunctionSelector from "../components/FunctionSelector";
 
 export default function FunctionEditorDialog() {
@@ -73,40 +73,40 @@ export default function FunctionEditorDialog() {
     console.log("imports", imports);
   }, [imports]);
 
-  useEffect(() => {
-    if (selectedFunction) {
-      const functionData = functions.get(selectedFunction);
-      if (functionData) {
-        setFunctionName(selectedFunction);
-        setVisibility(functionData.function.visibility);
-        setTypeParameters(
-          functionData.function.typeParameters.map((tp, i) => ({
-            name: functionData.function.typeParameterNames[i],
-            type: tp,
-          }))
-        );
-        setParameters(
-          functionData.function.parameters.map((p, i) => ({
-            name: functionData.function.parameterNames[i],
-            type: p,
-          }))
-        );
-        setReturns(
-          functionData.function.return.map((r) => ({ name: "", type: r }))
-        );
-        setInsideCodes(functionData.insideCode);
-      }
-    } else {
-      // 새로운 function 생성 시 초기화
-      // setFunctionName("new_function");
-      // setVisibility("Private");
-      // setTypeParameters([]);
-      // setParameters([]);
-      // setReturns([]);
-      // setInsideCodes(new Map());
-      resetFunction();
-    }
-  }, [selectedFunction, functions]);
+  // useEffect(() => {
+  //   if (selectedFunction) {
+  //     const functionData = functions.get(selectedFunction);
+  //     if (functionData) {
+  //       setFunctionName(selectedFunction);
+  //       setVisibility(functionData.function.visibility);
+  //       setTypeParameters(
+  //         functionData.function.typeParameters.map((tp, i) => ({
+  //           name: functionData.function.typeParameterNames[i],
+  //           type: tp,
+  //         }))
+  //       );
+  //       setParameters(
+  //         functionData.function.parameters.map((p, i) => ({
+  //           name: functionData.function.parameterNames[i],
+  //           type: p,
+  //         }))
+  //       );
+  //       setReturns(
+  //         functionData.function.return.map((r) => ({ name: "", type: r }))
+  //       );
+  //       setInsideCodes(functionData.insideCode);
+  //     }
+  //   } else {
+  //     // 새로운 function 생성 시 초기화
+  //     // setFunctionName("new_function");
+  //     // setVisibility("Private");
+  //     // setTypeParameters([]);
+  //     // setParameters([]);
+  //     // setReturns([]);
+  //     // setInsideCodes(new Map());
+  //     resetFunction();
+  //   }
+  // }, [selectedFunction, functions]);
 
   const resetFunction = () => {
     setFunctionName("new_function");
@@ -139,18 +139,18 @@ export default function FunctionEditorDialog() {
       insideCode: insideCodes,
     };
 
-    setFunctions((prev) => {
-      const newFunctionMap = new Map(prev);
-      newFunctionMap.set(functionName, newSuiMoveFunctionData);
-      // 이전 function 이름이 있고, 새로운 이름과 다른 경우 (이름 변경)
-      if (selectedFunction && selectedFunction !== functionName) {
-        // 이전 function 데이터 삭제
-        newFunctionMap.delete(selectedFunction);
-      }
+    // setFunctions((prev) => {
+    //   const newFunctionMap = new Map(prev);
+    //   newFunctionMap.set(functionName, newSuiMoveFunctionData);
+    //   // 이전 function 이름이 있고, 새로운 이름과 다른 경우 (이름 변경)
+    //   if (selectedFunction && selectedFunction !== functionName) {
+    //     // 이전 function 데이터 삭제
+    //     newFunctionMap.delete(selectedFunction);
+    //   }
 
-      newFunctionMap.set(functionName, newSuiMoveFunctionData);
-      return newFunctionMap;
-    });
+    //   newFunctionMap.set(functionName, newSuiMoveFunctionData);
+    //   return newFunctionMap;
+    // });
 
     resetFunction();
     // Optionally reset all states
@@ -444,7 +444,7 @@ export default function FunctionEditorDialog() {
         <section className="col-span-6">
           {/* Preview */}
           <div className="bg-gray-100 p-4 text-sm rounded whitespace-pre-wrap mb-4">
-            {generateFunctionCode(functionName, {
+            {/* {generateFunctionCode(functionName, {
               function: {
                 visibility,
                 isEntry,
@@ -455,7 +455,7 @@ export default function FunctionEditorDialog() {
                 return: returns.map((r) => r.type),
               },
               insideCode: insideCodes,
-            })}
+            })} */}
           </div>
           <FunctionSelector
             nameKey={functionName}
@@ -465,78 +465,74 @@ export default function FunctionEditorDialog() {
           <Button
             className="cursor-pointer w-90"
             onClick={() => {
-              setInsideCodes((prev) => {
-                const [pkg, module, name] =
-                  newInsideCodeFunctionName.split("::");
-
-                if (pkg === "primitive") {
-                  return [...prev, name as SuiMoveNormalizedType];
-                }
-                if (pkg === "0x0" && module === "currentModuleStruct") {
-                  const selectedStruct = structs.get(name);
-                  if (!selectedStruct) return prev;
-                  return [
-                    ...prev,
-                    {
-                      struct: { ...selectedStruct, structName: name },
-                    },
-                  ];
-                }
-
-                const importedModule = imports.get(`${pkg}::${module}`);
-                if (pkg === "0x0" && module === "currentModuleFunction") {
-                  const selectedFunction = functions.get(name);
-                  if (!selectedFunction) return prev;
-                  return [
-                    ...prev,
-                    {
-                      functionName: name,
-                      visibility: selectedFunction.function.visibility,
-                      isEntry: selectedFunction.function.isEntry,
-                      typeParameters: selectedFunction.function.typeParameters,
-                      typeArgumentNames:
-                        selectedFunction.function.typeParameters.map(
-                          (_, i) => `T${i}`
-                        ),
-                      parameters: selectedFunction.function.parameters,
-                      argumentNames: selectedFunction.function.parameters.map(
-                        (_, i) => `P${i}`
-                      ),
-                      return: selectedFunction.function.return,
-                      returnVariableNames:
-                        selectedFunction.function.parameters.map(
-                          (_, i) => `R${i}`
-                        ),
-                    } as FunctionInsideCodeLine,
-                  ];
-                }
-
-                if (importedModule && importedModule.functions) {
-                  const selectedFunction = importedModule.functions[name];
-                  return [
-                    ...prev,
-                    {
-                      functionName: `${module}::${name}`,
-                      visibility: selectedFunction.visibility,
-                      isEntry: selectedFunction.isEntry,
-                      typeParameters: selectedFunction.typeParameters,
-                      typeArgumentNames: selectedFunction.typeParameters.map(
-                        (_, i) => `T${i}`
-                      ),
-                      parameters: selectedFunction.parameters,
-                      argumentNames: selectedFunction.parameters.map(
-                        (_, i) => `P${i}`
-                      ),
-                      return: selectedFunction.return,
-                      returnVariableNames: selectedFunction.parameters.map(
-                        (_, i) => `R${i}`
-                      ),
-                    } as FunctionInsideCodeLine,
-                  ];
-                }
-
-                return prev;
-              });
+              // setInsideCodes((prev) => {
+              //   const [pkg, module, name] =
+              //     newInsideCodeFunctionName.split("::");
+              //   if (pkg === "primitive") {
+              //     return [...prev, name as SuiMoveNormalizedType];
+              //   }
+              //   if (pkg === "0x0" && module === "currentModuleStruct") {
+              //     const selectedStruct = structs.get(name);
+              //     if (!selectedStruct) return prev;
+              //     return [
+              //       ...prev,
+              //       {
+              //         struct: { ...selectedStruct, structName: name },
+              //       },
+              //     ];
+              //   }
+              //   const importedModule = imports.get(`${pkg}::${module}`);
+              //   if (pkg === "0x0" && module === "currentModuleFunction") {
+              //     const selectedFunction = functions.get(name);
+              //     if (!selectedFunction) return prev;
+              //     return [
+              //       ...prev,
+              //       {
+              //         functionName: name,
+              //         visibility: selectedFunction.function.visibility,
+              //         isEntry: selectedFunction.function.isEntry,
+              //         typeParameters: selectedFunction.function.typeParameters,
+              //         typeArgumentNames:
+              //           selectedFunction.function.typeParameters.map(
+              //             (_, i) => `T${i}`
+              //           ),
+              //         parameters: selectedFunction.function.parameters,
+              //         argumentNames: selectedFunction.function.parameters.map(
+              //           (_, i) => `P${i}`
+              //         ),
+              //         return: selectedFunction.function.return,
+              //         returnVariableNames:
+              //           selectedFunction.function.parameters.map(
+              //             (_, i) => `R${i}`
+              //           ),
+              //       } as FunctionInsideCodeLine,
+              //     ];
+              //   }
+              //   if (importedModule && importedModule.functions) {
+              //     const selectedFunction = importedModule.functions[name];
+              //     return [
+              //       ...prev,
+              //       {
+              //         functionName: `${module}::${name}`,
+              //         visibility: selectedFunction.visibility,
+              //         isEntry: selectedFunction.isEntry,
+              //         typeParameters: selectedFunction.typeParameters,
+              //         typeArgumentNames: selectedFunction.typeParameters.map(
+              //           (_, i) => `T${i}`
+              //         ),
+              //         parameters: selectedFunction.parameters,
+              //         argumentNames: selectedFunction.parameters.map(
+              //           (_, i) => `P${i}`
+              //         ),
+              //         return: selectedFunction.return,
+              //         returnVariableNames: selectedFunction.parameters.map(
+              //           (_, i) => `R${i}`
+              //         ),
+              //       } as FunctionInsideCodeLine,
+              //     ];
+              //   }
+              //   return prev;
+              // });
             }}
           >
             Add Function Logic

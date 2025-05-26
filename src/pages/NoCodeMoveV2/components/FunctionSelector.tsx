@@ -13,7 +13,7 @@ import {
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
 import { useContext } from "react";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
 import { PRIMITIVE_TYPES } from "@/Constants";
 
@@ -29,31 +29,6 @@ export default function FunctionSelector({
 }) {
   const { imports, structs, functions, selectedStruct } =
     useContext(SuiMoveModuleContext);
-
-  const convertTypeToSelectValue = (type: SuiMoveNormalizedType): string => {
-    if (!selectedStruct) return "primitive:::U64";
-
-    if (typeof type === "string") {
-      return `primitive:::${type}`;
-    } else if ("TypeParameter" in type) {
-      const currentStruct = structs.get(selectedStruct);
-      return currentStruct
-        ? `typeParameter:::${
-            currentStruct.typeParameterNames[type.TypeParameter]
-          }`
-        : "";
-    } else if ("Struct" in type) {
-      const { address, module, name } = type.Struct;
-      return `moduleStruct:::${name}::${module}::${address}`;
-    } else if ("Reference" in type) {
-      return `${convertTypeToSelectValue(type.Reference)}::reference`;
-    } else if ("MutableReference" in type) {
-      return `${convertTypeToSelectValue(type.MutableReference)}::mutReference`;
-    } else if ("Vector" in type) {
-      return `${convertTypeToSelectValue(type.Vector)}::vector`;
-    }
-    return "";
-  };
 
   return (
     <Select onValueChange={setNewInsideCodeFunctionName}>
@@ -121,34 +96,41 @@ export default function FunctionSelector({
           Imported Module Functions
         </Label>
 
-        {[...imports.entries()].map(([key, module]) => {
-          const [pkgAddress, moduleName] = key.split("::");
-          const alias = SUI_PACKAGE_ALIASES[pkgAddress] || pkgAddress;
-          if (!module.functions) return;
+        {Object.entries(imports)
+          .flatMap(([packageAddress, modulesMap]) =>
+            Array.from(modulesMap.entries()).map(
+              ([moduleName, data]) =>
+                [packageAddress, moduleName, data] as const
+            )
+          )
+          .map(([packageAddress, moduleName, data]) => {
+            // const [pkgAddress, moduleName] = key.split("::");
+            const alias = SUI_PACKAGE_ALIASES[packageAddress] || packageAddress;
+            if (!data.functions) return;
 
-          if (Object.keys(module.functions).length === 0) return;
+            if (Object.keys(data.functions).length === 0) return;
 
-          return (
-            <div key={moduleName}>
-              <div>
-                {alias}::{moduleName}
+            return (
+              <div key={moduleName}>
+                <div>
+                  {alias}::{moduleName}
+                </div>
+                <div className="grid grid-cols-2">
+                  {Object.keys(data.functions).map((functionName) => {
+                    return (
+                      <SelectItem
+                        key={functionName}
+                        value={`${packageAddress}::${moduleName}::${functionName}`}
+                        className="cursor-pointer hover:bg-gray-200 break-words whitespace-normal truncate"
+                      >
+                        {functionName}
+                      </SelectItem>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="grid grid-cols-2">
-                {Object.keys(module.functions).map((functionName) => {
-                  return (
-                    <SelectItem
-                      key={functionName}
-                      value={`${pkgAddress}::${moduleName}::${functionName}`}
-                      className="cursor-pointer hover:bg-gray-200 break-words whitespace-normal truncate"
-                    >
-                      {functionName}
-                    </SelectItem>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
       </SelectContent>
     </Select>
   );

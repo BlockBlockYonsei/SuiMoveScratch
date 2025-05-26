@@ -1,10 +1,7 @@
 import { SideBarEditor } from "@/pages/NoCodeMoveV2/SideBarEditor";
 import MainScreen from "@/pages/NoCodeMoveV2/MainScreen";
-import {
-  SuiMoveModuleContext,
-  SuiMoveModuleProvider,
-} from "@/context/SuiMoveModuleContext2";
-import { useContext, useEffect, useState } from "react";
+import { SuiMoveModuleProvider } from "@/context/SuiMoveModuleContext2";
+import { useEffect, useState } from "react";
 import { Tabs } from "@/components/ui/tabs";
 import ModuleTabs from "./ModuleTabs";
 

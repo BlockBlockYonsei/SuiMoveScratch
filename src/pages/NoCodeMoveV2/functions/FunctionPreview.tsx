@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
 import FunctionCard from "./FunctionCard";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import FunctionEditorDialog from "./FunctionEditorDialog";
@@ -17,7 +17,7 @@ export default function FunctionPreview() {
               className="cursor-pointer rounded-md"
               onClick={() => setSelectedFunction(functionName)}
             >
-              <FunctionCard functionName={functionName} functionData={data} />
+              {/* <FunctionCard functionName={functionName} functionData={data} /> */}
             </DialogTrigger>
             <FunctionEditorDialog />
           </Dialog>

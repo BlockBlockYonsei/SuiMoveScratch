@@ -1,10 +1,11 @@
-import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
-import StructEditorDialog from "./StructEditorDialog";
 import { useContext } from "react";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
-import StructCard from "./StructCard";
-import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
+import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
+
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
+import { Button } from "@/components/ui/button";
+import StructEditorDialog from "./StructEditorDialog";
+import StructCard from "./StructCard";
 
 export default function StructPreview() {
   const { structs, setSelectedStruct } = useContext(SuiMoveModuleContext);
