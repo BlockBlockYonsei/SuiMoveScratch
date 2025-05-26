@@ -4,7 +4,7 @@ import {
   ModuleStructData,
   SuiMoveFunction,
   SuiMoveStruct,
-} from "@/types/move-syntax2";
+} from "@/types/move-type";
 import { createContext, useState } from "react";
 
 interface Value {

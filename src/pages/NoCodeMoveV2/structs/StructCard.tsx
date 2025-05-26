@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { X } from "lucide-react";
 
-import { SuiMoveStruct } from "@/types/move-syntax2";
+import { SuiMoveStruct } from "@/types/move-type";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { convertSuiMoveNomalizedTypeToString } from "@/lib/convertType";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

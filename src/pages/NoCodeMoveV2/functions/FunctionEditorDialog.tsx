@@ -7,7 +7,7 @@ import {
   SuiMoveVisibility,
 } from "@mysten/sui/client";
 
-import { FunctionInsideCodeLine, SuiMoveFunction } from "@/types/move-syntax2";
+import { FunctionInsideCodeLine, SuiMoveFunction } from "@/types/move-type";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import {
   DialogContent,

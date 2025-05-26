@@ -5,7 +5,7 @@ import {
   ModuleFunctionData,
   SuiMoveFunction,
   SuiMoveStruct,
-} from "@/types/move-syntax2";
+} from "@/types/move-type";
 import {
   SuiMoveAbilitySet,
   SuiMoveNormalizedType,

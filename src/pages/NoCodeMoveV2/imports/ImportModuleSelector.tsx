@@ -1,8 +1,5 @@
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-import {
-  ImportedModuleData,
-  ImportedSuiMoveModule,
-} from "@/types/move-syntax2";
+import { ImportedModuleData, ImportedSuiMoveModule } from "@/types/move-type";
 import { useSuiClientQuery } from "@mysten/dapp-kit";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { useContext } from "react";

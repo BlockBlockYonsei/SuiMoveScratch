@@ -1,4 +1,4 @@
-import { SuiMoveStruct } from "@/types/move-syntax2";
+import { SuiMoveStruct } from "@/types/move-type";
 import { SuiMoveNormalizedType } from "@mysten/sui/client";
 
 export function convertSuiMoveStructToSuiMoveNomalizedType(

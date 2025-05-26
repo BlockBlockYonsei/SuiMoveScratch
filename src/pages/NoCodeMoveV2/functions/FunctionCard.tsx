@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { X } from "lucide-react";
 
-import { SuiMoveFunction } from "@/types/move-syntax2";
+import { SuiMoveFunction } from "@/types/move-type";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import NameBox from "../components/NameBox";

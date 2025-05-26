@@ -7,7 +7,7 @@ import {
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
 
-import { SuiMoveStruct } from "@/types/move-syntax2";
+import { SuiMoveStruct } from "@/types/move-type";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 // import { generateStructCode } from "@/lib/generateCode";
 import { Button } from "@/components/ui/button";
