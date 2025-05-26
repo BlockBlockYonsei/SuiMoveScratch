@@ -8,7 +8,7 @@ import {
 } from "@mysten/sui/client";
 
 import { FunctionInsideCodeLine, SuiMoveFunction } from "@/types/move-syntax2";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import {
   DialogContent,
   DialogDescription,

@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { X } from "lucide-react";
 
 import { SuiMoveStruct } from "@/types/move-syntax";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { convertSuiMoveNomalizedTypeToString } from "@/lib/convertType";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import NameBox from "../components/NameBox";

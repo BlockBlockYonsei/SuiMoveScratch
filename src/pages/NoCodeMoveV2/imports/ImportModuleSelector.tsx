@@ -1,4 +1,4 @@
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import {
   ImportedModuleData,
   ImportedSuiMoveModule,

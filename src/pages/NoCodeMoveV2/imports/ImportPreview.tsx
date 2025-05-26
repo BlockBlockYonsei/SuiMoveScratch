@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { PlusIcon } from "lucide-react";
 import { useContext } from "react";
 import ImportEditorDialog from "./ImportEditorDialog";

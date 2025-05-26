@@ -5,7 +5,7 @@ import {
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
 
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SUI_PACKAGE_ALIASES, PRIMITIVE_TYPES } from "@/Constants";
 
 import {

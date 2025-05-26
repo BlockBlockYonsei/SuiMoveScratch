@@ -4,7 +4,7 @@
 //   generateFunctionCode,
 // } from "@/lib/generateCode";
 import { useContext, useEffect, useState } from "react";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { Button } from "@/components/ui/button";
 
 import { createHighlighter } from "shiki";

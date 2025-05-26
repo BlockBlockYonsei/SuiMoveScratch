@@ -8,7 +8,7 @@ import {
 } from "@mysten/sui/client";
 
 import { SuiMoveStruct } from "@/types/move-syntax2";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 // import { generateStructCode } from "@/lib/generateCode";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import FunctionCard from "./FunctionCard";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import FunctionEditorDialog from "./FunctionEditorDialog";

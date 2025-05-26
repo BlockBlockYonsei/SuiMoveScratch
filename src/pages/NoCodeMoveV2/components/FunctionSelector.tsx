@@ -13,7 +13,7 @@ import {
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
 import { useContext } from "react";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
 import { PRIMITIVE_TYPES } from "@/Constants";
 

@@ -3,7 +3,7 @@ import FunctionPreview from "./functions/FunctionPreview";
 import ImportPreview from "./imports/ImportPreview";
 import CodePreview from "./CodePreview";
 import { useContext, useEffect } from "react";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { Button } from "@/components/ui/button";
 
 export default function MainScreen({

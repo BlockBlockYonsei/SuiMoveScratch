@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { PlusIcon } from "lucide-react";
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { Button } from "@/components/ui/button";
 import StructEditorDialog from "./StructEditorDialog";
 import StructCard from "./StructCard";
