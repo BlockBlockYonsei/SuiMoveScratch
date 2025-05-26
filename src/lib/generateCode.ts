@@ -1,90 +1,78 @@
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
+import { ImportedModuleData, SuiMoveStruct } from "@/types/move-type";
 import {
-  ImportedModuleData,
-  ModuleStructData,
-  ModuleFunctionData,
-  SuiMoveFunction,
-  SuiMoveStruct,
-} from "@/types/move-type";
-import {
-  SuiMoveAbilitySet,
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
+import { convertSuiMoveNomalizedTypeToString } from "./convertType";
 
-// export function convertTypeToString(type: SuiMoveNormalizedType): string {
-//   if (typeof type === "string") return type;
-//   if ("Struct" in type) {
-//     const { name, typeArguments } = type.Struct;
-//     const args = typeArguments?.length
-//       ? `<${typeArguments.map((t) => `T${convertTypeToString(t)}`).join(", ")}>`
-//       : "";
-//     return `${name}${args}`;
-//   } else if ("TypeParameter" in type) {
-//     return type.TypeParameter.toString();
-//   } else if ("Reference" in type) {
-//     return `&${convertTypeToString(type.Reference)}`;
-//   } else if ("MutableReference" in type) {
-//     return `&mut ${convertTypeToString(type.MutableReference)}`;
-//   } else if ("Vector" in type) {
-//     return `vector<${convertTypeToString(type.Vector)}>`;
-//   }
+export function generateModuleDeclaration({
+  packageName,
+  moduleName,
+}: {
+  packageName: string;
+  moduleName: string;
+}): string {
+  return `module ${packageName}::${moduleName};\n\n`;
+}
 
-//   return "";
-// }
+export function generateImportsCode(imports: ImportedModuleData): string {
+  return (
+    Object.entries(imports)
+      .sort()
+      .map(([packageAddress, data]) => {
+        const pkgAlias = SUI_PACKAGE_ALIASES[packageAddress] || packageAddress;
 
-// export function generateImportsCode(imports: ImportDataMap): string {
-//   return Array.from(imports.entries())
-//     .sort()
-//     .map(([_, data]) => {
-//       const pkgAlias = SUI_PACKAGE_ALIASES[data.address] || data.address;
-//       const importedStructNames = Object.keys(data.structs);
-//       const importedNames = data.functions
-//         ? ["Self", ...importedStructNames].join(", ")
-//         : importedStructNames.join(", ");
+        return [...data.entries()]
+          .map(([moduleName, moduleData]) => {
+            const importedNames = moduleData.functions
+              ? ["Self", ...Object.keys(moduleData.structs)].join(", ")
+              : Object.keys(moduleData.structs).join(", ");
 
-//       return `use ${pkgAlias}::${data.moduleName}::{ ${importedNames} };`;
-//     })
-//     .join("\n");
-// }
+            return `use ${pkgAlias}::${moduleName}::{ ${importedNames} };`;
+          })
+          .join("\n");
+      })
+      .join("\n\n") + "\n\n"
+  );
+}
 
-// export function generateStructCode(
-//   name: string,
-//   struct: SuiMoveStruct
-// ): string {
-//   const abilities =
-//     struct.abilities.abilities.length > 0
-//       ? ` has ${struct.abilities.abilities
-//           .map((ability: string) => ability.toLowerCase())
-//           .join(", ")}`
-//       : "";
+export function generateStructCode(struct: SuiMoveStruct): string {
+  const abilities =
+    struct.abilities.abilities.length > 0
+      ? ` has ${struct.abilities.abilities
+          .map((ability: string) => ability.toLowerCase())
+          .join(", ")}`
+      : "";
 
-//   const typeParams = (struct.typeParameters || [])
-//     .map((tp: SuiMoveStructTypeParameter, i: number) => {
-//       const phantom = tp.isPhantom ? "phantom " : "";
-//       const paramName = struct.typeParameterNames?.[i] ?? `T${i}`;
-//       const abilities = tp.constraints?.abilities
-//         ?.map((a: string) => a.toLowerCase())
-//         .join(" + ");
-//       return `${phantom}${paramName}${abilities ? `: ${abilities}` : ""}`;
-//     })
-//     .join(", ");
+  const typeParams = (struct.typeParameters || [])
+    .map((tp: SuiMoveStructTypeParameter, i: number) => {
+      const phantom = tp.isPhantom ? "phantom " : "";
+      const paramName = struct.typeParameterNames?.[i] ?? `T${i}`;
+      const abilities = tp.constraints?.abilities
+        ?.map((a: string) => a.toLowerCase())
+        .join(" + ");
+      return `${phantom}${paramName}${abilities ? `: ${abilities}` : ""}`;
+    })
+    .join(", ");
 
-//   const generics = typeParams ? `<${typeParams}>` : "";
+  const generics = typeParams ? `<${typeParams}>` : "";
 
-//   const fields = (struct.fields || [])
-//     .map(
-//       (f: { name: string; type: SuiMoveNormalizedType }) =>
-//         `  ${f.name}: ${
-//           typeof f.type === "object" && "TypeParameter" in f.type
-//             ? struct.typeParameterNames[Number(convertTypeToString(f.type))]
-//             : convertTypeToString(f.type).toLowerCase()
-//         },`
-//     )
-//     .join("\n");
+  const fields = (struct.fields || [])
+    .map(
+      (f: { name: string; type: SuiMoveNormalizedType }) =>
+        `  ${f.name}: ${
+          typeof f.type === "object" && "TypeParameter" in f.type
+            ? struct.typeParameterNames[
+                Number(convertSuiMoveNomalizedTypeToString(f.type))
+              ]
+            : convertSuiMoveNomalizedTypeToString(f.type).toLowerCase()
+        },`
+    )
+    .join("\n");
 
-//   return `public struct ${name}${generics}${abilities} {\n${fields}\n}`;
-// }
+  return `public struct ${struct.structName}${generics}${abilities} {\n${fields}\n}`;
+}
 // export function generateStructCode2(
 //   name: string,
 //   struct: SuiMoveStruct
