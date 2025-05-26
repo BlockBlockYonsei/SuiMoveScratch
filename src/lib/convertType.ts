@@ -45,11 +45,13 @@ export function parseStructNameFromSuiMoveNomalizedType(
   if (typeof type === "string") {
     return `${type}`;
   } else if ("Reference" in type) {
-    return `&${convertSuiMoveNomalizedTypeToString(type.Reference)}`;
+    return `&${parseStructNameFromSuiMoveNomalizedType(type.Reference)}`;
   } else if ("MutableReference" in type) {
-    return convertSuiMoveNomalizedTypeToString(type.MutableReference);
+    return `&mut ${parseStructNameFromSuiMoveNomalizedType(
+      type.MutableReference
+    )}`;
   } else if ("Vector" in type) {
-    return convertSuiMoveNomalizedTypeToString(type.Vector);
+    return `vector<${parseStructNameFromSuiMoveNomalizedType(type.Vector)}>`;
   } else if ("Struct" in type) {
     const { name } = type.Struct;
     return name;

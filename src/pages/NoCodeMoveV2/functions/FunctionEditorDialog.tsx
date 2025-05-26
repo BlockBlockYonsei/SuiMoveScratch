@@ -47,9 +47,6 @@ export default function FunctionEditorDialog() {
     { name: string; type: SuiMoveAbilitySet }[]
   >([]);
 
-  // const [insideCodes, setInsideCodes] = useState<
-  //   Map<string, FunctionInsideCodeLine>
-  // >(new Map());
   const [insideCodes, setInsideCodes] = useState<FunctionInsideCodeLine[]>([]);
 
   const [newInsideCodeFunctionName, setNewInsideCodeFunctionName] =

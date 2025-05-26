@@ -32,9 +32,7 @@ export default function StructEditorDialog() {
   const [typeParameters, setTypeParameters] = useState<
     { name: string; type: SuiMoveStructTypeParameter }[]
   >([]);
-  const [fields, setFields] = useState<
-    { name: string; type: SuiMoveNormalizedType }[]
-  >([]);
+  const [fields, setFields] = useState<SuiMoveNormalizedField[]>([]);
 
   const [newFieldName, setNewFieldName] = useState("");
   const [newTypeParamName, setNewTypeParamName] = useState("");
