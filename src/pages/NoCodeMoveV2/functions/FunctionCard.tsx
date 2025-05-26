@@ -98,27 +98,27 @@ export default function FunctionCard({
           {functionData.parameters.length === 0 ? (
             <p className="text-sm text-gray-500 border rounded-sm">None</p>
           ) : (
-            functionData.parameters.map((param, i) => (
-              <div
-                key={functionData.parameterNames[i]}
-                className="text-gray-800 flex items-center gap-2"
-              >
-                <NameBox className="border-none">
-                  {functionData.parameterNames[i]}:
-                </NameBox>
-                :
-                <span className="text-gray-500 flex gap-1 flex-wrap">
-                  <NameBox className="border-pink-300">
-                    {/* {convertSuiMoveNomalizedTypeToString(param)} */}
-                    {typeof param === "object" && "TypeParameter" in param
-                      ? functionData.typeParameterNames[
-                          Number(parseStructNameFromSuiMoveNomalizedType(param))
-                        ]
-                      : parseStructNameFromSuiMoveNomalizedType(param)}
+            functionData.parameters.map((param, i) => {
+              return (
+                <div
+                  key={functionData.parameterNames[i]}
+                  className="text-gray-800 flex items-center gap-2"
+                >
+                  <NameBox className="border-none">
+                    {functionData.parameterNames[i]}:
                   </NameBox>
-                </span>
-              </div>
-            ))
+                  :
+                  <span className="text-gray-500 flex gap-1 flex-wrap">
+                    <NameBox className="border-pink-300">
+                      {parseStructNameFromSuiMoveNomalizedType(
+                        param,
+                        functionData.typeParameterNames
+                      )}
+                    </NameBox>
+                  </span>
+                </div>
+              );
+            })
           )}
         </div>
 
@@ -132,15 +132,16 @@ export default function FunctionCard({
             <p className="text-sm text-gray-500 border rounded-sm">None</p>
           ) : (
             <div className="flex gap-2 flex-wrap">
-              {functionData.return.map((r, i) => (
-                <NameBox key={i} className="border-emerald-300">
-                  {typeof r === "object" && "TypeParameter" in r
-                    ? functionData.typeParameterNames[
-                        Number(parseStructNameFromSuiMoveNomalizedType(r))
-                      ]
-                    : parseStructNameFromSuiMoveNomalizedType(r)}
-                </NameBox>
-              ))}
+              {functionData.return.map((r, i) => {
+                return (
+                  <NameBox key={i} className="border-emerald-300">
+                    {parseStructNameFromSuiMoveNomalizedType(
+                      r,
+                      functionData.typeParameterNames
+                    )}
+                  </NameBox>
+                );
+              })}
             </div>
           )}
         </div>

@@ -3,10 +3,7 @@ import { X } from "lucide-react";
 
 import { SuiMoveStruct } from "@/types/move-type";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-import {
-  convertSuiMoveNomalizedTypeToString,
-  parseStructNameFromSuiMoveNomalizedType,
-} from "@/lib/convertType";
+import { parseStructNameFromSuiMoveNomalizedType } from "@/lib/convertType";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import NameBox from "../components/NameBox";
 
@@ -100,24 +97,22 @@ export default function StructCard({
           {structData.fields.length === 0 ? (
             <p className="text-sm text-gray-500 border rounded-sm">None</p>
           ) : (
-            structData.fields.map((field) => (
-              <div
-                key={field.name}
-                className="text-gray-800 flex items-center gap-2"
-              >
-                <NameBox className="border-none">{field.name}</NameBox>:
-                <NameBox className="text-gray-500 border-emerald-300">
-                  {typeof field.type === "object" &&
-                  "TypeParameter" in field.type
-                    ? structData.typeParameterNames[
-                        Number(
-                          parseStructNameFromSuiMoveNomalizedType(field.type)
-                        )
-                      ]
-                    : parseStructNameFromSuiMoveNomalizedType(field.type)}
-                </NameBox>
-              </div>
-            ))
+            structData.fields.map((field) => {
+              return (
+                <div
+                  key={field.name}
+                  className="text-gray-800 flex items-center gap-2"
+                >
+                  <NameBox className="border-none">{field.name}</NameBox>:
+                  <NameBox className="text-gray-500 border-emerald-300">
+                    {parseStructNameFromSuiMoveNomalizedType(
+                      field.type,
+                      structData.typeParameterNames
+                    )}
+                  </NameBox>
+                </div>
+              );
+            })
           )}
         </div>
       </CardContent>

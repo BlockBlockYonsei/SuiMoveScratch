@@ -66,13 +66,10 @@ export function generateStructCode(struct: SuiMoveStruct): string {
   const fields = (struct.fields || [])
     .map(
       (f: { name: string; type: SuiMoveNormalizedType }) =>
-        `  ${f.name}: ${
-          typeof f.type === "object" && "TypeParameter" in f.type
-            ? struct.typeParameterNames[
-                Number(parseStructNameFromSuiMoveNomalizedType(f.type))
-              ]
-            : parseStructNameFromSuiMoveNomalizedType(f.type)
-        },`
+        `  ${f.name}: ${parseStructNameFromSuiMoveNomalizedType(
+          f.type,
+          struct.typeParameterNames
+        )},`
     )
     .join("\n");
 
@@ -105,13 +102,10 @@ export function generateFunctionCode(func: SuiMoveFunction): string {
   const parameters = func.parameters
     .map(
       (p: any, i: number) =>
-        `${func.parameterNames[i]}: ${
-          typeof p === "object" && "TypeParameter" in p
-            ? func.typeParameterNames[
-                Number(parseStructNameFromSuiMoveNomalizedType(p))
-              ]
-            : parseStructNameFromSuiMoveNomalizedType(p)
-        }`
+        `${func.parameterNames[i]}: ${parseStructNameFromSuiMoveNomalizedType(
+          p,
+          func.typeParameterNames
+        )}`
     )
     .join(", ");
 
@@ -119,11 +113,7 @@ export function generateFunctionCode(func: SuiMoveFunction): string {
     func.return.length > 0
       ? `: (${func.return
           .map((r) =>
-            typeof r === "object" && "TypeParameter" in r
-              ? func.typeParameterNames[
-                  Number(parseStructNameFromSuiMoveNomalizedType(r))
-                ]
-              : parseStructNameFromSuiMoveNomalizedType(r)
+            parseStructNameFromSuiMoveNomalizedType(r, func.typeParameterNames)
           )
           .join(", ")})`
       : "";
