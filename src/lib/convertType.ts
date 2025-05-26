@@ -19,7 +19,7 @@ export function parseStructNameFromSuiMoveNomalizedType(
   typeParameterNames?: string[]
 ): string {
   if (typeof type === "string") {
-    return `${type}`;
+    return `${type.toLowerCase()}`;
   } else if ("Reference" in type) {
     return `&${parseStructNameFromSuiMoveNomalizedType(
       type.Reference,
