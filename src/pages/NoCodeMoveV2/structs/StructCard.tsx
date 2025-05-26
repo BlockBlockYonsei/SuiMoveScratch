@@ -110,7 +110,9 @@ export default function StructCard({
                   {typeof field.type === "object" &&
                   "TypeParameter" in field.type
                     ? structData.typeParameterNames[
-                        Number(convertSuiMoveNomalizedTypeToString(field.type))
+                        Number(
+                          parseStructNameFromSuiMoveNomalizedType(field.type)
+                        )
                       ]
                     : parseStructNameFromSuiMoveNomalizedType(field.type)}
                 </NameBox>

@@ -1,13 +1,15 @@
 import { SUI_PACKAGE_ALIASES } from "@/Constants";
-import { ImportedModuleData, SuiMoveStruct } from "@/types/move-type";
 import {
+  ImportedModuleData,
+  SuiMoveFunction,
+  SuiMoveStruct,
+} from "@/types/move-type";
+import {
+  SuiMoveAbilitySet,
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
-import {
-  convertSuiMoveNomalizedTypeToString,
-  parseStructNameFromSuiMoveNomalizedType,
-} from "./convertType";
+import { parseStructNameFromSuiMoveNomalizedType } from "./convertType";
 
 export function generateModuleDeclaration({
   packageName,
@@ -67,152 +69,110 @@ export function generateStructCode(struct: SuiMoveStruct): string {
         `  ${f.name}: ${
           typeof f.type === "object" && "TypeParameter" in f.type
             ? struct.typeParameterNames[
-                Number(convertSuiMoveNomalizedTypeToString(f.type))
+                Number(parseStructNameFromSuiMoveNomalizedType(f.type))
               ]
             : parseStructNameFromSuiMoveNomalizedType(f.type)
         },`
     )
     .join("\n");
 
-  return `public struct ${struct.structName}${generics}${abilities} {\n${fields}\n}`;
+  return `public struct ${struct.structName}${generics}${abilities} {\n${fields}\n}\n`;
 }
-// export function generateStructCode2(
-//   name: string,
-//   struct: SuiMoveStruct
-// ): string {
-//   const abilities =
-//     struct.abilities.abilities.length > 0
-//       ? ` has ${struct.abilities.abilities
-//           .map((ability: string) => ability.toLowerCase())
-//           .join(", ")}`
-//       : "";
 
-//   const typeParams = (struct.typeParameters || [])
-//     .map((tp: SuiMoveStructTypeParameter, i: number) => {
-//       const phantom = tp.isPhantom ? "phantom " : "";
-//       const paramName = struct.typeParameters?.[i] ?? `T${i}`;
-//       const abilities = tp.constraints?.abilities
-//         ?.map((a: string) => a.toLowerCase())
-//         .join(" + ");
-//       return `${phantom}${paramName}${abilities ? `: ${abilities}` : ""}`;
-//     })
-//     .join(", ");
+export function generateFunctionCode(func: SuiMoveFunction): string {
+  const visibility = func.visibility;
+  const isEntry = func.isEntry;
+  const entryKeyword = isEntry ? "entry " : "";
 
-//   const generics = typeParams ? `<${typeParams}>` : "";
+  const visibilityKeyword =
+    visibility === "Public"
+      ? `public `
+      : visibility === "Friend"
+      ? "public (package) "
+      : "";
 
-//   const fields = (struct.fields || [])
-//     .map(
-//       (f: { name: string; type: SuiMoveNormalizedType }) =>
-//         `  ${f.name}: ${
-//           typeof f.type === "object" && "TypeParameter" in f.type
-//             ? `T${struct.typeParameters[Number(convertTypeToString(f.type))]}`
-//             : convertTypeToString(f.type).toLowerCase()
-//         },`
-//     )
-//     .join("\n");
+  const typeParams = (func.typeParameters || [])
+    .map((tp: SuiMoveAbilitySet, i: number) => {
+      const paramName = func.typeParameterNames?.[i] ?? `T${i}`;
+      const abilities = tp.abilities
+        ?.map((a: string) => a.toLowerCase())
+        .join(" + ");
+      return `${paramName}${abilities ? `: ${abilities}` : ""}`;
+    })
+    .join(", ");
+  const generics = typeParams ? `<${typeParams}>` : "";
 
-//   return `${name}${generics}${abilities} {\n${fields}\n}`;
-// }
+  const parameters = func.parameters
+    .map(
+      (p: any, i: number) =>
+        `${func.parameterNames[i]}: ${
+          typeof p === "object" && "TypeParameter" in p
+            ? func.typeParameterNames[
+                Number(parseStructNameFromSuiMoveNomalizedType(p))
+              ]
+            : parseStructNameFromSuiMoveNomalizedType(p)
+        }`
+    )
+    .join(", ");
 
-// export function generateFunctionCode(
-//   name: string,
-//   func: SuiMoveFunction
-// ): string {
-//   const visibility = func.function.visibility;
-//   const isEntry = func.function.isEntry;
-//   const entryKeyword = isEntry ? "entry " : "";
+  const returnType =
+    func.return.length > 0
+      ? `: (${func.return
+          .map((r) =>
+            typeof r === "object" && "TypeParameter" in r
+              ? func.typeParameterNames[
+                  Number(parseStructNameFromSuiMoveNomalizedType(r))
+                ]
+              : parseStructNameFromSuiMoveNomalizedType(r)
+          )
+          .join(", ")})`
+      : "";
 
-//   const visibilityKeyword =
-//     visibility === "Public"
-//       ? `public `
-//       : visibility === "Friend"
-//       ? "public (package) "
-//       : "";
+  const insideCodeString = func.insideCode
+    .map((code) => {
+      if (
+        typeof code === "object" &&
+        "functionName" in code &&
+        typeof code.functionName === "string" &&
+        Array.isArray(code.return) &&
+        Array.isArray(code.typeParameters) &&
+        Array.isArray(code.parameters)
+      ) {
+        if (code.return.length > 0) {
+          return `  let (${code.returnNames.join(", ")})${
+            code.return.length === 1 ? "" : ")"
+          } = ${code.functionName}${
+            code.typeParameters.length === 0
+              ? ""
+              : `<${code.typeParameters.map((_, i) => `T${i}`).join(", ")}>`
+          }(${code.parameters
+            .map(
+              (p, i) =>
+                `${
+                  Array.isArray(func.parameterNames) && code.parameterNames[i]
+                }: ${parseStructNameFromSuiMoveNomalizedType(p)}`
+            )
+            .join(", ")});`;
+        } else {
+          return `  ${code.functionName}(${code.parameters
+            .map(
+              (p, i) =>
+                `${
+                  Array.isArray(code.parameterNames) && code.parameterNames[i]
+                }: ${parseStructNameFromSuiMoveNomalizedType(p)}`
+            )
+            .join(", ")});`;
+        }
+      } else if (typeof code === "object" && "Struct" in code) {
+        return `  let var = ${parseStructNameFromSuiMoveNomalizedType(code)}`;
+      } else if (typeof code === "string") {
+        return `  let var = ${code};`;
+      }
+    })
+    .join("\n");
 
-//   const typeParams = (func.function.typeParameters || [])
-//     .map((tp: SuiMoveAbilitySet, i: number) => {
-//       const paramName = func.function.typeParameterNames?.[i] ?? `T${i}`;
-//       const abilities = tp.abilities
-//         ?.map((a: string) => a.toLowerCase())
-//         .join(" + ");
-//       return `${paramName}${abilities ? `: ${abilities}` : ""}`;
-//     })
-//     .join(", ");
-//   const generics = typeParams ? `<${typeParams}>` : "";
-
-//   const parameters = func.function.parameters
-//     .map(
-//       (p: any, i: number) =>
-//         `${func.function.parameterNames[i]}: ${
-//           typeof p === "object" && "TypeParameter" in p
-//             ? func.function.typeParameterNames[Number(convertTypeToString(p))]
-//             : convertTypeToString(p)
-//         }`
-//     )
-//     .join(", ");
-
-//   const returnType =
-//     func.function.return.length > 0
-//       ? `: (${func.function.return
-//           .map((r) =>
-//             typeof r === "object" && "TypeParameter" in r
-//               ? func.function.typeParameterNames[Number(convertTypeToString(r))]
-//               : convertTypeToString(r)
-//           )
-//           .join(", ")})`
-//       : "";
-
-//   const insideCodeString = func.insideCode
-//     .map((code) => {
-//       if (
-//         typeof code === "object" &&
-//         "functionName" in code &&
-//         typeof code.functionName === "string" &&
-//         Array.isArray(code.return) &&
-//         Array.isArray(code.returnVariableNames) &&
-//         Array.isArray(code.typeParameters) &&
-//         Array.isArray(code.typeArgumentNames) &&
-//         Array.isArray(code.parameters) &&
-//         Array.isArray(code.argumentNames)
-//       ) {
-//         if (code.return.length > 0) {
-//           return `  let (${code.returnVariableNames.join(", ")})${
-//             code.return.length === 1 ? "" : ")"
-//           } = ${code.functionName}${
-//             code.typeParameters.length === 0
-//               ? ""
-//               : `<${code.typeParameters.map((_, i) => `T${i}`).join(", ")}>`
-//           }(${code.parameters
-//             .map(
-//               (p, i) =>
-//                 `${
-//                   Array.isArray(code.argumentNames) && code.argumentNames[i]
-//                 }: ${convertTypeToString(p)}`
-//             )
-//             .join(", ")});`;
-//         } else {
-//           return `  ${code.functionName}(${code.parameters
-//             .map(
-//               (p, i) =>
-//                 `${
-//                   Array.isArray(code.argumentNames) && code.argumentNames[i]
-//                 }: ${convertTypeToString(p)}`
-//             )
-//             .join(", ")});`;
-//         }
-//       } else if (typeof code === "object" && "struct" in code) {
-//         return `  let var = ${generateStructCode2(
-//           code.struct.structName,
-//           code.struct
-//         )}`;
-//       } else if (typeof code === "string") {
-//         return `  let var = ${code};`;
-//       }
-//     })
-//     .join("\n");
-
-//   return `${entryKeyword}${visibilityKeyword}fun ${name}${generics}(${parameters})${returnType} {\n${insideCodeString}\n}`;
-// }
+  return `${entryKeyword}${visibilityKeyword}fun ${func.functionName}${generics}(${parameters})${returnType} {\n${insideCodeString}\n}\n`;
+}
 
 // export function generateMoveCode({
 //   imports,

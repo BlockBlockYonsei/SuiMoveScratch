@@ -5,7 +5,7 @@ import { SuiMoveFunction } from "@/types/move-type";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import NameBox from "../components/NameBox";
-import { convertSuiMoveNomalizedTypeToString } from "@/lib/convertType";
+import { parseStructNameFromSuiMoveNomalizedType } from "@/lib/convertType";
 
 export default function FunctionCard({
   functionName,
@@ -112,9 +112,9 @@ export default function FunctionCard({
                     {/* {convertSuiMoveNomalizedTypeToString(param)} */}
                     {typeof param === "object" && "TypeParameter" in param
                       ? functionData.typeParameterNames[
-                          Number(convertSuiMoveNomalizedTypeToString(param))
+                          Number(parseStructNameFromSuiMoveNomalizedType(param))
                         ]
-                      : convertSuiMoveNomalizedTypeToString(param)}
+                      : parseStructNameFromSuiMoveNomalizedType(param)}
                   </NameBox>
                 </span>
               </div>
@@ -136,9 +136,9 @@ export default function FunctionCard({
                 <NameBox key={i} className="border-emerald-300">
                   {typeof r === "object" && "TypeParameter" in r
                     ? functionData.typeParameterNames[
-                        Number(convertSuiMoveNomalizedTypeToString(r))
+                        Number(parseStructNameFromSuiMoveNomalizedType(r))
                       ]
-                    : convertSuiMoveNomalizedTypeToString(r)}
+                    : parseStructNameFromSuiMoveNomalizedType(r)}
                 </NameBox>
               ))}
             </div>

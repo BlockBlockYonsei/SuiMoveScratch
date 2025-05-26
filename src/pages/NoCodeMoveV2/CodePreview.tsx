@@ -5,10 +5,10 @@
 // } from "@/lib/generateCode";
 import { useContext, useEffect, useState } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-import { Button } from "@/components/ui/button";
 
 import { createHighlighter } from "shiki";
 import {
+  generateFunctionCode,
   generateImportsCode,
   generateModuleDeclaration,
   generateStructCode,
@@ -34,11 +34,18 @@ export default function CodePreview() {
 
       const importsCode = generateImportsCode(imports);
 
-      const structsCode = Array.from(structs.values())
-        .map((struct) => generateStructCode(struct))
-        .join("\n");
+      const structsCode =
+        Array.from(structs.values())
+          .map((struct) => generateStructCode(struct))
+          .join("\n") + "\n";
 
-      const code = moduleDeclaration + importsCode + structsCode;
+      const functionsCode =
+        Array.from(functions.values())
+          .map((func) => generateFunctionCode(func))
+          .join("\n") + "\n";
+
+      const code =
+        moduleDeclaration + importsCode + structsCode + functionsCode;
 
       const highlightedCode = highlighter.codeToHtml(code, {
         lang: "move",
