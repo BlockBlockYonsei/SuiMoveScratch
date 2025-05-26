@@ -5,7 +5,7 @@ import { SuiMoveFunction } from "@/types/move-syntax2";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext2";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import NameBox from "../components/NameBox";
-import { convertSuiMoveNomalizedTypeToString } from "@/lib/suiMoveType";
+import { convertSuiMoveNomalizedTypeToString } from "@/lib/convertType";
 
 export default function FunctionCard({
   functionName,

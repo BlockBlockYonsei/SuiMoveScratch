@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { convertSuiMoveStructToSuiMoveNomalizedType } from "@/lib/suiMoveType";
+import { convertSuiMoveStructToSuiMoveNomalizedType } from "@/lib/convertType";
 import { SuiMoveStruct } from "@/types/move-syntax2";
 
 export default function TypeSelector({
