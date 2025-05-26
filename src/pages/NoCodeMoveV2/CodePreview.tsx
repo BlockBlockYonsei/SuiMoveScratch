@@ -60,7 +60,9 @@ export default function CodePreview() {
 
   return (
     <div className="min-h-100">
-      <code className="" dangerouslySetInnerHTML={{ __html: code }} />
+      <pre className="shiki overflow-x-auto rounded p-4 bg-[#2e3440ff] text-white text-sm">
+        <code dangerouslySetInnerHTML={{ __html: code }} />
+      </pre>
     </div>
   );
 }
