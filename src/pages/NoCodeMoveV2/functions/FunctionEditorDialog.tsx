@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
+import { createHighlighter } from "shiki";
 import {
   SuiMoveAbilitySet,
   SuiMoveNormalizedType,
@@ -27,8 +28,11 @@ import {
 import AbilitySelector from "../components/AbilitySelector";
 import TypeSelector from "../components/TypeSelector";
 import FunctionSelector from "../components/FunctionSelector";
+import { generateFunctionCode } from "@/lib/generateCode";
 
 export default function FunctionEditorDialog() {
+  const [previewCode, setPreviewCode] = useState("");
+
   const [functionName, setFunctionName] = useState("new_function");
   const [visibility, setVisibility] = useState<SuiMoveVisibility>("Private");
   const [isEntry, setIsEntry] = useState(false);
@@ -54,18 +58,45 @@ export default function FunctionEditorDialog() {
   const [newParamName, setNewParamName] = useState("");
   const [newTypeParamName, setNewTypeParamName] = useState("");
 
-  const {
-    moduleName,
-    imports,
-    structs,
-    functions,
-    setFunctions,
-    selectedFunction,
-  } = useContext(SuiMoveModuleContext);
+  const { moduleName, imports, functions, setFunctions, selectedFunction } =
+    useContext(SuiMoveModuleContext);
 
   useEffect(() => {
-    console.log("imports", imports);
-  }, [imports]);
+    const createCode = async () => {
+      const highlighter = await createHighlighter({
+        langs: ["move"],
+        themes: ["nord"],
+      });
+      const functionsCode = generateFunctionCode({
+        functionName: functionName,
+        visibility,
+        isEntry,
+        typeParameters: typeParameters.map((t) => t.type),
+        typeParameterNames: typeParameters.map((t) => t.name),
+        parameters: parameters.map((p) => p.type),
+        parameterNames: parameters.map((p) => p.name),
+        return: returns.map((r) => r.type),
+        insideCode: insideCodes,
+      } as SuiMoveFunction);
+
+      const highlightedCode = highlighter.codeToHtml(functionsCode, {
+        lang: "move",
+        theme: "nord",
+      });
+
+      setPreviewCode(highlightedCode);
+    };
+
+    createCode();
+  }, [
+    functionName,
+    visibility,
+    isEntry,
+    parameters,
+    returns,
+    typeParameters,
+    insideCodes,
+  ]);
 
   useEffect(() => {
     if (selectedFunction) {
@@ -422,20 +453,9 @@ export default function FunctionEditorDialog() {
 
         <section className="col-span-6">
           {/* Preview */}
-          <div className="bg-gray-100 p-4 text-sm rounded whitespace-pre-wrap mb-4">
-            {/* {generateFunctionCode(functionName, {
-              function: {
-                visibility,
-                isEntry,
-                typeParameters: typeParameters.map((t) => t.type),
-                typeParameterNames: typeParameters.map((t) => t.name),
-                parameters: parameters.map((p) => p.type),
-                parameterNames: parameters.map((p) => p.name),
-                return: returns.map((r) => r.type),
-              },
-              insideCode: insideCodes,
-            })} */}
-          </div>
+          <pre className="shiki overflow-x-auto rounded p-4 bg-[#2e3440ff] text-white text-sm">
+            <code dangerouslySetInnerHTML={{ __html: previewCode }} />
+          </pre>
           <FunctionSelector
             nameKey={functionName}
             typeParameters={typeParameters}

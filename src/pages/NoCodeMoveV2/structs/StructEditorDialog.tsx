@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { X } from "lucide-react";
+import { createHighlighter } from "shiki";
 import {
   SuiMoveAbility,
   SuiMoveNormalizedField,
@@ -9,7 +10,7 @@ import {
 
 import { SuiMoveStruct } from "@/types/move-type";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-// import { generateStructCode } from "@/lib/generateCode";
+import { generateStructCode } from "@/lib/generateCode";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,12 +25,13 @@ import AbilitySelector from "../components/AbilitySelector";
 import TypeSelector from "../components/TypeSelector";
 
 export default function StructEditorDialog() {
+  const [previewCode, setPreviewCode] = useState("");
+
   const [structName, setStructName] = useState("NewStruct");
   const [abilities, setAbilities] = useState<SuiMoveAbility[]>([]);
   const [typeParameters, setTypeParameters] = useState<
-    SuiMoveStructTypeParameter[]
+    { name: string; type: SuiMoveStructTypeParameter }[]
   >([]);
-  const [typeParameterNames, setTypeParameterNames] = useState<string[]>([]);
   const [fields, setFields] = useState<
     { name: string; type: SuiMoveNormalizedType }[]
   >([]);
@@ -44,11 +46,42 @@ export default function StructEditorDialog() {
     useContext(SuiMoveModuleContext);
 
   useEffect(() => {
+    const createCode = async () => {
+      const highlighter = await createHighlighter({
+        langs: ["move"],
+        themes: ["nord"],
+      });
+      const structCode = generateStructCode({
+        address: "0x0",
+        moduleName: moduleName,
+        structName: structName,
+        abilities: { abilities },
+        fields,
+        typeParameters: typeParameters.map((t) => t.type),
+        typeParameterNames: typeParameters.map((t) => t.name),
+      } as SuiMoveStruct);
+
+      const highlightedCode = highlighter.codeToHtml(structCode, {
+        lang: "move",
+        theme: "nord",
+      });
+
+      setPreviewCode(highlightedCode);
+    };
+
+    createCode();
+  }, [structName, abilities, fields, typeParameters]);
+
+  useEffect(() => {
     if (selectedStruct) {
       setStructName(selectedStruct.structName);
       setAbilities(selectedStruct.abilities.abilities);
-      setTypeParameters(selectedStruct.typeParameters);
-      setTypeParameterNames(selectedStruct.typeParameterNames);
+      setTypeParameters(
+        selectedStruct.typeParameters.map((tp, i) => ({
+          name: selectedStruct.typeParameterNames[i],
+          type: tp,
+        }))
+      );
       setFields(selectedStruct.fields);
     } else {
       resetState();
@@ -67,8 +100,8 @@ export default function StructEditorDialog() {
         structName: structName,
         abilities: { abilities },
         fields,
-        typeParameters,
-        typeParameterNames,
+        typeParameters: typeParameters.map((t) => t.type),
+        typeParameterNames: typeParameters.map((t) => t.name),
       };
 
       if (!selectedStruct) {
@@ -124,9 +157,8 @@ export default function StructEditorDialog() {
   const resetState = () => {
     setStructName("NewStruct");
     setAbilities([]);
-    setFields([]);
-    setTypeParameterNames([]);
     setTypeParameters([]);
+    setFields([]);
   };
 
   return (
@@ -196,19 +228,18 @@ export default function StructEditorDialog() {
                 onClick={() => {
                   if (
                     !newTypeParamName ||
-                    typeParameterNames.includes(newTypeParamName)
+                    typeParameters.map((t) => t.name).includes(newTypeParamName)
                   )
                     return;
 
-                  setTypeParameterNames([
-                    ...typeParameterNames,
-                    newTypeParamName,
-                  ]);
                   setTypeParameters([
                     ...typeParameters,
                     {
-                      isPhantom: false,
-                      constraints: { abilities: newTypeParamAbilities },
+                      name: newTypeParamName,
+                      type: {
+                        isPhantom: false,
+                        constraints: { abilities: newTypeParamAbilities },
+                      },
                     },
                   ]);
 
@@ -222,25 +253,30 @@ export default function StructEditorDialog() {
             </div>
 
             {/* 추가된 타입 파라미터 목록 */}
-            {typeParameterNames.map((name, index) => (
+            {typeParameters.map(({ name, type }, index) => (
               <div
                 key={name}
                 className="flex justify-between items-center gap-2 mb-2"
               >
                 <button
                   className={`${
-                    typeParameters[index].isPhantom
-                      ? "text-purple-500 border-purple-500"
-                      : ""
+                    type.isPhantom ? "text-purple-500 border-purple-500" : ""
                   } border-2 font-semibold cursor-pointer rounded-md p-1 transition-all`}
                   onClick={() => {
                     setTypeParameters((prev) => {
-                      const newParams = [...prev];
-                      newParams[index] = {
-                        ...newParams[index],
-                        isPhantom: !newParams[index].isPhantom,
+                      const newTypeParam = {
+                        name,
+                        type: {
+                          ...type,
+                          isPhantom: type.isPhantom,
+                        },
                       };
-                      return newParams;
+
+                      return [
+                        ...prev.slice(0, index),
+                        newTypeParam,
+                        ...prev.slice(index + 1),
+                      ];
                     });
                   }}
                 >
@@ -249,15 +285,22 @@ export default function StructEditorDialog() {
                 </button>
                 <div className="flex">
                   <AbilitySelector
-                    abilities={typeParameters[index].constraints.abilities}
+                    abilities={type.constraints.abilities}
                     onChange={(newAbilities) => {
                       setTypeParameters((prev) => {
-                        const newParams = [...prev];
-                        newParams[index] = {
-                          ...newParams[index],
-                          constraints: { abilities: newAbilities },
+                        const newTypeParam = {
+                          name,
+                          type: {
+                            ...type,
+                            constraints: { abilities: newAbilities },
+                          },
                         };
-                        return newParams;
+
+                        return [
+                          ...prev.slice(0, index),
+                          newTypeParam,
+                          ...prev.slice(index + 1),
+                        ];
                       });
                     }}
                     className="flex-1"
@@ -267,9 +310,6 @@ export default function StructEditorDialog() {
                     size="sm"
                     className="text-gray-500 hover:text-gray-700 p-1 h-7 w-7 flex-shrink-0"
                     onClick={() => {
-                      setTypeParameterNames((prev) =>
-                        prev.filter((_, i) => i !== index)
-                      );
                       setTypeParameters((prev) =>
                         prev.filter((_, i) => i !== index)
                       );
@@ -335,10 +375,7 @@ export default function StructEditorDialog() {
                 </span>
                 <TypeSelector
                   nameKey={structName}
-                  typeParameters={typeParameters.map((tp, i) => ({
-                    name: typeParameterNames[i],
-                    type: tp,
-                  }))}
+                  typeParameters={typeParameters}
                   defaultType={field.type}
                   onChange={(type: SuiMoveNormalizedType) => {
                     setFields((prev) =>
@@ -363,13 +400,8 @@ export default function StructEditorDialog() {
 
         <section className="col-span-6">
           <div className="mt-4">
-            <pre className="text-sm bg-gray-100 p-4 rounded whitespace-pre-wrap overflow-y-auto">
-              {/* {generateStructCode(structName, {
-                abilities: { abilities },
-                typeParameters,
-                fields,
-                typeParameterNames,
-              })} */}
+            <pre className="shiki overflow-x-auto rounded p-4 bg-[#2e3440ff] text-white text-sm">
+              <code dangerouslySetInnerHTML={{ __html: previewCode }} />
             </pre>
           </div>
         </section>
