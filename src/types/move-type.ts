@@ -47,5 +47,4 @@ export type FunctionInsideCodeLine =
       returnNames: string[];
       typeArguments: SuiMoveNormalizedType[];
     })
-  | SuiMoveNormalizedType
-  | SuiMoveStruct;
+  | { type: SuiMoveNormalizedType; variableName: string; value: string };

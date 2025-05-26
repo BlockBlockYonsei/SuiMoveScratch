@@ -1,3 +1,7 @@
+import { useContext } from "react";
+
+import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
+import { SUI_PACKAGE_ALIASES, PRIMITIVE_TYPES } from "@/Constants";
 import {
   Select,
   SelectContent,
@@ -7,31 +11,24 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import {
-  SuiMoveAbilitySet,
-  SuiMoveNormalizedType,
-  SuiMoveStructTypeParameter,
-} from "@mysten/sui/client";
-import { useContext } from "react";
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-import { SUI_PACKAGE_ALIASES } from "@/Constants";
-import { PRIMITIVE_TYPES } from "@/Constants";
+import { FunctionInsideCodeLine } from "@/types/move-type";
+import { SuiMoveNormalizedType } from "@mysten/sui/client";
+import { convertSuiMoveStructToSuiMoveNomalizedType } from "@/lib/convertType";
 
 export default function FunctionSelector({
-  nameKey,
-  setNewInsideCodeFunctionName,
+  addFunction,
 }: {
-  nameKey: string;
-  typeParameters:
-    | { name: string; type: SuiMoveStructTypeParameter }[]
-    | { name: string; type: SuiMoveAbilitySet }[];
-  setNewInsideCodeFunctionName: React.Dispatch<React.SetStateAction<string>>;
+  addFunction: (type: FunctionInsideCodeLine) => void;
 }) {
-  const { imports, structs, functions, selectedStruct } =
-    useContext(SuiMoveModuleContext);
+  const { imports, structs, functions } = useContext(SuiMoveModuleContext);
 
   return (
-    <Select onValueChange={setNewInsideCodeFunctionName}>
+    <Select
+      onValueChange={(value: string) => {
+        const convertedType: FunctionInsideCodeLine = JSON.parse(value);
+        addFunction(convertedType);
+      }}
+    >
       <SelectTrigger className="cursor-pointer">
         <SelectValue placeholder="Select type..." />
       </SelectTrigger>
@@ -42,10 +39,21 @@ export default function FunctionSelector({
         <div className="grid grid-cols-4">
           {PRIMITIVE_TYPES.map((type) => {
             if (typeof type !== "string") return null;
+
+            const value =
+              type === "Address" || type === "Signer"
+                ? `"0x0"`
+                : type === "Bool"
+                ? "false"
+                : "0";
             return (
               <SelectItem
                 key={type}
-                value={`primitive::primitive::${type}`}
+                value={JSON.stringify({
+                  type: type as SuiMoveNormalizedType,
+                  variableName: "variable",
+                  value: value,
+                })}
                 className="col-span-1 cursor-pointer hover:bg-gray-200"
               >
                 {type}
@@ -60,15 +68,29 @@ export default function FunctionSelector({
           Current Module Structs
         </Label>
         <div className="grid grid-cols-2">
-          {[...structs.keys()].map((name) => (
-            <SelectItem
-              key={name}
-              value={`0x0::currentModuleStruct::${name}`}
-              className="cursor-pointer hover:bg-gray-200"
-            >
-              {name}
-            </SelectItem>
-          ))}
+          {[...structs.values()].map((struct) => {
+            return (
+              <SelectItem
+                key={struct.structName}
+                value={JSON.stringify({
+                  type: convertSuiMoveStructToSuiMoveNomalizedType(
+                    struct
+                  ) as SuiMoveNormalizedType,
+                  variableName: struct.structName,
+                  value: `${struct.structName}${
+                    struct.typeParameters.length > 0
+                      ? `<${struct.typeParameterNames.join(", ")}>`
+                      : ""
+                  } {\n${struct.fields
+                    .map((f, i) => `    ${f.name}: field${i}`)
+                    .join("\n")}\n  }`,
+                })}
+                className="cursor-pointer hover:bg-gray-200"
+              >
+                {struct.structName}
+              </SelectItem>
+            );
+          })}
         </div>
 
         <Separator className="my-2" />
@@ -77,17 +99,15 @@ export default function FunctionSelector({
           Current Module Functions
         </Label>
         <div className="grid grid-cols-2">
-          {[...functions.keys()]
-            .filter((name) => name !== nameKey)
-            .map((name) => (
-              <SelectItem
-                key={name}
-                value={`0x0::currentModuleFunction::${name}`}
-                className="cursor-pointer hover:bg-gray-200"
-              >
-                {name}
-              </SelectItem>
-            ))}
+          {[...functions.values()].map((f) => (
+            <SelectItem
+              key={f.functionName}
+              value={JSON.stringify(f)}
+              className="cursor-pointer hover:bg-gray-200"
+            >
+              {f.functionName}
+            </SelectItem>
+          ))}
         </div>
 
         <Separator className="my-2" />
@@ -104,7 +124,6 @@ export default function FunctionSelector({
             )
           )
           .map(([packageAddress, moduleName, data]) => {
-            // const [pkgAddress, moduleName] = key.split("::");
             const alias = SUI_PACKAGE_ALIASES[packageAddress] || packageAddress;
             if (!data.functions) return;
 
@@ -116,17 +135,35 @@ export default function FunctionSelector({
                   {alias}::{moduleName}
                 </div>
                 <div className="grid grid-cols-2">
-                  {Object.keys(data.functions).map((functionName) => {
-                    return (
-                      <SelectItem
-                        key={functionName}
-                        value={`${packageAddress}::${moduleName}::${functionName}`}
-                        className="cursor-pointer hover:bg-gray-200 break-words whitespace-normal truncate"
-                      >
-                        {functionName}
-                      </SelectItem>
-                    );
-                  })}
+                  {Object.entries(data.functions).map(
+                    ([functionName, functionData]) => {
+                      return (
+                        <SelectItem
+                          key={functionName}
+                          value={JSON.stringify({
+                            ...functionData,
+                            address: packageAddress,
+                            moduleName,
+                            functionName,
+                            parameterNames: functionData.parameters.map(
+                              (_, i) => `P${i}`
+                            ),
+                            returnNames: functionData.parameters.map(
+                              (_, i) => `R${i}`
+                            ),
+                            typeParameterNames: [],
+                            typeArguments: functionData.typeParameters.map(
+                              (_) => "U64"
+                            ),
+                            insideCode: [],
+                          } as FunctionInsideCodeLine)}
+                          className="cursor-pointer hover:bg-gray-200 break-words whitespace-normal truncate"
+                        >
+                          {functionName}
+                        </SelectItem>
+                      );
+                    }
+                  )}
                 </div>
               </div>
             );

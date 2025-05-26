@@ -454,9 +454,22 @@ export default function FunctionEditorDialog() {
             <code dangerouslySetInnerHTML={{ __html: previewCode }} />
           </pre>
           <FunctionSelector
-            nameKey={functionName}
-            typeParameters={typeParameters}
-            setNewInsideCodeFunctionName={setNewInsideCodeFunctionName}
+            // func={
+            //   {
+            //     functionName: functionName,
+            //     visibility,
+            //     isEntry,
+            //     typeParameters: typeParameters.map((t) => t.type),
+            //     typeParameterNames: typeParameters.map((t) => t.name),
+            //     parameters: parameters.map((p) => p.type),
+            //     parameterNames: parameters.map((p) => p.name),
+            //     return: returns.map((r) => r.type),
+            //     insideCode: insideCodes,
+            //   } as SuiMoveFunction
+            // }
+            addFunction={(line) => {
+              setInsideCodes((prev) => [...prev, line]);
+            }}
           />
           <Button
             className="cursor-pointer w-90"

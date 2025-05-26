@@ -119,49 +119,34 @@ export function generateFunctionCode(func: SuiMoveFunction): string {
       : "";
 
   const insideCodeString = func.insideCode
-    .map((code) => {
-      if (
-        typeof code === "object" &&
-        "functionName" in code &&
-        typeof code.functionName === "string" &&
-        Array.isArray(code.return) &&
-        Array.isArray(code.typeParameters) &&
-        Array.isArray(code.parameters)
-      ) {
-        if (code.return.length > 0) {
-          return `  let (${code.returnNames.join(", ")})${
-            code.return.length === 1 ? "" : ")"
-          } = ${code.functionName}${
-            code.typeParameters.length === 0
-              ? ""
-              : `<${code.typeParameters.map((_, i) => `T${i}`).join(", ")}>`
-          }(${code.parameters
-            .map(
-              (p, i) =>
-                `${
-                  Array.isArray(func.parameterNames) && code.parameterNames[i]
-                }: ${parseStructNameFromSuiMoveNomalizedType(p)}`
-            )
-            .join(", ")});`;
-        } else {
-          return `  ${code.functionName}(${code.parameters
-            .map(
-              (p, i) =>
-                `${
-                  Array.isArray(code.parameterNames) && code.parameterNames[i]
-                }: ${parseStructNameFromSuiMoveNomalizedType(p)}`
-            )
-            .join(", ")});`;
-        }
-      } else if (typeof code === "object" && "Struct" in code) {
-        return `  let var = ${parseStructNameFromSuiMoveNomalizedType(code)}`;
-      } else if (typeof code === "string") {
-        return `  let var = ${code};`;
+    .map((line) => {
+      if ("variableName" in line) {
+        return `  let ${
+          line.variableName
+        }: ${parseStructNameFromSuiMoveNomalizedType(
+          line.type
+        ).toLowerCase()} = ${line.value};`;
+      } else if ("functionName" in line) {
+        return `  ${
+          line.return.length > 0
+            ? "let (" + line.return.map((_, i) => `R${i}`).join(", ") + ") = "
+            : ""
+        }${line.functionName}${
+          line.typeParameters.length > 0
+            ? `<${line.typeParameterNames.join(", ")}>`
+            : ``
+        }(${line.parameterNames.join(", ")});`;
       }
     })
     .join("\n");
 
-  return `${entryKeyword}${visibilityKeyword}fun ${func.functionName}${generics}(${parameters})${returnType} {\n${insideCodeString}\n}\n`;
+  return `${entryKeyword}${visibilityKeyword}fun ${
+    func.functionName
+  }${generics}(${parameters})${returnType} {\n${insideCodeString}\n\n${
+    func.return.length > 0
+      ? "  (" + func.return.map((_, i) => `R${i}`).join(", ") + ")"
+      : ""
+  }\n}\n`;
 }
 
 // export function generateMoveCode({
