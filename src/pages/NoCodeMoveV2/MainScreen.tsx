@@ -4,7 +4,6 @@ import ImportPreview from "./imports/ImportPreview";
 import CodePreview from "./CodePreview";
 import { useContext, useEffect } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-import { Button } from "@/components/ui/button";
 import {
   generateFunctionCode,
   generateImportsCode,
@@ -15,9 +14,11 @@ import {
 export default function MainScreen({
   menu,
   moduleName,
+  setModuleCodes,
 }: {
   menu: "Imports" | "Structs" | "Functions" | "CodePreview";
   moduleName: string;
+  setModuleCodes: React.Dispatch<React.SetStateAction<Record<string, string>>>;
 }) {
   const { setModuleName, imports, structs, functions } =
     useContext(SuiMoveModuleContext);
@@ -26,7 +27,7 @@ export default function MainScreen({
     setModuleName(moduleName);
   }, [moduleName]);
 
-  const handleDownload = () => {
+  useEffect(() => {
     const moduleDeclaration = generateModuleDeclaration({
       packageName: "0x0",
       moduleName,
@@ -46,23 +47,13 @@ export default function MainScreen({
 
     const code = moduleDeclaration + importsCode + structsCode + functionsCode;
 
-    const blob = new Blob([code], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${moduleName}.move`;
-    a.click();
-  };
+    setModuleCodes((prev) => ({ ...prev, [moduleName]: code }));
+  }, [moduleName, imports, structs, functions]);
 
   return (
     <div className="flex-1 space-y-6 text-sm font-mono">
       <div className="flex justify-start items-center gap-4">
         <h1 className="text-2xl font-bold">{menu}</h1>
-        {menu === "CodePreview" && (
-          <Button className="cursor-pointer" onClick={handleDownload}>
-            Download Code
-          </Button>
-        )}
       </div>
 
       <pre className="bg-white p-4 rounded-md shadow whitespace-pre-wrap overflow-auto">

@@ -6,8 +6,12 @@ import { Tabs } from "@/components/ui/tabs";
 import ModuleTabs from "./ModuleTabs";
 
 export default function Main() {
+  // const [packageName, setPackageName] = useState("");
+
   const [currentModule, setCurrentModule] = useState("");
   const [moduleNames, setModuleNames] = useState<string[]>([]);
+  const [moduleCodes, setModuleCodes] = useState<Record<string, string>>({});
+
   const [menu, setMenu] = useState<
     "Imports" | "Structs" | "Functions" | "CodePreview"
   >("Imports");
@@ -28,7 +32,11 @@ export default function Main() {
   return (
     <div className="min-h-screen bg-gray-200">
       <div className="flex ">
-        <SideBarEditor menu={menu} setMenu={setMenu} />
+        <SideBarEditor
+          menu={menu}
+          setMenu={setMenu}
+          moduleCodes={moduleCodes}
+        />
         <Tabs
           onValueChange={setCurrentModule}
           value={currentModule}
@@ -40,7 +48,6 @@ export default function Main() {
             currentTab={currentModule}
             setCurrentTab={setCurrentModule}
           />
-
           {moduleNames.map((moduleName) => (
             <div
               key={moduleName}
@@ -48,7 +55,11 @@ export default function Main() {
               className="bg-gray-50 rounded-md p-2"
             >
               <SuiMoveModuleProvider>
-                <MainScreen moduleName={moduleName} menu={menu} />
+                <MainScreen
+                  moduleName={moduleName}
+                  menu={menu}
+                  setModuleCodes={setModuleCodes}
+                />
               </SuiMoveModuleProvider>
             </div>
           ))}
