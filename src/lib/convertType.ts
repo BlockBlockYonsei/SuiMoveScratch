@@ -14,18 +14,19 @@ export function convertSuiMoveStructToSuiMoveNomalizedType(
   };
 }
 
-export function convertSuiMoveNomalizedTypeToSuiMoveStruct(
-  struct: SuiMoveStruct
-): SuiMoveNormalizedType {
-  return {
-    Struct: {
-      address: struct.address,
-      module: struct.moduleName,
-      name: struct.structName,
-      typeArguments: [],
-    },
-  };
-}
+// export function convertSuiMoveNomalizedTypeToSuiMoveStruct(
+//   type: SuiMoveNormalizedType
+// ): SuiMoveStruct {
+//   return {
+//     // Struct: {
+//     //   address: struct.address,
+//     //   module: struct.moduleName,
+//     //   name: struct.structName,
+//     //   typeArguments: [],
+//     // },
+//     address: type.
+//   };
+// }
 
 export function parseStructNameFromSuiMoveNomalizedType(
   type: SuiMoveNormalizedType,

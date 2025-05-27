@@ -49,13 +49,13 @@ export default function FunctionEditorDialog() {
 
   const [insideCodes, setInsideCodes] = useState<FunctionInsideCodeLine[]>([]);
 
-  const [newInsideCodeFunctionName, setNewInsideCodeFunctionName] =
-    useState("");
+  // const [newInsideCodeFunctionName, setNewInsideCodeFunctionName] =
+  //   useState("");
 
   const [newParamName, setNewParamName] = useState("");
   const [newTypeParamName, setNewTypeParamName] = useState("");
 
-  const { moduleName, imports, functions, setFunctions, selectedFunction } =
+  const { moduleName, functions, setFunctions, selectedFunction } =
     useContext(SuiMoveModuleContext);
 
   useEffect(() => {
