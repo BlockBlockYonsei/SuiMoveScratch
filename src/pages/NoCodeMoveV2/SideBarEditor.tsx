@@ -158,7 +158,7 @@ new = "0x0"
 
           <hr />
 
-          <Button
+          {/* <Button
             // variant={menu === "CodePreview" ? "default" : "ghost"}
             variant={"ghost"}
             className={`active:bg-black active:text-white hover:bg-gray-100
@@ -166,7 +166,7 @@ new = "0x0"
             // onClick={() => setMenu("CodePreview")}
           >
             Save Code
-          </Button>
+          </Button> */}
           <Button
             // variant={menu === "CodePreview" ? "default" : "ghost"}
             variant={"ghost"}
