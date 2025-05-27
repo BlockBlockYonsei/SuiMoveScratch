@@ -5,6 +5,12 @@ import CodePreview from "./CodePreview";
 import { useContext, useEffect } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { Button } from "@/components/ui/button";
+import {
+  generateFunctionCode,
+  generateImportsCode,
+  generateModuleDeclaration,
+  generateStructCode,
+} from "@/lib/generateCode";
 
 export default function MainScreen({
   menu,
@@ -13,13 +19,40 @@ export default function MainScreen({
   menu: "Imports" | "Structs" | "Functions" | "CodePreview";
   moduleName: string;
 }) {
-  const { setModuleName } = useContext(SuiMoveModuleContext);
+  const { setModuleName, imports, structs, functions } =
+    useContext(SuiMoveModuleContext);
 
   useEffect(() => {
     setModuleName(moduleName);
   }, [moduleName]);
 
-  const handleDownload = () => {};
+  const handleDownload = () => {
+    const moduleDeclaration = generateModuleDeclaration({
+      packageName: "0x0",
+      moduleName,
+    });
+
+    const importsCode = generateImportsCode(imports);
+
+    const structsCode =
+      Array.from(structs.values())
+        .map((struct) => generateStructCode(struct))
+        .join("\n") + "\n";
+
+    const functionsCode =
+      Array.from(functions.values())
+        .map((func) => generateFunctionCode(func))
+        .join("\n") + "\n";
+
+    const code = moduleDeclaration + importsCode + structsCode + functionsCode;
+
+    const blob = new Blob([code], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${moduleName}.move`;
+    a.click();
+  };
 
   return (
     <div className="flex-1 space-y-6 text-sm font-mono">
@@ -27,7 +60,7 @@ export default function MainScreen({
         <h1 className="text-2xl font-bold">{menu}</h1>
         {menu === "CodePreview" && (
           <Button className="cursor-pointer" onClick={handleDownload}>
-            Code Download
+            Download Code
           </Button>
         )}
       </div>
