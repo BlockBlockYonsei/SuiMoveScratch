@@ -23,6 +23,7 @@ import {
 
 import AbilitySelector from "../components/AbilitySelector";
 import TypeSelector from "../components/TypeSelector";
+import NewTypeParameterInput from "../components/NewTypeParameterInput";
 
 export default function StructEditorDialog() {
   const [previewCode, setPreviewCode] = useState("");
@@ -35,10 +36,6 @@ export default function StructEditorDialog() {
   const [fields, setFields] = useState<SuiMoveNormalizedField[]>([]);
 
   const [newFieldName, setNewFieldName] = useState("");
-  const [newTypeParamName, setNewTypeParamName] = useState("");
-  const [newTypeParamAbilities, setNewTypeParamAbilities] = useState<
-    SuiMoveAbility[]
-  >([]);
 
   const { moduleName, structs, setStructs, selectedStruct } =
     useContext(SuiMoveModuleContext);
@@ -201,54 +198,19 @@ export default function StructEditorDialog() {
 
           {/* Type Parameters */}
           <div className="mb-4">
-            <p className="block font-semibold mb-1">Type Parameters</p>
-            <div className="flex gap-2 mb-2">
-              <Input
-                placeholder="Type parameter name"
-                value={newTypeParamName}
-                onChange={(e) => {
-                  const raw = e.target.value;
-                  if (raw.length > 0 && /^\d/.test(raw)) {
-                    return; // 첫 글자가 숫자면 무시
-                  }
-                  const onlyAlphabet = e.target.value.replace(
-                    /[^a-zA-Z0-9]/g,
-                    ""
-                  );
-                  const firstLetterCapitalized =
-                    onlyAlphabet.charAt(0).toUpperCase() +
-                    onlyAlphabet.slice(1);
-                  setNewTypeParamName(firstLetterCapitalized);
-                }}
-              />
-              <Button
-                className="cursor-pointer"
-                onClick={() => {
-                  if (
-                    !newTypeParamName ||
-                    typeParameters.map((t) => t.name).includes(newTypeParamName)
-                  )
-                    return;
+            <NewTypeParameterInput
+              create={(name) => {
+                if (typeParameters.map((t) => t.name).includes(name)) return;
 
-                  setTypeParameters([
-                    ...typeParameters,
-                    {
-                      name: newTypeParamName,
-                      type: {
-                        isPhantom: false,
-                        constraints: { abilities: newTypeParamAbilities },
-                      },
-                    },
-                  ]);
-
-                  // 초기화
-                  setNewTypeParamName("");
-                  setNewTypeParamAbilities([]);
-                }}
-              >
-                Add
-              </Button>
-            </div>
+                setTypeParameters([
+                  ...typeParameters,
+                  {
+                    name,
+                    type: { isPhantom: false, constraints: { abilities: [] } },
+                  },
+                ]);
+              }}
+            />
 
             {/* 추가된 타입 파라미터 목록 */}
             {typeParameters.map(({ name, type }, index) => (
@@ -306,7 +268,7 @@ export default function StructEditorDialog() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-gray-500 hover:text-gray-700 p-1 h-7 w-7 flex-shrink-0"
+                    className="cursor-pointer text-gray-500 hover:text-gray-700 p-1 h-7 w-7 flex-shrink-0"
                     onClick={() => {
                       setTypeParameters((prev) =>
                         prev.filter((_, i) => i !== index)

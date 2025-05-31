@@ -31,6 +31,7 @@ import FunctionSelector from "../components/FunctionSelector";
 import { generateFunctionCode } from "@/lib/generateCode";
 import NewFieldEntityInput from "../components/NewFieldEntityInput";
 import EditableInput from "../components/EditableInput";
+import NewTypeParameterInput from "../components/NewTypeParameterInput";
 
 export default function FunctionEditorDialog() {
   const [previewCode, setPreviewCode] = useState("");
@@ -50,9 +51,6 @@ export default function FunctionEditorDialog() {
   >([]);
 
   const [insideCodes, setInsideCodes] = useState<FunctionInsideCodeLine[]>([]);
-
-  // const [newParamName, setNewParamName] = useState("");
-  const [newTypeParamName, setNewTypeParamName] = useState("");
 
   const { moduleName, functions, setFunctions, selectedFunction } =
     useContext(SuiMoveModuleContext);
@@ -244,53 +242,16 @@ export default function FunctionEditorDialog() {
 
           {/* Type Parameters */}
           <div className="mb-4">
-            <label className="block mb-1 font-semibold">Type Parameters</label>
+            <NewTypeParameterInput
+              create={(name) => {
+                if (typeParameters.map((t) => t.name).includes(name)) return;
 
-            <div className="flex gap-2 mb-2">
-              <Input
-                placeholder="Type parameter name"
-                value={newTypeParamName}
-                onChange={(e) => {
-                  const raw = e.target.value;
-                  if (raw.length > 0 && /^\d/.test(raw)) {
-                    return; // 첫 글자가 숫자면 무시
-                  }
-                  const onlyAlphabet = e.target.value.replace(
-                    /[^a-zA-Z0-9]/g,
-                    ""
-                  );
-                  const firstLetterCapitalized =
-                    onlyAlphabet.charAt(0).toUpperCase() +
-                    onlyAlphabet.slice(1);
-                  setNewTypeParamName(firstLetterCapitalized);
-                }}
-              />
-              <Button
-                className="cursor-pointer"
-                onClick={() => {
-                  if (
-                    !newTypeParamName ||
-                    typeParameters.map((t) => t.name).includes(newTypeParamName)
-                  )
-                    return;
-
-                  setTypeParameters((prev) => [
-                    ...prev,
-                    {
-                      name: newTypeParamName,
-                      type: {
-                        abilities: [],
-                      },
-                    },
-                  ]);
-
-                  // 초기화
-                  setNewTypeParamName("");
-                }}
-              >
-                Add
-              </Button>
-            </div>
+                setTypeParameters((prev) => [
+                  ...prev,
+                  { name, type: { abilities: [] } },
+                ]);
+              }}
+            />
 
             {/* 추가된 타입 파라미터 목록 */}
             {typeParameters.map((t, index) => (
