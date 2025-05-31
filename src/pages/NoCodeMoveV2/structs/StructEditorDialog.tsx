@@ -24,6 +24,8 @@ import {
 import AbilitySelector from "../components/AbilitySelector";
 import TypeSelector from "../components/TypeSelector";
 import NewTypeParameterInput from "../components/NewTypeParameterInput";
+import NewFieldEntityInput from "../components/NewFieldEntityInput";
+import EditableInput from "../components/EditableInput";
 
 export default function StructEditorDialog() {
   const [previewCode, setPreviewCode] = useState("");
@@ -34,8 +36,6 @@ export default function StructEditorDialog() {
     { name: string; type: SuiMoveStructTypeParameter }[]
   >([]);
   const [fields, setFields] = useState<SuiMoveNormalizedField[]>([]);
-
-  const [newFieldName, setNewFieldName] = useState("");
 
   const { moduleName, structs, setStructs, selectedStruct } =
     useContext(SuiMoveModuleContext);
@@ -284,55 +284,29 @@ export default function StructEditorDialog() {
 
           {/* Fields */}
           <div className="mb-4">
-            <p className="block font-semibold mb-1">Fields</p>
-            <div className="flex gap-2 mb-2">
-              <Input
-                value={newFieldName}
-                placeholder="Field name"
-                onChange={(e) => {
-                  const raw = e.target.value;
-                  if (raw.length > 0 && /^[\d_]/.test(raw)) {
-                    return; // 첫 글자가 숫자거나 _면 무시
-                  }
-                  const onlyAlphabet = e.target.value.replace(
-                    /[^a-zA-Z0-9_]/g,
-                    ""
-                  );
-                  setNewFieldName(onlyAlphabet.toLowerCase());
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    if (
-                      !newFieldName ||
-                      fields.some((f) => f.name === newFieldName)
-                    )
-                      return;
-                    setFields([...fields, { name: newFieldName, type: "U64" }]);
-                    setNewFieldName("");
-                  }
-                }}
-              />
-              <Button
-                className="cursor-pointer"
-                onClick={() => {
-                  if (
-                    !newFieldName ||
-                    fields.some((f) => f.name === newFieldName)
-                  )
-                    return;
-                  setFields([...fields, { name: newFieldName, type: "U64" }]);
-                  setNewFieldName("");
-                }}
-              >
-                Add
-              </Button>
-            </div>
+            <NewFieldEntityInput
+              title="Field"
+              create={(name: string) => {
+                if (fields.some((r) => r.name === name)) return;
+                setFields([...fields, { name: name, type: "U64" }]);
+              }}
+            />
 
             {fields.map((field, index) => (
               <div key={field.name} className="flex items-center gap-2 mb-2">
-                <span className="text-blue-600 font-semibold min-w-[100px]">
-                  {field.name}
-                </span>
+                <EditableInput
+                  defaultValue={field.name}
+                  onUpdate={(name: string) => {
+                    if (field.name === name) return true;
+                    if (fields.some((field) => field.name === name))
+                      return false;
+                    setFields((prev) =>
+                      prev.map((f, i) => (i === index ? { ...f, name } : f))
+                    );
+
+                    return true;
+                  }}
+                />
                 <TypeSelector
                   typeParameters={typeParameters}
                   suiMoveType={field.type}
