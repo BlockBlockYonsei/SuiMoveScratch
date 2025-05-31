@@ -30,6 +30,7 @@ import TypeSelector from "../components/TypeSelector";
 import FunctionSelector from "../components/FunctionSelector";
 import { generateFunctionCode } from "@/lib/generateCode";
 import NewFieldEntityInput from "../components/NewFieldEntityInput";
+import EditableInput from "../components/EditableInput";
 
 export default function FunctionEditorDialog() {
   const [previewCode, setPreviewCode] = useState("");
@@ -332,14 +333,23 @@ export default function FunctionEditorDialog() {
 
             {parameters.map((param, index) => (
               <div key={param.name} className="flex items-center gap-2 mb-2">
-                <span className="text-blue-600 font-semibold min-w-[100px]">
-                  {param.name}
-                </span>
+                <EditableInput
+                  defaultValue={param.name}
+                  onUpdate={(name: string) => {
+                    if (param.name === name) return true;
+                    if (parameters.some((p) => p.name === name)) return false;
+
+                    setParameters((prev) =>
+                      prev.map((r, i) => (i === index ? { ...r, name } : r))
+                    );
+
+                    return true;
+                  }}
+                />
                 <TypeSelector
-                  nameKey={functionName}
                   typeParameters={typeParameters}
-                  defaultType={param.type}
-                  onChange={(type: SuiMoveNormalizedType) => {
+                  suiMoveType={param.type}
+                  onSelect={(type: SuiMoveNormalizedType) => {
                     setParameters((prev) =>
                       prev.map((f, i) => (i === index ? { ...f, type } : f))
                     );
@@ -366,21 +376,29 @@ export default function FunctionEditorDialog() {
             <NewFieldEntityInput
               title="Return"
               create={(name: string) => {
-                if (returns.some((p) => p.name === name)) return;
+                if (returns.some((r) => r.name === name)) return;
                 setReturns([...returns, { name: name, type: "U64" }]);
               }}
             />
 
             {returns.map((r, index) => (
               <div key={index} className="flex items-center gap-2 mb-2">
-                <span className="text-blue-600 font-semibold min-w-[100px]">
-                  R{index}
-                </span>
+                <EditableInput
+                  defaultValue={r.name}
+                  onUpdate={(name: string) => {
+                    if (r.name === name) return true;
+                    if (returns.some((r) => r.name === name)) return false;
+                    setReturns((prev) =>
+                      prev.map((r, i) => (i === index ? { ...r, name } : r))
+                    );
+
+                    return true;
+                  }}
+                />
                 <TypeSelector
-                  nameKey={functionName}
                   typeParameters={typeParameters}
-                  defaultType={r.type}
-                  onChange={(type: SuiMoveNormalizedType) => {
+                  suiMoveType={r.type}
+                  onSelect={(type: SuiMoveNormalizedType) => {
                     setReturns((prev) =>
                       prev.map((r, i) => (i === index ? { ...r, type } : r))
                     );

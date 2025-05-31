@@ -372,10 +372,9 @@ export default function StructEditorDialog() {
                   {field.name}
                 </span>
                 <TypeSelector
-                  nameKey={structName}
                   typeParameters={typeParameters}
-                  defaultType={field.type}
-                  onChange={(type: SuiMoveNormalizedType) => {
+                  suiMoveType={field.type}
+                  onSelect={(type: SuiMoveNormalizedType) => {
                     setFields((prev) =>
                       prev.map((f, i) => (i === index ? { ...f, type } : f))
                     );

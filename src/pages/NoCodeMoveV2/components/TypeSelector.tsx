@@ -21,18 +21,16 @@ import { convertSuiMoveStructToSuiMoveNomalizedType } from "@/lib/convertType";
 import { SuiMoveStruct } from "@/types/move-type";
 
 export default function TypeSelector({
-  nameKey,
-  defaultType,
+  suiMoveType,
   typeParameters,
-  onChange,
+  onSelect,
   st,
 }: {
-  nameKey: string;
-  defaultType?: SuiMoveNormalizedType;
+  suiMoveType: SuiMoveNormalizedType;
   typeParameters:
     | { name: string; type: SuiMoveStructTypeParameter }[]
     | { name: string; type: SuiMoveAbilitySet }[];
-  onChange?: (type: SuiMoveNormalizedType) => void;
+  onSelect: (type: SuiMoveNormalizedType) => void;
   st: "struct" | "function";
 }) {
   const [selectedType, setSelectedType] = useState<SuiMoveNormalizedType>();
@@ -42,7 +40,7 @@ export default function TypeSelector({
   const [dataType, setDataType] = useState<"Single Value" | "Vector">(
     "Single Value"
   );
-  const { imports, structs } = useContext(SuiMoveModuleContext);
+  const { imports, structs, selectedStruct } = useContext(SuiMoveModuleContext);
 
   const getValueType = (type: SuiMoveNormalizedType): SuiMoveNormalizedType => {
     if (typeof type === "string") {
@@ -65,13 +63,11 @@ export default function TypeSelector({
   };
 
   useEffect(() => {
-    if (!defaultType) return;
-
     setDataAccess("Value");
     setDataType("Single Value");
 
-    setSelectedType(getValueType(defaultType));
-  }, [defaultType]);
+    setSelectedType(getValueType(suiMoveType));
+  }, [suiMoveType]);
 
   useEffect(() => {
     if (!selectedType) return;
@@ -79,7 +75,7 @@ export default function TypeSelector({
   }, [selectedType]);
 
   useEffect(() => {
-    if (!onChange || !selectedType) return;
+    if (!selectedType) return;
 
     let result: SuiMoveNormalizedType = selectedType;
 
@@ -93,18 +89,16 @@ export default function TypeSelector({
       result = { MutableReference: result };
     }
 
-    onChange(result);
+    onSelect(result);
   }, [dataAccess, dataType]);
 
   return (
     <div className="flex gap-2">
       <Select
         onValueChange={(value: string) => {
-          if (!onChange) return;
-
           const convertedType = JSON.parse(value);
           setSelectedType(convertedType);
-          onChange(convertedType);
+          onSelect(convertedType);
         }}
         value={selectedType ? JSON.stringify(selectedType) : "U64"}
       >
@@ -156,7 +150,11 @@ export default function TypeSelector({
           </Label>
           <div className="grid grid-cols-2">
             {[...structs.values()]
-              .filter((struct) => struct.structName !== nameKey)
+              .filter((struct) =>
+                selectedStruct
+                  ? struct.structName !== selectedStruct.structName
+                  : true
+              )
               .map((struct) => (
                 <SelectItem
                   key={struct.structName}
@@ -229,7 +227,6 @@ export default function TypeSelector({
           onValueChange={(
             value: "Value" | "Reference" | "Mutable Reference"
           ) => {
-            if (!onChange) return;
             if (!selectedType) return;
 
             setDataAccess(value);
@@ -259,7 +256,6 @@ export default function TypeSelector({
       )}
       <Select
         onValueChange={(value: "Single Value" | "Vector") => {
-          if (!onChange) return;
           if (!selectedType) return;
 
           setDataType(value);
