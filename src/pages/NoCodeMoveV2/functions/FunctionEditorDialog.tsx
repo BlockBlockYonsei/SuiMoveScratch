@@ -29,6 +29,7 @@ import AbilitySelector from "../components/AbilitySelector";
 import TypeSelector from "../components/TypeSelector";
 import FunctionSelector from "../components/FunctionSelector";
 import { generateFunctionCode } from "@/lib/generateCode";
+import NewFieldEntityInput from "../components/NewFieldEntityInput";
 
 export default function FunctionEditorDialog() {
   const [previewCode, setPreviewCode] = useState("");
@@ -49,10 +50,7 @@ export default function FunctionEditorDialog() {
 
   const [insideCodes, setInsideCodes] = useState<FunctionInsideCodeLine[]>([]);
 
-  // const [newInsideCodeFunctionName, setNewInsideCodeFunctionName] =
-  //   useState("");
-
-  const [newParamName, setNewParamName] = useState("");
+  // const [newParamName, setNewParamName] = useState("");
   const [newTypeParamName, setNewTypeParamName] = useState("");
 
   const { moduleName, functions, setFunctions, selectedFunction } =
@@ -324,55 +322,13 @@ export default function FunctionEditorDialog() {
 
           {/* Parameters */}
           <div className="mb-4">
-            <label className="block font-semibold mb-1">Parameters</label>
-            <div className="flex gap-2 mb-2">
-              <Input
-                value={newParamName}
-                placeholder="Parameter name"
-                onChange={(e) => {
-                  const raw = e.target.value;
-                  if (raw.length > 0 && /^[\d_]/.test(raw)) {
-                    return; // 첫 글자가 숫자거나 _면 무시
-                  }
-                  const onlyAlphabet = e.target.value.replace(
-                    /[^a-zA-Z0-9_]/g,
-                    ""
-                  );
-                  setNewParamName(onlyAlphabet.toLowerCase());
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    if (
-                      !newParamName ||
-                      parameters.some((p) => p.name === newParamName)
-                    )
-                      return;
-                    setParameters((prev) => [
-                      ...prev,
-                      { name: newParamName, type: "U64" },
-                    ]);
-                    setNewParamName("");
-                  }
-                }}
-              />
-              <Button
-                className="cursor-pointer"
-                onClick={() => {
-                  if (
-                    !newParamName ||
-                    parameters.some((p) => p.name === newParamName)
-                  )
-                    return;
-                  setParameters([
-                    ...parameters,
-                    { name: newParamName, type: "U64" },
-                  ]);
-                  setNewParamName("");
-                }}
-              >
-                Add
-              </Button>
-            </div>
+            <NewFieldEntityInput
+              title="Parameter"
+              create={(name: string) => {
+                if (parameters.some((p) => p.name === name)) return;
+                setParameters((prev) => [...prev, { name: name, type: "U64" }]);
+              }}
+            />
 
             {parameters.map((param, index) => (
               <div key={param.name} className="flex items-center gap-2 mb-2">
