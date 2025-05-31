@@ -384,7 +384,7 @@ export default function StructEditorDialog() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-gray-500 hover:text-gray-700 p-1 h-7 w-7 flex-shrink-0"
+                  className="cursor-pointer text-gray-500 hover:text-gray-700 p-1 h-7 w-7 flex-shrink-0"
                   onClick={() => {
                     setFields((prev) => prev.filter((_, i) => i !== index));
                   }}
