@@ -144,9 +144,7 @@ export function generateFunctionCode(func: SuiMoveFunction): string {
   return `${entryKeyword}${visibilityKeyword}fun ${
     func.functionName
   }${generics}(${parameters})${returnType} {\n${insideCodeString}\n\n${
-    func.return.length > 0
-      ? "  (" + func.return.map((_, i) => `R${i}`).join(", ") + ")"
-      : ""
+    func.return.length > 0 ? "  (" + func.returnNames.join(", ") + ")" : ""
   }\n}\n`;
 }
 

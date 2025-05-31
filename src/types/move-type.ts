@@ -39,12 +39,12 @@ export interface SuiMoveFunction extends SuiMoveNormalizedFunction {
   functionName: string;
   parameterNames: string[];
   typeParameterNames: string[];
+  returnNames: string[];
   insideCode: FunctionInsideCodeLine[];
 }
 
 export type FunctionInsideCodeLine =
   | (SuiMoveFunction & {
-      returnNames: string[];
       typeArguments: SuiMoveNormalizedType[];
     })
   | { type: SuiMoveNormalizedType; variableName: string; value: string };

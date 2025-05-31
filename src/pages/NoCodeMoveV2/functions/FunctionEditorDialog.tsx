@@ -72,6 +72,7 @@ export default function FunctionEditorDialog() {
         parameters: parameters.map((p) => p.type),
         parameterNames: parameters.map((p) => p.name),
         return: returns.map((r) => r.type),
+        returnNames: returns.map((r) => r.name),
         insideCode: insideCodes,
       } as SuiMoveFunction);
 
@@ -110,7 +111,12 @@ export default function FunctionEditorDialog() {
           type: p,
         }))
       );
-      setReturns(selectedFunction.return.map((r) => ({ name: "", type: r })));
+      setReturns(
+        selectedFunction.return.map((p, i) => ({
+          name: selectedFunction.returnNames[i],
+          type: p,
+        }))
+      );
       setInsideCodes(selectedFunction.insideCode);
     } else {
       // 새로운 function 생성 시 초기화
@@ -142,6 +148,7 @@ export default function FunctionEditorDialog() {
       typeParameters: typeParameters.map((t) => t.type),
       typeParameterNames: typeParameters.map((t) => t.name),
       return: returns.map((r) => r.type),
+      returnNames: returns.map((r) => r.name),
       insideCode: insideCodes,
     };
 
