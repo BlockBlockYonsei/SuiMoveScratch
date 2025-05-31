@@ -363,17 +363,13 @@ export default function FunctionEditorDialog() {
 
           {/* Returns */}
           <div className="mb-4">
-            <label className="block font-semibold mb-1">Returns</label>
-            <div className="flex gap-2 mb-2">
-              <Button
-                className="cursor-pointer"
-                onClick={() => {
-                  setReturns([...returns, { name: "", type: "U64" }]);
-                }}
-              >
-                Add
-              </Button>
-            </div>
+            <NewFieldEntityInput
+              title="Return"
+              create={(name: string) => {
+                if (returns.some((p) => p.name === name)) return;
+                setReturns([...returns, { name: name, type: "U64" }]);
+              }}
+            />
 
             {returns.map((r, index) => (
               <div key={index} className="flex items-center gap-2 mb-2">
