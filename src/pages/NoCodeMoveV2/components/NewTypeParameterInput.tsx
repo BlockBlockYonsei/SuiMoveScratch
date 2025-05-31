@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 interface Props {
-  create: (name: string) => void;
+  onCreate: (name: string) => void;
 }
 
-export default function NewTypeParameterInput({ create }: Props) {
+export default function NewTypeParameterInput({ onCreate }: Props) {
   const [name, setName] = useState("");
 
   return (
@@ -30,7 +30,7 @@ export default function NewTypeParameterInput({ create }: Props) {
             if (e.key === "Enter") {
               if (!name) return;
 
-              create(name);
+              onCreate(name);
               setName("");
             }
           }}
@@ -40,7 +40,7 @@ export default function NewTypeParameterInput({ create }: Props) {
           onClick={() => {
             if (!name) return;
 
-            create(name);
+            onCreate(name);
             setName("");
           }}
         >

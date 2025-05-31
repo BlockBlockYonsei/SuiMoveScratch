@@ -4,10 +4,10 @@ import { useState } from "react";
 
 interface Props {
   title: string;
-  create: (name: string) => void;
+  onCreate: (name: string) => void;
 }
 
-export default function NewFieldEntityInput({ title, create }: Props) {
+export default function NewFieldEntityInput({ title, onCreate }: Props) {
   const [name, setName] = useState("");
 
   return (
@@ -29,7 +29,7 @@ export default function NewFieldEntityInput({ title, create }: Props) {
             if (e.key === "Enter") {
               if (!name) return;
 
-              create(name);
+              onCreate(name);
               setName("");
             }
           }}
@@ -39,7 +39,7 @@ export default function NewFieldEntityInput({ title, create }: Props) {
           onClick={() => {
             if (!name) return;
 
-            create(name);
+            onCreate(name);
             setName("");
           }}
         >

@@ -171,7 +171,7 @@ export default function FunctionEditorDialog() {
     <DialogContent className="sm:max-w-[600px] lg:max-w-[1000px] max-h-[80vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>
-          {selectedFunction ? "Update Function" : "Create a New Function"}
+          {selectedFunction ? "Update Function" : "onCreate a New Function"}
         </DialogTitle>
 
         <DialogDescription>
@@ -243,7 +243,7 @@ export default function FunctionEditorDialog() {
           {/* Type Parameters */}
           <div className="mb-4">
             <NewTypeParameterInput
-              create={(name) => {
+              onCreate={(name) => {
                 if (typeParameters.map((t) => t.name).includes(name)) return;
 
                 setTypeParameters((prev) => [
@@ -293,7 +293,7 @@ export default function FunctionEditorDialog() {
           <div className="mb-4">
             <NewFieldEntityInput
               title="Parameter"
-              create={(name: string) => {
+              onCreate={(name: string) => {
                 if (parameters.some((p) => p.name === name)) return;
                 setParameters((prev) => [...prev, { name: name, type: "U64" }]);
               }}
@@ -343,7 +343,7 @@ export default function FunctionEditorDialog() {
           <div className="mb-4">
             <NewFieldEntityInput
               title="Return"
-              create={(name: string) => {
+              onCreate={(name: string) => {
                 if (returns.some((r) => r.name === name)) return;
                 setReturns([...returns, { name: name, type: "U64" }]);
               }}

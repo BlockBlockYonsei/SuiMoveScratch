@@ -160,7 +160,7 @@ export default function StructEditorDialog() {
     <DialogContent className="sm:max-w-[600px] lg:max-w-[1000px] max-h-[80vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>
-          {selectedStruct ? "Update Struct" : "Create a New Struct"}
+          {selectedStruct ? "Update Struct" : "onCreate a New Struct"}
         </DialogTitle>
         <DialogDescription>
           Add abilities, type parameters, and fields for your struct.
@@ -199,7 +199,7 @@ export default function StructEditorDialog() {
           {/* Type Parameters */}
           <div className="mb-4">
             <NewTypeParameterInput
-              create={(name) => {
+              onCreate={(name) => {
                 if (typeParameters.map((t) => t.name).includes(name)) return;
 
                 setTypeParameters([
@@ -286,7 +286,7 @@ export default function StructEditorDialog() {
           <div className="mb-4">
             <NewFieldEntityInput
               title="Field"
-              create={(name: string) => {
+              onCreate={(name: string) => {
                 if (fields.some((r) => r.name === name)) return;
                 setFields([...fields, { name: name, type: "U64" }]);
               }}
