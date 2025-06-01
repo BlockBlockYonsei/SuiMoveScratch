@@ -18,7 +18,7 @@ export default function StructCard({
   const { setStructs } = useContext(SuiMoveModuleContext);
 
   return (
-    <Card className="relative" {...props}>
+    <Card {...props} className="relative cursor-pointer">
       <CardHeader>
         <button
           onClick={() => {

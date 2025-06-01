@@ -16,7 +16,7 @@ export default function StructPreview() {
         <Dialog key={structName}>
           <DialogTrigger
             asChild
-            className="cursor-pointer rounded-md"
+            className="rounded-md"
             onClick={() => setSelectedStruct(structData)}
           >
             <StructCard structName={structName} structData={structData} />

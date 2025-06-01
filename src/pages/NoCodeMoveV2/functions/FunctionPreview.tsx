@@ -15,7 +15,7 @@ export default function FunctionPreview() {
           <Dialog key={functionName}>
             <DialogTrigger
               asChild
-              className="cursor-pointer rounded-md"
+              className="rounded-md"
               onClick={() => setSelectedFunction(data)}
             >
               <FunctionCard functionName={functionName} functionData={data} />
