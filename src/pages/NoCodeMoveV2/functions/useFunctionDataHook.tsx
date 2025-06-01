@@ -73,6 +73,7 @@ export default function useFunctionDataHook() {
   useEffect(() => {
     if (selectedFunction) {
       setFunctionName(selectedFunction.functionName);
+      setIsEntry(selectedFunction.isEntry);
       setVisibility(selectedFunction.visibility);
       setTypeParameters(
         selectedFunction.typeParameters.map((tp, i) => ({
