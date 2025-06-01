@@ -18,6 +18,7 @@ import TypeSelector from "../components/TypeSelector";
 import NewFieldEntityInput from "../components/NewFieldEntityInput";
 import EditableInput from "../components/EditableInput";
 import useStructDataHook from "./useStructDataHook";
+import { camelCaseFilter, snakeCaseFilter } from "@/utils/filter";
 
 export default function StructEditorDialog() {
   const {
@@ -34,6 +35,7 @@ export default function StructEditorDialog() {
   } = useStructDataHook();
 
   const { selectedStruct } = useContext(SuiMoveModuleContext);
+
   return (
     <DialogContent className="sm:max-w-[600px] lg:max-w-[1000px] max-h-[80vh] overflow-y-auto">
       <DialogHeader>
@@ -54,15 +56,7 @@ export default function StructEditorDialog() {
               value={structName}
               onChange={(e) => {
                 const raw = e.target.value;
-                if (raw.length > 0 && /^\d/.test(raw)) {
-                  return; // 첫 글자가 숫자면 무시
-                }
-                const onlyAlphabet = e.target.value.replace(
-                  /[^a-zA-Z0-9]/g,
-                  ""
-                );
-                const firstLetterCapitalized =
-                  onlyAlphabet.charAt(0).toUpperCase() + onlyAlphabet.slice(1);
+                const firstLetterCapitalized = camelCaseFilter(raw);
                 setStructName(firstLetterCapitalized);
               }}
             />
@@ -78,16 +72,7 @@ export default function StructEditorDialog() {
           <div className="mb-4">
             <NewFieldEntityInput
               title="Type Parameter"
-              filter={(value: string) => {
-                if (value.length > 0 && /^\d/.test(value)) {
-                  return ""; // 첫 글자가 숫자면 무시
-                }
-                const onlyAlphabet = value.replace(/[^a-zA-Z0-9]/g, "");
-                const firstLetterCapitalized =
-                  onlyAlphabet.charAt(0).toUpperCase() + onlyAlphabet.slice(1);
-
-                return firstLetterCapitalized;
-              }}
+              filter={camelCaseFilter}
               onCreate={(name) => {
                 if (typeParameters.map((t) => t.name).includes(name)) return;
 
@@ -109,17 +94,7 @@ export default function StructEditorDialog() {
               >
                 <EditableInput
                   defaultValue={t.name}
-                  filter={(value: string) => {
-                    if (value.length > 0 && /^\d/.test(value)) {
-                      return ""; // 첫 글자가 숫자면 무시
-                    }
-                    const onlyAlphabet = value.replace(/[^a-zA-Z0-9]/g, "");
-                    const firstLetterCapitalized =
-                      onlyAlphabet.charAt(0).toUpperCase() +
-                      onlyAlphabet.slice(1);
-
-                    return firstLetterCapitalized;
-                  }}
+                  filter={camelCaseFilter}
                   onUpdate={(name: string) => {
                     if (t.name === name) return true;
                     if (typeParameters.some((t) => t.name === name))
@@ -198,13 +173,7 @@ export default function StructEditorDialog() {
           <div className="mb-4">
             <NewFieldEntityInput
               title="Field"
-              filter={(value: string) => {
-                if (value.length > 0 && /^[\d_]/.test(value)) {
-                  return ""; // 첫 글자가 숫자거나 _면 무시
-                }
-                const onlyAlphabet = value.replace(/[^a-zA-Z0-9_]/g, "");
-                return onlyAlphabet;
-              }}
+              filter={snakeCaseFilter}
               onCreate={(name: string) => {
                 if (fields.some((r) => r.name === name)) return;
                 setFields([...fields, { name: name, type: "U64" }]);
@@ -215,13 +184,7 @@ export default function StructEditorDialog() {
               <div key={field.name} className="flex items-center gap-2 mb-2">
                 <EditableInput
                   defaultValue={field.name}
-                  filter={(value: string) => {
-                    if (value.length > 0 && /^[\d_]/.test(value)) {
-                      return ""; // 첫 글자가 숫자거나 _면 무시
-                    }
-                    const onlyAlphabet = value.replace(/[^a-zA-Z0-9_]/g, "");
-                    return onlyAlphabet;
-                  }}
+                  filter={snakeCaseFilter}
                   onUpdate={(name: string) => {
                     if (field.name === name) return true;
                     if (fields.some((field) => field.name === name))

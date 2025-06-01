@@ -25,6 +25,7 @@ import FunctionSelector from "../components/FunctionSelector";
 import NewFieldEntityInput from "../components/NewFieldEntityInput";
 import EditableInput from "../components/EditableInput";
 import useFunctionDataHook from "./useFunctionDataHook";
+import { camelCaseFilter, snakeCaseFilter } from "@/utils/filter";
 
 export default function FunctionEditorDialog() {
   const {
@@ -70,13 +71,7 @@ export default function FunctionEditorDialog() {
               value={functionName}
               onChange={(e) => {
                 const raw = e.target.value;
-                if (raw.length > 0 && /^[\d_]/.test(raw)) {
-                  return; // 첫 글자가 숫자거나 _면 무시
-                }
-                const onlyAlphabet = e.target.value.replace(
-                  /[^a-zA-Z0-9_]/g,
-                  ""
-                );
+                const onlyAlphabet = snakeCaseFilter(raw);
                 setFunctionName(onlyAlphabet.toLocaleLowerCase());
               }}
             />
@@ -126,16 +121,7 @@ export default function FunctionEditorDialog() {
           <div className="mb-4">
             <NewFieldEntityInput
               title="Type Parameter"
-              filter={(value: string) => {
-                if (value.length > 0 && /^\d/.test(value)) {
-                  return ""; // 첫 글자가 숫자면 무시
-                }
-                const onlyAlphabet = value.replace(/[^a-zA-Z0-9]/g, "");
-                const firstLetterCapitalized =
-                  onlyAlphabet.charAt(0).toUpperCase() + onlyAlphabet.slice(1);
-
-                return firstLetterCapitalized;
-              }}
+              filter={camelCaseFilter}
               onCreate={(name) => {
                 if (typeParameters.map((t) => t.name).includes(name)) return;
 
@@ -151,17 +137,7 @@ export default function FunctionEditorDialog() {
               <div key={t.name} className="flex items-center gap-2 mb-2">
                 <EditableInput
                   defaultValue={t.name}
-                  filter={(value: string) => {
-                    if (value.length > 0 && /^\d/.test(value)) {
-                      return ""; // 첫 글자가 숫자면 무시
-                    }
-                    const onlyAlphabet = value.replace(/[^a-zA-Z0-9]/g, "");
-                    const firstLetterCapitalized =
-                      onlyAlphabet.charAt(0).toUpperCase() +
-                      onlyAlphabet.slice(1);
-
-                    return firstLetterCapitalized;
-                  }}
+                  filter={camelCaseFilter}
                   onUpdate={(name: string) => {
                     if (t.name === name) return true;
                     if (typeParameters.some((t) => t.name === name))
@@ -207,13 +183,7 @@ export default function FunctionEditorDialog() {
           <div className="mb-4">
             <NewFieldEntityInput
               title="Parameter"
-              filter={(value: string) => {
-                if (value.length > 0 && /^[\d_]/.test(value)) {
-                  return ""; // 첫 글자가 숫자거나 _면 무시
-                }
-                const onlyAlphabet = value.replace(/[^a-zA-Z0-9_]/g, "");
-                return onlyAlphabet;
-              }}
+              filter={snakeCaseFilter}
               onCreate={(name: string) => {
                 if (parameters.some((p) => p.name === name)) return;
                 setParameters((prev) => [...prev, { name: name, type: "U64" }]);
@@ -224,13 +194,7 @@ export default function FunctionEditorDialog() {
               <div key={param.name} className="flex items-center gap-2 mb-2">
                 <EditableInput
                   defaultValue={param.name}
-                  filter={(value: string) => {
-                    if (value.length > 0 && /^[\d_]/.test(value)) {
-                      return ""; // 첫 글자가 숫자거나 _면 무시
-                    }
-                    const onlyAlphabet = value.replace(/[^a-zA-Z0-9_]/g, "");
-                    return onlyAlphabet;
-                  }}
+                  filter={snakeCaseFilter}
                   onUpdate={(name: string) => {
                     if (param.name === name) return true;
                     if (parameters.some((p) => p.name === name)) return false;
@@ -271,13 +235,7 @@ export default function FunctionEditorDialog() {
           <div className="mb-4">
             <NewFieldEntityInput
               title="Return"
-              filter={(value: string) => {
-                if (value.length > 0 && /^[\d_]/.test(value)) {
-                  return ""; // 첫 글자가 숫자거나 _면 무시
-                }
-                const onlyAlphabet = value.replace(/[^a-zA-Z0-9_]/g, "");
-                return onlyAlphabet;
-              }}
+              filter={snakeCaseFilter}
               onCreate={(name: string) => {
                 if (returns.some((r) => r.name === name)) return;
                 setReturns([...returns, { name: name, type: "U64" }]);
@@ -288,13 +246,7 @@ export default function FunctionEditorDialog() {
               <div key={index} className="flex items-center gap-2 mb-2">
                 <EditableInput
                   defaultValue={r.name}
-                  filter={(value: string) => {
-                    if (value.length > 0 && /^[\d_]/.test(value)) {
-                      return ""; // 첫 글자가 숫자거나 _면 무시
-                    }
-                    const onlyAlphabet = value.replace(/[^a-zA-Z0-9_]/g, "");
-                    return onlyAlphabet;
-                  }}
+                  filter={snakeCaseFilter}
                   onUpdate={(name: string) => {
                     if (r.name === name) return true;
                     if (returns.some((r) => r.name === name)) return false;
