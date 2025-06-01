@@ -79,22 +79,17 @@ export default function FunctionEditorDialog() {
 
           {/* Entry + Visibility */}
           <div className="flex gap-4 mb-4">
-            <Select
-              onValueChange={(v) => setIsEntry(v === "true")}
-              value={String(isEntry)}
+            <button
+              className={`${
+                isEntry ? "text-purple-500 border-purple-500" : ""
+              } border-2 font-semibold cursor-pointer rounded-md p-1 transition-all`}
+              onClick={() => {
+                setIsEntry((prev) => !prev);
+              }}
             >
-              <SelectTrigger className="w-32 cursor-pointer">
-                <SelectValue placeholder="Entry" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem className="cursor-pointer" value="true">
-                  Entry
-                </SelectItem>
-                <SelectItem className="cursor-pointer" value="false">
-                  Non-entry
-                </SelectItem>
-              </SelectContent>
-            </Select>
+              {/* Entry */}
+              <span className="text-blue-600 font-semibold">Entry</span>
+            </button>
 
             <Select
               onValueChange={(v) => setVisibility(v as SuiMoveVisibility)}
