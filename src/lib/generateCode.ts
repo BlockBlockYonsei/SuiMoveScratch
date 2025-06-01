@@ -102,12 +102,12 @@ export function generateFunctionCode(func: SuiMoveFunction): string {
   const parameters = func.parameters
     .map(
       (p: SuiMoveNormalizedType, i: number) =>
-        `${func.parameterNames[i]}: ${parseStructNameFromSuiMoveNomalizedType(
+        `  ${func.parameterNames[i]}: ${parseStructNameFromSuiMoveNomalizedType(
           p,
           func.typeParameterNames
         )}`
     )
-    .join(", ");
+    .join(",\n");
 
   const returnType =
     func.return.length > 0
@@ -143,7 +143,9 @@ export function generateFunctionCode(func: SuiMoveFunction): string {
 
   return `${entryKeyword}${visibilityKeyword}fun ${
     func.functionName
-  }${generics}(${parameters})${returnType} {\n${insideCodeString}\n\n${
+  }${generics}(${
+    parameters.length > 0 ? "\n" + parameters + "\n" : parameters
+  })${returnType} {\n${insideCodeString}\n\n${
     func.return.length > 0 ? "  (" + func.returnNames.join(", ") + ")" : ""
   }\n}\n`;
 }
