@@ -29,7 +29,7 @@ export default function ImportPreview() {
                 SUI_PACKAGE_ALIASES[packageAddress] || packageAddress;
 
               return (
-                <CardHeader>
+                <CardHeader key={packageAddress}>
                   {[...data.entries()].map(([moduleName, moduleData]) => {
                     return (
                       <CardTitle key={moduleName}>
