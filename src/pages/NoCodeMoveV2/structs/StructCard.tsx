@@ -10,6 +10,7 @@ import NameBox from "../components/NameBox";
 export default function StructCard({
   structName,
   structData,
+  ...props
 }: {
   structName: string;
   structData: SuiMoveStruct;
@@ -17,7 +18,7 @@ export default function StructCard({
   const { setStructs } = useContext(SuiMoveModuleContext);
 
   return (
-    <Card className="relative">
+    <Card className="relative" {...props}>
       <CardHeader>
         <button
           onClick={() => {
