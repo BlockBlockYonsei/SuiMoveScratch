@@ -48,7 +48,7 @@ export default function useFunctionDataHook() {
         parameterNames: parameters.map((p) => p.name),
         return: returns.map((r) => r.type),
         returnNames: returns.map((r) => r.name),
-        insideCode: insideCodes,
+        insideCodes: insideCodes,
       } as SuiMoveFunction);
 
       const highlightedCode = highlighter.codeToHtml(functionsCode, {
@@ -93,7 +93,7 @@ export default function useFunctionDataHook() {
           type: p,
         }))
       );
-      setInsideCodes(selectedFunction.insideCode);
+      setInsideCodes(selectedFunction.insideCodes);
     } else {
       // 새로운 function 생성 시 초기화
       resetFunction();
@@ -125,7 +125,7 @@ export default function useFunctionDataHook() {
       typeParameterNames: typeParameters.map((t) => t.name),
       return: returns.map((r) => r.type),
       returnNames: returns.map((r) => r.name),
-      insideCode: insideCodes,
+      insideCodes: insideCodes,
     };
 
     setFunctions((prev) => {

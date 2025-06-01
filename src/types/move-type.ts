@@ -1,5 +1,4 @@
 import {
-  SuiMoveNormalizedField,
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
@@ -41,7 +40,7 @@ export interface SuiMoveFunction extends SuiMoveNormalizedFunction {
   parameterNames: string[];
   typeParameterNames: string[];
   returnNames: string[];
-  insideCode: FunctionInsideCodeLine[];
+  insideCodes: FunctionInsideCodeLine[];
 }
 
 export type FunctionInsideCodeLine =

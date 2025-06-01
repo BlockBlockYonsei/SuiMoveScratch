@@ -6,35 +6,14 @@ import { parseTypeStringFromSuiMoveNomalizedType } from "@/lib/convertType";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
-import { SUI_PACKAGE_ALIASES, PRIMITIVE_TYPES } from "@/Constants";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { FunctionInsideCodeLine, SuiMoveStruct } from "@/types/move-type";
-import { SuiMoveNormalizedType } from "@mysten/sui/client";
-import { convertSuiMoveStructToSuiMoveNomalizedType } from "@/lib/convertType";
-import FunctionSelector from "../components/FunctionSelector";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import AssignVariableDialog from "./AssignVariableDialog";
 import useFunctionDataHook from "./useFunctionDataHook";
 
 export default function FunctionCodePreview() {
-  const { structs, functions, selectedFunction } =
-    useContext(SuiMoveModuleContext);
+  const { functions, selectedFunction } = useContext(SuiMoveModuleContext);
 
-  const { insideCodes, setInsideCodes } = useFunctionDataHook();
+  const { insideCodes, setInsideCodes, handleComplete } = useFunctionDataHook();
 
   if ([...functions.keys()].length === 0) return <div>Add Function</div>;
 
@@ -95,10 +74,7 @@ export default function FunctionCodePreview() {
         <Separator />
         <CardContent className="space-x-2 ">
           <Dialog>
-            <DialogTrigger
-              asChild
-              // onClick={() => setSelectedFunction(undefined)}
-            >
+            <DialogTrigger asChild>
               <Button variant="outline" className="cursor-pointer h-full">
                 Assign Variable
               </Button>
@@ -121,18 +97,22 @@ export default function FunctionCodePreview() {
             variant={"outline"}
             className="cursor-pointer active:bg-black active:text-white"
           >
-            Assert
-          </Button>
-          <Button
-            variant={"outline"}
-            className="cursor-pointer active:bg-black active:text-white"
-          >
             if / while
           </Button>
         </CardContent>
 
-        <CardContent className="border-2 border-black rounded-md min-h-30">
-          <div>
+        <CardContent>
+          <Button
+            variant={"default"}
+            className="w-1/2 cursor-pointer active:bg-black active:text-white"
+            onClick={handleComplete}
+          >
+            Complete
+          </Button>
+        </CardContent>
+
+        <CardContent>
+          <div className="border-2 border-black rounded-md min-h-30">
             {insideCodes.map((line) => (
               <div>{JSON.stringify(line)}</div>
             ))}

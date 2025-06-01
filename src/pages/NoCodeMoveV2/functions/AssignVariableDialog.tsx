@@ -14,7 +14,7 @@ import {
 import { PRIMITIVE_TYPES, SUI_PACKAGE_ALIASES } from "@/Constants";
 import { Button } from "@/components/ui/button";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { FunctionInsideCodeLine } from "@/types/move-type";
 
 export default function AssignVariableDialog({
@@ -295,7 +295,7 @@ export default function AssignVariableDialog({
                               returnNames: functionData.return.map(
                                 (_, i) => `return_var${i}`
                               ),
-                              insideCode: [],
+                              insideCodes: [],
                               typeArguments: functionData.typeParameters.map(
                                 (tp) => "U64" as SuiMoveNormalizedType
                               ),

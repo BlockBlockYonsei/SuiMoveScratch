@@ -118,9 +118,9 @@ export function generateFunctionCode(func: SuiMoveFunction): string {
           .join(", ")})`
       : "";
 
-  const insideCodeString = func.insideCode
+  const insideCodeString = func.insideCodes
     .map((line) => {
-      if ("variableName" in line) {
+      if ("value" in line) {
         if (typeof line.type === "string") {
           return `  let ${line.variableName}: ${line.type.toLowerCase()} = ${
             line.value
@@ -137,6 +137,12 @@ export function generateFunctionCode(func: SuiMoveFunction): string {
             ? `<${line.typeParameterNames.join(", ")}>`
             : ``
         }(${line.parameterNames.join(", ")});`;
+      } else if ("structName" in line) {
+        return `  let ${line.variableName} = ${line.structName} {
+${line.fields
+  .map((f, i) => `    ${f.name}: ${line.fieldVariableNames[i]},`)
+  .join("\n")}
+  };`;
       }
     })
     .join("\n");

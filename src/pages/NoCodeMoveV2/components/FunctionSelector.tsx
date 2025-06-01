@@ -196,25 +196,26 @@ export default function FunctionSelector({
                       return (
                         <SelectItem
                           key={functionName}
-                          value={JSON.stringify({
-                            ...functionData,
-                            address: packageAddress,
-                            moduleName,
-                            functionName,
-                            parameterNames: functionData.parameters.map(
-                              (_, i) => `arg${i}`
-                            ),
-                            returnNames: functionData.parameters.map(
-                              (_, i) => `var${i}`
-                            ),
-                            typeParameterNames: functionData.parameters.map(
-                              (_, i) => `T${i}`
-                            ),
-                            typeArguments: functionData.typeParameters.map(
-                              (_) => "U64"
-                            ),
-                            insideCode: [],
-                          } as FunctionInsideCodeLine)}
+                          value=""
+                          // value={JSON.stringify({
+                          //   ...functionData,
+                          //   address: packageAddress,
+                          //   moduleName,
+                          //   functionName,
+                          //   parameterNames: functionData.parameters.map(
+                          //     (_, i) => `arg${i}`
+                          //   ),
+                          //   returnNames: functionData.parameters.map(
+                          //     (_, i) => `var${i}`
+                          //   ),
+                          //   typeParameterNames: functionData.parameters.map(
+                          //     (_, i) => `T${i}`
+                          //   ),
+                          //   typeArguments: functionData.typeParameters.map(
+                          //     (_) => "U64"
+                          //   ),
+                          //   insideCode: [],
+                          // } as FunctionInsideCodeLine)}
                           className="cursor-pointer hover:bg-gray-200 break-words whitespace-normal truncate"
                         >
                           {functionName}
