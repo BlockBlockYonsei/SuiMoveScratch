@@ -10,6 +10,7 @@ import { parseTypeStringFromSuiMoveNomalizedType } from "@/lib/convertType";
 export default function FunctionCard({
   functionName,
   functionData,
+  ...props
 }: {
   functionName: string;
   functionData: SuiMoveFunction;
@@ -17,7 +18,7 @@ export default function FunctionCard({
   const { setFunctions } = useContext(SuiMoveModuleContext);
 
   return (
-    <Card className="relative">
+    <Card className="relative" {...props}>
       <CardHeader>
         <button
           onClick={() => {

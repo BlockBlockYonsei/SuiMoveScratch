@@ -60,7 +60,7 @@ export default function FunctionCodePreview() {
 
         <CardContent className="space-y-2">
           <CardTitle className="flex flex-wrap gap-2 text-xl items-center">
-            <span>(</span>
+            <span>Parameters: (</span>
             {selectedFunction.parameters.map((p, i) => (
               <NameBox key={i}>
                 {selectedFunction.parameterNames[i]}:{" "}
@@ -121,30 +121,19 @@ export default function FunctionCodePreview() {
 
         <Separator />
 
-        {selectedFunction.return.length > 0 && (
-          <CardContent className="space-y-2">
-            <CardTitle className="flex flex-wrap gap-2 text-xl items-center">
-              <span>: (</span>
-              {selectedFunction.return.map((r, i) => (
-                <NameBox key={i}>
-                  <span>{selectedFunction.returnNames[i]}: </span>
-                  <span>{parseTypeStringFromSuiMoveNomalizedType(r)}</span>
-                </NameBox>
-              ))}
-              <span>)</span>
-            </CardTitle>
-          </CardContent>
-        )}
+        <CardContent className="space-y-2">
+          <CardTitle className="flex flex-wrap gap-2 text-xl items-center">
+            <span>Returns: (</span>
+            {selectedFunction.return.map((r, i) => (
+              <NameBox key={i}>
+                <span>{selectedFunction.returnNames[i]}: </span>
+                <span>{parseTypeStringFromSuiMoveNomalizedType(r)}</span>
+              </NameBox>
+            ))}
+            <span>)</span>
+          </CardTitle>
+        </CardContent>
       </Card>
-      {/* <Dialog key={selectedFunction.functionName}>
-        <DialogTrigger className="cursor-pointer rounded-md">
-          <FunctionCard
-            functionName={selectedFunction.functionName}
-            functionData={selectedFunction}
-          />
-        </DialogTrigger>
-        <FunctionCodeEditorDialog />
-      </Dialog> */}
     </div>
   );
 }

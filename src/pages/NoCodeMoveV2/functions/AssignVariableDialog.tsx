@@ -87,7 +87,7 @@ export default function AssignVariableDialog({
                     ...struct,
                     variableName: `var${insideCodes.length}`,
                     typeArguments: struct.typeParameters.map(
-                      (tp) => "U64" as SuiMoveNormalizedType
+                      (_) => "U64" as SuiMoveNormalizedType
                     ),
                     fieldVariableNames: struct.fields.map((f) => f.name),
                   };
@@ -115,7 +115,7 @@ export default function AssignVariableDialog({
                 const line = {
                   ...func,
                   typeArguments: func.typeParameters.map(
-                    (tp) => "U64" as SuiMoveNormalizedType
+                    (_) => "U64" as SuiMoveNormalizedType
                   ),
                   variableNames: func.returnNames.map((rn) => rn),
                 };
@@ -297,7 +297,7 @@ export default function AssignVariableDialog({
                               ),
                               insideCodes: [],
                               typeArguments: functionData.typeParameters.map(
-                                (tp) => "U64" as SuiMoveNormalizedType
+                                (_) => "U64" as SuiMoveNormalizedType
                               ),
                               variableNames: functionData.return.map(
                                 (_, i) => `return_var${i}`
