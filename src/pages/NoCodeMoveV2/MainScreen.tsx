@@ -10,6 +10,7 @@ import {
   generateModuleDeclaration,
   generateStructCode,
 } from "@/lib/generateCode";
+import FunctionCodePreview from "./functions/FunctionCodePreview";
 
 export default function MainScreen({
   menu,
@@ -60,6 +61,7 @@ export default function MainScreen({
         {menu === "Import" && <ImportPreview />}
         {menu === "Struct" && <StructPreview />}
         {menu === "Function" && <FunctionPreview />}
+        {menu === "FunctionCode" && <FunctionCodePreview />}
 
         {menu === "CodePreview" && <CodePreview />}
       </pre>
