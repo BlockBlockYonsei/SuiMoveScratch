@@ -1,9 +1,4 @@
-import { useContext } from "react";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { X } from "lucide-react";
-import { SuiMoveNormalizedType, SuiMoveVisibility } from "@mysten/sui/client";
-
-import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import {
   DialogContent,
   DialogDescription,
@@ -17,8 +12,6 @@ import useFunctionDataHook from "./useFunctionDataHook";
 export default function FunctionCodeEditorDialog() {
   const { previewCode, setInsideCodes, handleComplete } = useFunctionDataHook();
 
-  const { selectedFunction } = useContext(SuiMoveModuleContext);
-
   return (
     <DialogContent className="sm:max-w-[600px] lg:max-w-[1000px] max-h-[80vh] overflow-y-auto">
       <DialogHeader>
@@ -27,12 +20,8 @@ export default function FunctionCodeEditorDialog() {
         <DialogDescription>Add function codes</DialogDescription>
       </DialogHeader>
 
-      <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+      <div className="lg:grid lg:grid-cols-12 lg:gap-8 min-h-100">
         <section className="col-span-6">
-          {/* Preview */}
-          <pre className="shiki max-w-[550px] overflow-x-auto rounded p-4 bg-[#2e3440ff] text-white text-sm">
-            <code dangerouslySetInnerHTML={{ __html: previewCode }} />
-          </pre>
           <FunctionSelector
             // func={
             //   {
@@ -126,6 +115,12 @@ export default function FunctionCodeEditorDialog() {
           >
             Add Function Logic
           </Button>
+        </section>
+        <section className="col-span-6">
+          {/* Preview */}
+          <pre className="shiki max-w-[550px] overflow-x-auto rounded p-4 bg-[#2e3440ff] text-white text-sm">
+            <code dangerouslySetInnerHTML={{ __html: previewCode }} />
+          </pre>
         </section>
       </div>
 
