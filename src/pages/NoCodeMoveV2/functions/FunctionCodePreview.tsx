@@ -2,8 +2,6 @@ import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import FunctionCard from "./FunctionCard";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { PlusIcon } from "lucide-react";
 import FunctionCodeEditorDialog from "./FunctionCodeEditorDialog";
 
 export default function FunctionCodePreview() {
@@ -23,14 +21,6 @@ export default function FunctionCodePreview() {
           </Dialog>
         );
       })}
-      <Dialog>
-        <DialogTrigger asChild onClick={() => setSelectedFunction(undefined)}>
-          <Button variant="outline" className="cursor-pointer h-full text-9xl">
-            <PlusIcon />
-          </Button>
-        </DialogTrigger>
-        <FunctionCodeEditorDialog />
-      </Dialog>
     </div>
   );
 }
