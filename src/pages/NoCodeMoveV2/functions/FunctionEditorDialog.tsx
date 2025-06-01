@@ -24,7 +24,6 @@ import TypeSelector from "../components/TypeSelector";
 import FunctionSelector from "../components/FunctionSelector";
 import NewFieldEntityInput from "../components/NewFieldEntityInput";
 import EditableInput from "../components/EditableInput";
-import NewTypeParameterInput from "../components/NewTypeParameterInput";
 import useFunctionDataHook from "./useFunctionDataHook";
 
 export default function FunctionEditorDialog() {
@@ -125,7 +124,18 @@ export default function FunctionEditorDialog() {
 
           {/* Type Parameters */}
           <div className="mb-4">
-            <NewTypeParameterInput
+            <NewFieldEntityInput
+              title="Type Parameter"
+              filter={(value: string) => {
+                if (value.length > 0 && /^\d/.test(value)) {
+                  return ""; // 첫 글자가 숫자면 무시
+                }
+                const onlyAlphabet = value.replace(/[^a-zA-Z0-9]/g, "");
+                const firstLetterCapitalized =
+                  onlyAlphabet.charAt(0).toUpperCase() + onlyAlphabet.slice(1);
+
+                return firstLetterCapitalized;
+              }}
               onCreate={(name) => {
                 if (typeParameters.map((t) => t.name).includes(name)) return;
 
@@ -197,6 +207,13 @@ export default function FunctionEditorDialog() {
           <div className="mb-4">
             <NewFieldEntityInput
               title="Parameter"
+              filter={(value: string) => {
+                if (value.length > 0 && /^[\d_]/.test(value)) {
+                  return ""; // 첫 글자가 숫자거나 _면 무시
+                }
+                const onlyAlphabet = value.replace(/[^a-zA-Z0-9_]/g, "");
+                return onlyAlphabet;
+              }}
               onCreate={(name: string) => {
                 if (parameters.some((p) => p.name === name)) return;
                 setParameters((prev) => [...prev, { name: name, type: "U64" }]);
@@ -254,6 +271,13 @@ export default function FunctionEditorDialog() {
           <div className="mb-4">
             <NewFieldEntityInput
               title="Return"
+              filter={(value: string) => {
+                if (value.length > 0 && /^[\d_]/.test(value)) {
+                  return ""; // 첫 글자가 숫자거나 _면 무시
+                }
+                const onlyAlphabet = value.replace(/[^a-zA-Z0-9_]/g, "");
+                return onlyAlphabet;
+              }}
               onCreate={(name: string) => {
                 if (returns.some((r) => r.name === name)) return;
                 setReturns([...returns, { name: name, type: "U64" }]);

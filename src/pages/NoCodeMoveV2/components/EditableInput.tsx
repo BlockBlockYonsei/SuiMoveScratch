@@ -37,12 +37,6 @@ function EditableInput({
           onChange={(e) => {
             const raw = e.target.value;
             const filteredString = filter(raw);
-            // if (raw.length > 0 && /^[\d_]/.test(raw)) {
-            //   return; // 첫 글자가 숫자거나 _면 무시
-            // }
-            // const onlyAlphabet = e.target.value.replace(/[^a-zA-Z0-9_]/g, "");
-            // setValue(onlyAlphabet.toLowerCase());
-            // if (!filteredString) return;
             setValue(filteredString);
           }}
           onBlur={() => {

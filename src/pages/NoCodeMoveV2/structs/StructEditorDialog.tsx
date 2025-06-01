@@ -23,7 +23,6 @@ import {
 
 import AbilitySelector from "../components/AbilitySelector";
 import TypeSelector from "../components/TypeSelector";
-import NewTypeParameterInput from "../components/NewTypeParameterInput";
 import NewFieldEntityInput from "../components/NewFieldEntityInput";
 import EditableInput from "../components/EditableInput";
 
@@ -198,7 +197,7 @@ export default function StructEditorDialog() {
 
           {/* Type Parameters */}
           <div className="mb-4">
-            <NewTypeParameterInput
+            {/* <NewTypeParameterInput
               onCreate={(name) => {
                 if (typeParameters.map((t) => t.name).includes(name)) return;
 
@@ -210,57 +209,104 @@ export default function StructEditorDialog() {
                   },
                 ]);
               }}
+            /> */}
+            <NewFieldEntityInput
+              title="Type Parameter"
+              filter={(value: string) => {
+                if (value.length > 0 && /^\d/.test(value)) {
+                  return ""; // 첫 글자가 숫자면 무시
+                }
+                const onlyAlphabet = value.replace(/[^a-zA-Z0-9]/g, "");
+                const firstLetterCapitalized =
+                  onlyAlphabet.charAt(0).toUpperCase() + onlyAlphabet.slice(1);
+
+                return firstLetterCapitalized;
+              }}
+              onCreate={(name) => {
+                if (typeParameters.map((t) => t.name).includes(name)) return;
+
+                setTypeParameters((prev) => [
+                  ...prev,
+                  {
+                    name,
+                    type: { isPhantom: false, constraints: { abilities: [] } },
+                  },
+                ]);
+              }}
             />
 
             {/* 추가된 타입 파라미터 목록 */}
-            {typeParameters.map(({ name, type }, index) => (
+            {typeParameters.map((t, index) => (
               <div
-                key={name}
+                key={t.name}
                 className="flex justify-between items-center gap-2 mb-2"
               >
+                <EditableInput
+                  defaultValue={t.name}
+                  filter={(value: string) => {
+                    if (value.length > 0 && /^\d/.test(value)) {
+                      return ""; // 첫 글자가 숫자면 무시
+                    }
+                    const onlyAlphabet = value.replace(/[^a-zA-Z0-9]/g, "");
+                    const firstLetterCapitalized =
+                      onlyAlphabet.charAt(0).toUpperCase() +
+                      onlyAlphabet.slice(1);
+
+                    return firstLetterCapitalized;
+                  }}
+                  onUpdate={(name: string) => {
+                    if (t.name === name) return true;
+                    if (typeParameters.some((t) => t.name === name))
+                      return false;
+
+                    setTypeParameters((prev) =>
+                      prev.map((tp, i) => (i === index ? { ...tp, name } : tp))
+                    );
+
+                    return true;
+                  }}
+                />
                 <button
                   className={`${
-                    type.isPhantom ? "text-purple-500 border-purple-500" : ""
+                    t.type.isPhantom ? "text-purple-500 border-purple-500" : ""
                   } border-2 font-semibold cursor-pointer rounded-md p-1 transition-all`}
                   onClick={() => {
                     setTypeParameters((prev) => {
                       const newTypeParam = {
-                        name,
+                        ...t,
                         type: {
-                          ...type,
-                          isPhantom: type.isPhantom,
+                          ...t.type,
+                          isPhantom: !t.type.isPhantom,
                         },
                       };
 
-                      return [
-                        ...prev.slice(0, index),
-                        newTypeParam,
-                        ...prev.slice(index + 1),
-                      ];
+                      return prev.map((tp, i) =>
+                        i === index ? newTypeParam : tp
+                      );
                     });
                   }}
                 >
                   {/* Phantom */}
-                  <span className="text-blue-600 font-semibold">{name}</span>
+                  <span className="text-xs text-blue-600 font-semibold">
+                    phantom
+                  </span>
                 </button>
                 <div className="flex">
                   <AbilitySelector
-                    abilities={type.constraints.abilities}
+                    abilities={t.type.constraints.abilities}
                     onChange={(newAbilities) => {
                       setTypeParameters((prev) => {
                         const newTypeParam = {
-                          name,
+                          ...t,
                           type: {
-                            ...type,
+                            ...t.type,
                             constraints: { abilities: newAbilities },
                           },
                         };
 
-                        return [
-                          ...prev.slice(0, index),
-                          newTypeParam,
-                          ...prev.slice(index + 1),
-                        ];
+                        return prev.map((tp, i) =>
+                          i === index ? newTypeParam : tp
+                        );
                       });
                     }}
                     className="flex-1"
@@ -286,6 +332,13 @@ export default function StructEditorDialog() {
           <div className="mb-4">
             <NewFieldEntityInput
               title="Field"
+              filter={(value: string) => {
+                if (value.length > 0 && /^[\d_]/.test(value)) {
+                  return ""; // 첫 글자가 숫자거나 _면 무시
+                }
+                const onlyAlphabet = value.replace(/[^a-zA-Z0-9_]/g, "");
+                return onlyAlphabet;
+              }}
               onCreate={(name: string) => {
                 if (fields.some((r) => r.name === name)) return;
                 setFields([...fields, { name: name, type: "U64" }]);

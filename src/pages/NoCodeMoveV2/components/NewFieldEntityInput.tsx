@@ -5,9 +5,14 @@ import { useState } from "react";
 interface Props {
   title: string;
   onCreate: (name: string) => void;
+  filter: (value: string) => string;
 }
 
-export default function NewFieldEntityInput({ title, onCreate }: Props) {
+export default function NewFieldEntityInput({
+  title,
+  onCreate,
+  filter,
+}: Props) {
   const [name, setName] = useState("");
 
   return (
@@ -18,12 +23,15 @@ export default function NewFieldEntityInput({ title, onCreate }: Props) {
           value={name}
           placeholder={`${title} Name`}
           onChange={(e) => {
+            // const raw = e.target.value;
+            // if (raw.length > 0 && /^[\d_]/.test(raw)) {
+            //   return; // 첫 글자가 숫자거나 _면 무시
+            // }
+            // const onlyAlphabet = e.target.value.replace(/[^a-zA-Z0-9_]/g, "");
+            // setName(onlyAlphabet.toLowerCase());
             const raw = e.target.value;
-            if (raw.length > 0 && /^[\d_]/.test(raw)) {
-              return; // 첫 글자가 숫자거나 _면 무시
-            }
-            const onlyAlphabet = e.target.value.replace(/[^a-zA-Z0-9_]/g, "");
-            setName(onlyAlphabet.toLowerCase());
+            const filteredString = filter(raw);
+            setName(filteredString);
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
