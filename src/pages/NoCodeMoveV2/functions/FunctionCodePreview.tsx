@@ -2,7 +2,10 @@ import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import NameBox from "../components/NameBox";
-import { parseTypeStringFromSuiMoveNomalizedType } from "@/lib/convertType";
+import {
+  parseStructNameFromSuiMoveNomalizedType,
+  parseTypeStringFromSuiMoveNomalizedType,
+} from "@/lib/convertType";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
@@ -113,9 +116,58 @@ export default function FunctionCodePreview() {
 
         <CardContent>
           <div className="border-2 border-black rounded-md min-h-30">
-            {insideCodes.map((line, i) => (
-              <div key={i}>{JSON.stringify(line)}</div>
-            ))}
+            {insideCodes.map((line, index) => {
+              if ("functionName" in line) {
+                return (
+                  <div key={index}>
+                    {line.variableNames.length > 0 &&
+                      `let (${line.variableNames.join(", ")}) = `}
+                    {line.functionName}
+                    {line.typeArguments.length > 0
+                      ? `<${line.typeArguments.map((t) =>
+                          parseStructNameFromSuiMoveNomalizedType(
+                            t,
+                            line.typeParameterNames
+                          )
+                        )}>`
+                      : ""}
+                    ({line.argumentNames.join(", ")});
+                  </div>
+                );
+              } else if ("structName" in line) {
+                return (
+                  <div key={index}>
+                    let {line.variableName} = {line.structName}
+                    {line.typeArguments.length > 0
+                      ? `<${line.typeArguments.map((t) =>
+                          parseStructNameFromSuiMoveNomalizedType(
+                            t,
+                            line.typeParameterNames
+                          )
+                        )}>`
+                      : ""}
+                    {` {
+  ${line.fields
+    .map((f, i) => `${f.name}: ${line.fieldVariableNames[i]}`)
+    .join(",\n  ")}
+};`}
+                  </div>
+                );
+              } else if ("value" in line && typeof line.type === "string") {
+                return (
+                  <div key={index}>
+                    let {line.variableName}: {line.type.toLowerCase()} ={" "}
+                    {line.value};
+                  </div>
+                );
+              }
+
+              return (
+                <div key={index}>
+                  <div>{JSON.stringify(line)}</div>
+                </div>
+              );
+            })}
           </div>
         </CardContent>
 
