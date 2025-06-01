@@ -20,31 +20,30 @@ export default function ImportEditorDialog() {
   const [selectedPkg, setSelectedPkg] = useState<string | null>(null);
 
   return (
-    <DialogContent>
+    <DialogContent className="min-h-100">
       <DialogHeader>
         <DialogTitle>Import Modules and Structs</DialogTitle>
         <DialogDescription>
           Select a package, then choose a module and struct to import.
         </DialogDescription>
+        {/* 패키지 선택 */}
+        <Select
+          onValueChange={(value: string) => setSelectedPkg(value)}
+          defaultValue={selectedPkg ? selectedPkg : ""}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a package" />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.entries(SUI_PACKAGE_ALIASES).map(([pkg, alias]) => (
+              <SelectItem key={pkg} value={pkg} className="cursor-pointer">
+                {/* {pkg.slice(0, 8)}...{pkg.slice(-4)} ({alias}) */}
+                {pkg} ({alias})
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </DialogHeader>
-
-      {/* 패키지 선택 */}
-      <Select
-        onValueChange={(value: string) => setSelectedPkg(value)}
-        defaultValue={selectedPkg ? selectedPkg : ""}
-      >
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select a package" />
-        </SelectTrigger>
-        <SelectContent>
-          {Object.entries(SUI_PACKAGE_ALIASES).map(([pkg, alias]) => (
-            <SelectItem key={pkg} value={pkg} className="cursor-pointer">
-              {/* {pkg.slice(0, 8)}...{pkg.slice(-4)} ({alias}) */}
-              {pkg} ({alias})
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
 
       {/* 패키지를 선택한 후만 로딩/오류/리스트 표시 */}
       {Object.keys(SUI_PACKAGE_ALIASES).map((pkg) => (
