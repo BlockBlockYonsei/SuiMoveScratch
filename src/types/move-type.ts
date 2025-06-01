@@ -47,6 +47,7 @@ export type FunctionInsideCodeLine =
   | { type: SuiMoveNormalizedType; variableName: string; value: string } // primitive type?
   | (SuiMoveFunction & {
       typeArguments: SuiMoveNormalizedType[];
+      argumentNames: string[];
       variableNames: string[];
     })
   | (SuiMoveStruct & {

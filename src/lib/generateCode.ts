@@ -130,13 +130,20 @@ export function generateFunctionCode(func: SuiMoveFunction): string {
       } else if ("functionName" in line) {
         return `  ${
           line.return.length > 0
-            ? "let (" + line.returnNames.join(", ") + ") = "
+            ? "let (" + line.variableNames.join(", ") + ") = "
             : ""
         }${line.functionName}${
           line.typeParameters.length > 0
-            ? `<${line.typeParameterNames.join(", ")}>`
+            ? `<${line.typeArguments
+                .map((ta) =>
+                  parseStructNameFromSuiMoveNomalizedType(
+                    ta,
+                    line.typeParameterNames
+                  )
+                )
+                .join(", ")}>`
             : ``
-        }(${line.parameterNames.join(", ")});`;
+        }(${line.argumentNames.join(", ")});`;
       } else if ("structName" in line) {
         return `  let ${line.variableName} = ${line.structName} {
 ${line.fields

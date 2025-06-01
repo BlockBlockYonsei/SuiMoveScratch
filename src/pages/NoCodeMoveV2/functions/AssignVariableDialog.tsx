@@ -117,6 +117,7 @@ export default function AssignVariableDialog({
                   typeArguments: func.typeParameters.map(
                     (_) => "U64" as SuiMoveNormalizedType
                   ),
+                  argumentNames: func.parameterNames.map((pn) => pn),
                   variableNames: func.returnNames.map((rn) => rn),
                 };
                 addFunction(line);
@@ -290,17 +291,20 @@ export default function AssignVariableDialog({
                               ),
                               typeParameterNames:
                                 functionData.typeParameters.map(
-                                  (_, i) => `type_param${i}`
+                                  (_, i) => `T${i}`
                                 ),
                               returnNames: functionData.return.map(
-                                (_, i) => `return_var${i}`
+                                (_, i) => `return${i}`
                               ),
                               insideCodes: [],
                               typeArguments: functionData.typeParameters.map(
                                 (_) => "U64" as SuiMoveNormalizedType
                               ),
+                              argumentNames: functionData.parameters.map(
+                                (_, i) => `args${i}`
+                              ),
                               variableNames: functionData.return.map(
-                                (_, i) => `return_var${i}`
+                                (_, i) => `return${i}`
                               ),
                             };
                             addFunction(line);
