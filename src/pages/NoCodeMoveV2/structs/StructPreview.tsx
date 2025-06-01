@@ -8,7 +8,8 @@ import StructEditorDialog from "./StructEditorDialog";
 import StructCard from "./StructCard";
 
 export default function StructPreview() {
-  const { structs, setSelectedStruct } = useContext(SuiMoveModuleContext);
+  const { structs, setSelectedStruct, setSelectedFunction } =
+    useContext(SuiMoveModuleContext);
 
   return (
     <div className="space-y-2 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-2">
@@ -17,7 +18,10 @@ export default function StructPreview() {
           <DialogTrigger
             asChild
             className="rounded-md"
-            onClick={() => setSelectedStruct(structData)}
+            onClick={() => {
+              setSelectedStruct(structData);
+              setSelectedFunction(undefined);
+            }}
           >
             <StructCard structName={structName} structData={structData} />
           </DialogTrigger>
@@ -31,6 +35,7 @@ export default function StructPreview() {
             className="cursor-pointer h-full text-9xl"
             onClick={() => {
               setSelectedStruct(undefined);
+              setSelectedFunction(undefined);
             }}
           >
             <PlusIcon />

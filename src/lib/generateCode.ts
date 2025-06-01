@@ -9,7 +9,10 @@ import {
   SuiMoveNormalizedType,
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
-import { parseStructNameFromSuiMoveNomalizedType } from "./convertType";
+import {
+  parseStructNameFromSuiMoveNomalizedType,
+  parseTypeStringFromSuiMoveNomalizedType,
+} from "./convertType";
 
 export function generateModuleDeclaration({
   packageName,
@@ -102,7 +105,7 @@ export function generateFunctionCode(func: SuiMoveFunction): string {
   const parameters = func.parameters
     .map(
       (p: SuiMoveNormalizedType, i: number) =>
-        `  ${func.parameterNames[i]}: ${parseStructNameFromSuiMoveNomalizedType(
+        `  ${func.parameterNames[i]}: ${parseTypeStringFromSuiMoveNomalizedType(
           p,
           func.typeParameterNames
         )}`
@@ -113,7 +116,7 @@ export function generateFunctionCode(func: SuiMoveFunction): string {
     func.return.length > 0
       ? `: (${func.return
           .map((r) =>
-            parseStructNameFromSuiMoveNomalizedType(r, func.typeParameterNames)
+            parseTypeStringFromSuiMoveNomalizedType(r, func.typeParameterNames)
           )
           .join(", ")})`
       : "";

@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 
 export default function FunctionPreview() {
-  const { functions, setSelectedFunction } = useContext(SuiMoveModuleContext);
+  const { functions, setSelectedFunction, setSelectedStruct } =
+    useContext(SuiMoveModuleContext);
   return (
     <div className="space-y-2 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-2">
       {[...functions.entries()].map(([functionName, data]) => {
@@ -16,7 +17,10 @@ export default function FunctionPreview() {
             <DialogTrigger
               asChild
               className="rounded-md"
-              onClick={() => setSelectedFunction(data)}
+              onClick={() => {
+                setSelectedStruct(undefined);
+                setSelectedFunction(data);
+              }}
             >
               <FunctionCard functionName={functionName} functionData={data} />
             </DialogTrigger>
@@ -25,7 +29,13 @@ export default function FunctionPreview() {
         );
       })}
       <Dialog>
-        <DialogTrigger asChild onClick={() => setSelectedFunction(undefined)}>
+        <DialogTrigger
+          asChild
+          onClick={() => {
+            setSelectedStruct(undefined);
+            setSelectedFunction(undefined);
+          }}
+        >
           <Button
             variant="outline"
             className="cursor-pointer h-full min-h-40 text-9xl"
