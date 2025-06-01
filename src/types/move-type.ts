@@ -1,4 +1,5 @@
 import {
+  SuiMoveNormalizedField,
   SuiMoveNormalizedFunction,
   SuiMoveNormalizedStruct,
   SuiMoveNormalizedType,
@@ -30,7 +31,7 @@ export interface SuiMoveStruct extends SuiMoveNormalizedStruct {
   typeParameterNames: string[];
 }
 
-// export type ModuleFunctionData = SuiMoveFunction[];
+// key : functionName
 export type ModuleFunctionData = Map<string, SuiMoveFunction>;
 
 export interface SuiMoveFunction extends SuiMoveNormalizedFunction {
@@ -44,7 +45,13 @@ export interface SuiMoveFunction extends SuiMoveNormalizedFunction {
 }
 
 export type FunctionInsideCodeLine =
+  | { type: SuiMoveNormalizedType; variableName: string; value: string } // primitive type?
   | (SuiMoveFunction & {
       typeArguments: SuiMoveNormalizedType[];
+      variableNames: string[];
     })
-  | { type: SuiMoveNormalizedType; variableName: string; value: string };
+  | (SuiMoveStruct & {
+      variableName: string;
+      typeArguments: SuiMoveNormalizedType[];
+      fieldVariableNames: string[];
+    });
