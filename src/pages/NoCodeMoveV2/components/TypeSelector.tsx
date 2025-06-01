@@ -105,7 +105,7 @@ export default function TypeSelector({
         <SelectTrigger className="cursor-pointer">
           <SelectValue placeholder="Select type..." />
         </SelectTrigger>
-        <SelectContent className="max-h-80 max-w-98 overflow-y-auto grid grid-cols-4">
+        <SelectContent className="min-h-80 max-h-120 min-w-120 overflow-y-auto grid grid-cols-4">
           <Label className="px-2 text-xs text-muted-foreground">
             Primitive Types
           </Label>
@@ -130,17 +130,19 @@ export default function TypeSelector({
             Type Parameters
           </Label>
           <div className="grid grid-cols-2">
-            {typeParameters.map((tp, index) => (
-              <SelectItem
-                key={tp.name}
-                value={JSON.stringify({
-                  TypeParameter: index,
-                } as SuiMoveNormalizedType)}
-                className="cursor-pointer hover:bg-gray-200"
-              >
-                {tp.name}
-              </SelectItem>
-            ))}
+            {typeParameters
+              .filter((tp) => "isPhantom" in tp.type && !tp.type.isPhantom)
+              .map((tp, index) => (
+                <SelectItem
+                  key={tp.name}
+                  value={JSON.stringify({
+                    TypeParameter: index,
+                  } as SuiMoveNormalizedType)}
+                  className="cursor-pointer hover:bg-gray-200"
+                >
+                  {tp.name}
+                </SelectItem>
+              ))}
           </div>
 
           <Separator className="my-2" />
