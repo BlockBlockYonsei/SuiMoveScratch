@@ -282,7 +282,7 @@ export default function FunctionEditorDialog() {
         </section>
       </div>
 
-      <DialogClose>
+      <DialogClose asChild>
         <Button className="cursor-pointer w-90" onClick={handleComplete}>
           Complete
         </Button>

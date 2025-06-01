@@ -15,6 +15,7 @@ export default function StructPreview() {
       {Array.from(structs.entries()).map(([structName, structData]) => (
         <Dialog key={structName}>
           <DialogTrigger
+            asChild
             className="cursor-pointer rounded-md"
             onClick={() => setSelectedStruct(structData)}
           >

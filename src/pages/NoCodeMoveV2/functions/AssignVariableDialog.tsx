@@ -35,9 +35,9 @@ export default function AssignVariableDialog({
     <DialogContent className="sm:max-w-[600px] lg:max-w-[1000px] max-h-[80vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>Assign Variable</DialogTitle>
-
         <DialogDescription>Add Variables</DialogDescription>
       </DialogHeader>
+
       <Label className="px-2 text-xs text-muted-foreground">
         Primitive Types
       </Label>
@@ -52,7 +52,7 @@ export default function AssignVariableDialog({
               ? "false"
               : "0";
           return (
-            <DialogClose>
+            <DialogClose key={type} asChild>
               <Button
                 key={type}
                 className="col-span-1 cursor-pointer hover:bg-gray-200"
@@ -78,7 +78,7 @@ export default function AssignVariableDialog({
       <div className="flex flex-wrap gap-4">
         {[...structs.values()].map((struct) => {
           return (
-            <DialogClose>
+            <DialogClose key={struct.structName} asChild>
               <Button
                 key={struct.structName}
                 className="cursor-pointer hover:bg-gray-200"
@@ -106,7 +106,7 @@ export default function AssignVariableDialog({
       </Label>
       <div className="flex flex-wrap gap-4">
         {[...functions.values()].map((func) => (
-          <DialogClose>
+          <DialogClose key={func.functionName} asChild>
             <Button
               key={func.functionName}
               // value={JSON.stringify(f)}
@@ -275,7 +275,7 @@ export default function AssignVariableDialog({
                   )
                   .map(([functionName, functionData]) => {
                     return (
-                      <DialogClose>
+                      <DialogClose key={functionName} asChild>
                         <Button
                           key={functionName}
                           className="cursor-pointer hover:bg-gray-200 break-words whitespace-normal truncate"

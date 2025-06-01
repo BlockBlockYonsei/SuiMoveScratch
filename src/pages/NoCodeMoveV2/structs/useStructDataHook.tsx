@@ -45,6 +45,7 @@ export default function useStructDataHook() {
       });
 
       setPreviewCode(highlightedCode);
+      highlighter.dispose();
     };
 
     createCode();

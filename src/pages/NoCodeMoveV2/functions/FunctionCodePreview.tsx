@@ -43,7 +43,7 @@ export default function FunctionCodePreview() {
               <span className="text-lg space-x-2">
                 &lt;
                 {selectedFunction.typeParameters.map((tp, i) => (
-                  <NameBox>
+                  <NameBox key={i}>
                     <span>{selectedFunction.typeParameterNames[i]}</span>
                     <span>
                       {tp.abilities.length > 0
@@ -62,7 +62,7 @@ export default function FunctionCodePreview() {
           <CardTitle className="flex flex-wrap gap-2 text-xl items-center">
             <span>(</span>
             {selectedFunction.parameters.map((p, i) => (
-              <NameBox>
+              <NameBox key={i}>
                 {selectedFunction.parameterNames[i]}:{" "}
                 {parseTypeStringFromSuiMoveNomalizedType(p)}
               </NameBox>
@@ -113,8 +113,8 @@ export default function FunctionCodePreview() {
 
         <CardContent>
           <div className="border-2 border-black rounded-md min-h-30">
-            {insideCodes.map((line) => (
-              <div>{JSON.stringify(line)}</div>
+            {insideCodes.map((line, i) => (
+              <div key={i}>{JSON.stringify(line)}</div>
             ))}
           </div>
         </CardContent>
@@ -126,7 +126,7 @@ export default function FunctionCodePreview() {
             <CardTitle className="flex flex-wrap gap-2 text-xl items-center">
               <span>: (</span>
               {selectedFunction.return.map((r, i) => (
-                <NameBox>
+                <NameBox key={i}>
                   <span>{selectedFunction.returnNames[i]}: </span>
                   <span>{parseTypeStringFromSuiMoveNomalizedType(r)}</span>
                 </NameBox>

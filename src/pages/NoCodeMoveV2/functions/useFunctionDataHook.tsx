@@ -57,6 +57,7 @@ export default function useFunctionDataHook() {
       });
 
       setPreviewCode(highlightedCode);
+      highlighter.dispose();
     };
 
     createCode();
