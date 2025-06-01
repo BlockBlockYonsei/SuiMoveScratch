@@ -296,6 +296,13 @@ export default function StructEditorDialog() {
               <div key={field.name} className="flex items-center gap-2 mb-2">
                 <EditableInput
                   defaultValue={field.name}
+                  filter={(value: string) => {
+                    if (value.length > 0 && /^[\d_]/.test(value)) {
+                      return ""; // 첫 글자가 숫자거나 _면 무시
+                    }
+                    const onlyAlphabet = value.replace(/[^a-zA-Z0-9_]/g, "");
+                    return onlyAlphabet;
+                  }}
                   onUpdate={(name: string) => {
                     if (field.name === name) return true;
                     if (fields.some((field) => field.name === name))

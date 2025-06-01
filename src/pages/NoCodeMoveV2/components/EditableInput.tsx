@@ -3,11 +3,13 @@ import { useState, useRef, useEffect } from "react";
 interface Props {
   defaultValue: string;
   onUpdate: (name: string) => boolean;
+  filter: (value: string) => string;
 }
 
 function EditableInput({
   defaultValue,
   onUpdate,
+  filter,
   ...props
 }: React.ComponentProps<"input"> & Props) {
   const [isEditing, setIsEditing] = useState(false);
@@ -34,17 +36,21 @@ function EditableInput({
           value={value}
           onChange={(e) => {
             const raw = e.target.value;
-            if (raw.length > 0 && /^[\d_]/.test(raw)) {
-              return; // 첫 글자가 숫자거나 _면 무시
-            }
-            const onlyAlphabet = e.target.value.replace(/[^a-zA-Z0-9_]/g, "");
-            setValue(onlyAlphabet.toLowerCase());
+            const filteredString = filter(raw);
+            // if (raw.length > 0 && /^[\d_]/.test(raw)) {
+            //   return; // 첫 글자가 숫자거나 _면 무시
+            // }
+            // const onlyAlphabet = e.target.value.replace(/[^a-zA-Z0-9_]/g, "");
+            // setValue(onlyAlphabet.toLowerCase());
+            // if (!filteredString) return;
+            setValue(filteredString);
           }}
           onBlur={() => {
             setIsEditing(false);
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
+              if (!value) return;
               const s = onUpdate(value);
               s ? setIsEditing(false) : setIsEditing(true);
             }
