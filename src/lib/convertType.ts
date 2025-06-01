@@ -33,6 +33,37 @@ export function parseStructNameFromSuiMoveNomalizedType(
   typeParameterNames?: string[]
 ): string {
   if (typeof type === "string") {
+    // return `${type.toLowerCase()}`;
+    return type;
+  } else if ("Reference" in type) {
+    return parseStructNameFromSuiMoveNomalizedType(
+      type.Reference,
+      typeParameterNames
+    );
+  } else if ("MutableReference" in type) {
+    return parseStructNameFromSuiMoveNomalizedType(
+      type.MutableReference,
+      typeParameterNames
+    );
+  } else if ("Vector" in type) {
+    return parseStructNameFromSuiMoveNomalizedType(
+      type.Vector,
+      typeParameterNames
+    );
+  } else if ("Struct" in type) {
+    const { name } = type.Struct;
+    return name;
+  } else if ("TypeParameter" in type && typeParameterNames) {
+    return typeParameterNames[type.TypeParameter];
+  }
+  return "";
+}
+
+export function parseTypeStringFromSuiMoveNomalizedType(
+  type: SuiMoveNormalizedType,
+  typeParameterNames?: string[]
+): string {
+  if (typeof type === "string") {
     return `${type.toLowerCase()}`;
   } else if ("Reference" in type) {
     return `&${parseStructNameFromSuiMoveNomalizedType(

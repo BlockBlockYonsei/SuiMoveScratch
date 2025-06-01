@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 
 import { SuiMoveStruct } from "@/types/move-type";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-import { parseStructNameFromSuiMoveNomalizedType } from "@/lib/convertType";
+import { parseTypeStringFromSuiMoveNomalizedType } from "@/lib/convertType";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import NameBox from "../components/NameBox";
 
@@ -105,7 +105,7 @@ export default function StructCard({
                 >
                   <NameBox className="border-none">{field.name}</NameBox>:
                   <NameBox className="text-gray-500 border-emerald-300">
-                    {parseStructNameFromSuiMoveNomalizedType(
+                    {parseTypeStringFromSuiMoveNomalizedType(
                       field.type,
                       structData.typeParameterNames
                     )}

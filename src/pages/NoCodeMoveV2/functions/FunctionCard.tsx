@@ -5,7 +5,7 @@ import { SuiMoveFunction } from "@/types/move-type";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import NameBox from "../components/NameBox";
-import { parseStructNameFromSuiMoveNomalizedType } from "@/lib/convertType";
+import { parseTypeStringFromSuiMoveNomalizedType } from "@/lib/convertType";
 
 export default function FunctionCard({
   functionName,
@@ -110,7 +110,7 @@ export default function FunctionCard({
                   :
                   <span className="text-gray-500 flex gap-1 flex-wrap">
                     <NameBox className="border-pink-300">
-                      {parseStructNameFromSuiMoveNomalizedType(
+                      {parseTypeStringFromSuiMoveNomalizedType(
                         param,
                         functionData.typeParameterNames
                       )}
@@ -135,7 +135,7 @@ export default function FunctionCard({
               {functionData.return.map((r, i) => {
                 return (
                   <NameBox key={i} className="border-emerald-300">
-                    {parseStructNameFromSuiMoveNomalizedType(
+                    {parseTypeStringFromSuiMoveNomalizedType(
                       r,
                       functionData.typeParameterNames
                     )}
