@@ -16,7 +16,7 @@ export default function MainScreen({
   moduleName,
   setModuleCodes,
 }: {
-  menu: "Imports" | "Structs" | "Functions" | "CodePreview";
+  menu: "Import" | "Struct" | "Function" | "FunctionCode" | "CodePreview";
   moduleName: string;
   setModuleCodes: React.Dispatch<React.SetStateAction<Record<string, string>>>;
 }) {
@@ -57,9 +57,9 @@ export default function MainScreen({
       </div>
 
       <pre className="bg-white p-4 rounded-md shadow whitespace-pre-wrap overflow-auto">
-        {menu === "Imports" && <ImportPreview />}
-        {menu === "Structs" && <StructPreview />}
-        {menu === "Functions" && <FunctionPreview />}
+        {menu === "Import" && <ImportPreview />}
+        {menu === "Struct" && <StructPreview />}
+        {menu === "Function" && <FunctionPreview />}
 
         {menu === "CodePreview" && <CodePreview />}
       </pre>

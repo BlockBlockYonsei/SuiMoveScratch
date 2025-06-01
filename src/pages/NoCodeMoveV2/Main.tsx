@@ -13,8 +13,8 @@ export default function Main() {
   const [moduleCodes, setModuleCodes] = useState<Record<string, string>>({});
 
   const [menu, setMenu] = useState<
-    "Imports" | "Structs" | "Functions" | "CodePreview"
-  >("Imports");
+    "Import" | "Struct" | "Function" | "FunctionCode" | "CodePreview"
+  >("Import");
 
   useEffect(() => {
     const handleBeforeUnload = (e: any) => {
