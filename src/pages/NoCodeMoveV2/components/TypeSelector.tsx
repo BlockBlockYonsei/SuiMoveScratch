@@ -131,7 +131,9 @@ export default function TypeSelector({
           </Label>
           <div className="grid grid-cols-2">
             {typeParameters
-              .filter((tp) => "isPhantom" in tp.type && !tp.type.isPhantom)
+              .filter((tp) =>
+                "isPhantom" in tp.type ? !tp.type.isPhantom : true
+              )
               .map((tp, index) => (
                 <SelectItem
                   key={tp.name}
