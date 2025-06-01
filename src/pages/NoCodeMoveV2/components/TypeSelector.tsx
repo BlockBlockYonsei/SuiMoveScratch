@@ -159,6 +159,7 @@ export default function TypeSelector({
                   ? struct.structName !== selectedStruct.structName
                   : true
               )
+              .filter((struct) => struct.abilities.abilities.includes("Store"))
               .map((struct) => (
                 <SelectItem
                   key={struct.structName}
