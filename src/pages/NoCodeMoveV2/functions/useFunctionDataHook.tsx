@@ -156,6 +156,30 @@ export default function useFunctionDataHook() {
       }
     });
 
+    setFunctions((prev) => {
+      const newFunctionMap = new Map<string, SuiMoveFunction>();
+
+      prev.forEach((funcData) => {
+        const updatedInsedCodes = funcData.insideCodes.map((line) => {
+          if ("functionName" in line && line.functionName === oldFunctionName) {
+            return {
+              ...newFunctionData,
+              typeArguments: line.typeArguments,
+              argumentNames: line.argumentNames,
+              variableNames: line.variableNames,
+            };
+            // 귀찮다 일단 대충 해
+          }
+          return line;
+        });
+        newFunctionMap.set(funcData.functionName, {
+          ...funcData,
+          insideCodes: updatedInsedCodes,
+        });
+      });
+      return newFunctionMap;
+    });
+
     // resetFunction();
     // Optionally reset all states
   };

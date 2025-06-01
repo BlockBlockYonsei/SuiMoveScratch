@@ -144,14 +144,10 @@ export default function useStructDataHook() {
         const updatedInsedCodes = funcData.insideCodes.map((line) => {
           if ("structName" in line && line.structName === oldStructName) {
             return {
-              ...line,
-              moduleName: moduleName,
-              structName: structName,
-              abilities: { abilities },
-              fields: fields,
-              typeParameters: typeParameters.map((t) => t.type),
-              typeParameterNames: typeParameters.map((t) => t.name),
-              fieldVariableNames: fields.map((f) => f.name),
+              ...newStructData,
+              variableName: line.variableName,
+              typeArguments: line.typeArguments,
+              fieldVariableNames: line.fieldVariableNames,
             };
           } else if ("functionName" in line) {
             // 귀찮다 일단 대충 해
