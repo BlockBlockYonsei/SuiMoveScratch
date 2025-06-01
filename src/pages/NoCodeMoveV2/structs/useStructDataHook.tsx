@@ -6,7 +6,7 @@ import {
   SuiMoveStructTypeParameter,
 } from "@mysten/sui/client";
 
-import { SuiMoveStruct } from "@/types/move-type";
+import { SuiMoveFunction, SuiMoveStruct } from "@/types/move-type";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { generateStructCode } from "@/lib/generateCode";
 
@@ -21,7 +21,7 @@ export default function useStructDataHook() {
   >([]);
   const [fields, setFields] = useState<SuiMoveNormalizedField[]>([]);
 
-  const { moduleName, structs, setStructs, selectedStruct } =
+  const { moduleName, structs, setStructs, selectedStruct, setFunctions } =
     useContext(SuiMoveModuleContext);
 
   useEffect(() => {
@@ -135,6 +135,35 @@ export default function useStructDataHook() {
 
         return newStructMap;
       }
+    });
+
+    setFunctions((prev) => {
+      const newFunctionMap = new Map<string, SuiMoveFunction>();
+
+      prev.forEach((funcData) => {
+        const updatedInsedCodes = funcData.insideCodes.map((line) => {
+          if ("structName" in line && line.structName === oldStructName) {
+            return {
+              ...line,
+              moduleName: moduleName,
+              structName: structName,
+              abilities: { abilities },
+              fields: fields,
+              typeParameters: typeParameters.map((t) => t.type),
+              typeParameterNames: typeParameters.map((t) => t.name),
+              fieldVariableNames: fields.map((f) => f.name),
+            };
+          } else if ("functionName" in line) {
+            // 귀찮다 일단 대충 해
+          }
+          return line;
+        });
+        newFunctionMap.set(funcData.functionName, {
+          ...funcData,
+          insideCodes: updatedInsedCodes,
+        });
+      });
+      return newFunctionMap;
     });
 
     resetState();
