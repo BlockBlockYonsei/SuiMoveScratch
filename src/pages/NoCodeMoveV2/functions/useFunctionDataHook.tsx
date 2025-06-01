@@ -13,6 +13,7 @@ import { generateFunctionCode } from "@/lib/generateCode";
 export default function useFunctionDataHook() {
   const [previewCode, setPreviewCode] = useState("");
 
+  const [oldFunctionName, setOldFunctionName] = useState("");
   const [functionName, setFunctionName] = useState("new_function");
   const [visibility, setVisibility] = useState<SuiMoveVisibility>("Private");
   const [isEntry, setIsEntry] = useState(false);
@@ -74,6 +75,7 @@ export default function useFunctionDataHook() {
   useEffect(() => {
     if (selectedFunction) {
       setFunctionName(selectedFunction.functionName);
+      setOldFunctionName(selectedFunction.functionName);
       setIsEntry(selectedFunction.isEntry);
       setVisibility(selectedFunction.visibility);
       setTypeParameters(
@@ -112,7 +114,10 @@ export default function useFunctionDataHook() {
   };
 
   const handleComplete = () => {
-    if (!functionName) return;
+    if (!functionName) return resetFunction();
+
+    if (!selectedFunction && functions.has(functionName))
+      return resetFunction();
 
     const newFunctionData: SuiMoveFunction = {
       address: "0x0",
@@ -130,19 +135,28 @@ export default function useFunctionDataHook() {
     };
 
     setFunctions((prev) => {
-      const newFunctionMap = new Map(prev);
-      newFunctionMap.set(functionName, newFunctionData);
-      // 이전 function 이름이 있고, 새로운 이름과 다른 경우 (이름 변경)
-      if (selectedFunction) {
-        // 이전 function 데이터 삭제
-        newFunctionMap.delete(selectedFunction.functionName);
-      }
+      const newFunctionMap = new Map();
 
-      newFunctionMap.set(functionName, newFunctionData);
-      return newFunctionMap;
+      if (!selectedFunction) {
+        [...prev.entries()].forEach(([funcName, funcData]) => {
+          newFunctionMap.set(funcName, funcData);
+        });
+        newFunctionMap.set(functionName, newFunctionData);
+        return newFunctionMap;
+      } else {
+        // 이전 function 이름이 있고, 새로운 이름과 다른 경우 (이름 변경)
+        [...prev.entries()].forEach(([funcName, funcData]) => {
+          if (funcName === oldFunctionName) {
+            newFunctionMap.set(functionName, newFunctionData);
+            return;
+          }
+          newFunctionMap.set(funcName, funcData);
+        });
+        return newFunctionMap;
+      }
     });
 
-    resetFunction();
+    // resetFunction();
     // Optionally reset all states
   };
 
