@@ -40,6 +40,7 @@ function EditableInput({
             setValue(filteredString);
           }}
           onBlur={() => {
+            setValue(defaultValue);
             setIsEditing(false);
           }}
           onKeyDown={(e) => {
