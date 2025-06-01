@@ -32,8 +32,8 @@ export default function StructCard({
           <X size={20} />
         </button>
 
-        <CardTitle className="flex gap-2 flex-wrap items-center">
-          <span className="text-xl text-start font-bold text-emerald-600">
+        <CardTitle className="flex gap-2 flex-wrap items-center truncate">
+          <span className="text-xl text-start font-bold text-emerald-600 max-w-full">
             {structName}
           </span>
           <span>
