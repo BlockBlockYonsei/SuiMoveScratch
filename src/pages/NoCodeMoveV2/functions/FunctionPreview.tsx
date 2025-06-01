@@ -25,7 +25,10 @@ export default function FunctionPreview() {
       })}
       <Dialog>
         <DialogTrigger asChild onClick={() => setSelectedFunction(undefined)}>
-          <Button variant="outline" className="cursor-pointer h-full text-9xl">
+          <Button
+            variant="outline"
+            className="cursor-pointer h-full min-h-40 text-9xl"
+          >
             <PlusIcon />
           </Button>
         </DialogTrigger>
