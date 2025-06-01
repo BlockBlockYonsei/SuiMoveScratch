@@ -21,8 +21,14 @@ export default function MainScreen({
   moduleName: string;
   setModuleCodes: React.Dispatch<React.SetStateAction<Record<string, string>>>;
 }) {
-  const { setModuleName, imports, structs, functions, setSelectedFunction } =
-    useContext(SuiMoveModuleContext);
+  const {
+    setModuleName,
+    imports,
+    structs,
+    functions,
+    selectedFunction,
+    setSelectedFunction,
+  } = useContext(SuiMoveModuleContext);
 
   useEffect(() => {
     setModuleName(moduleName);
@@ -62,7 +68,11 @@ export default function MainScreen({
               return (
                 <button
                   key={functionName}
-                  className="border-4 border-pink-500 p-1 rounded-md cursor-pointer"
+                  className={`border-4 ${
+                    functionName === selectedFunction?.functionName
+                      ? "border-pink-500"
+                      : "border-black"
+                  } p-1 rounded-md cursor-pointer`}
                   onClick={() => setSelectedFunction(data)}
                 >
                   {functionName}
