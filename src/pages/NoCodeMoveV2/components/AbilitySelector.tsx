@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { allAbilities } from "@/Constants";
 import { SuiMoveAbility } from "@mysten/sui/client";
 
 interface AbilitySelectorProps {
@@ -12,13 +13,6 @@ export default function AbilitySelector({
   onChange,
   className = "",
 }: AbilitySelectorProps) {
-  const allAbilities: SuiMoveAbility[] = [
-    "copy",
-    "drop",
-    "store",
-    "key",
-  ] as unknown as SuiMoveAbility[];
-
   return (
     <div className={`flex gap-2 flex-wrap ${className}`}>
       {allAbilities.map((ability) => (
@@ -27,11 +21,21 @@ export default function AbilitySelector({
           className="cursor-pointer h-7 px-3 text-sm"
           size="sm"
           variant={abilities.includes(ability) ? "default" : "outline"}
+          disabled={
+            abilities.includes("Key") &&
+            (ability === "Copy" || ability === "Drop")
+              ? true
+              : (abilities.includes("Copy") || abilities.includes("Drop")) &&
+                ability === "Key"
+              ? true
+              : false
+          }
+          // disabled={ability === ability ? true : false}
           onClick={() => {
             onChange(
               abilities.includes(ability)
                 ? abilities.filter((a) => a !== ability)
-                : [...abilities, ability],
+                : [...abilities, ability]
             );
           }}
         >

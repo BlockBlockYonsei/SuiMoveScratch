@@ -1,4 +1,4 @@
-import { SuiMoveNormalizedType } from "@mysten/sui/client";
+import { SuiMoveAbility, SuiMoveNormalizedType } from "@mysten/sui/client";
 
 export const SUI_PACKAGE_ALIASES: Record<string, string> = {
   "0x0000000000000000000000000000000000000000000000000000000000000001": "std",
@@ -16,3 +16,5 @@ export const PRIMITIVE_TYPES: SuiMoveNormalizedType[] = [
   "Address",
   "Signer",
 ];
+
+export const allAbilities: SuiMoveAbility[] = ["Key", "Store", "Copy", "Drop"];
