@@ -66,23 +66,31 @@ export function parseTypeStringFromSuiMoveNomalizedType(
   if (typeof type === "string") {
     return `${type.toLowerCase()}`;
   } else if ("Reference" in type) {
-    return `&${parseStructNameFromSuiMoveNomalizedType(
+    return `&${parseTypeStringFromSuiMoveNomalizedType(
       type.Reference,
       typeParameterNames
     )}`;
   } else if ("MutableReference" in type) {
-    return `&mut ${parseStructNameFromSuiMoveNomalizedType(
+    return `&mut ${parseTypeStringFromSuiMoveNomalizedType(
       type.MutableReference,
       typeParameterNames
     )}`;
   } else if ("Vector" in type) {
-    return `vector<${parseStructNameFromSuiMoveNomalizedType(
+    return `vector<${parseTypeStringFromSuiMoveNomalizedType(
       type.Vector,
       typeParameterNames
     )}>`;
   } else if ("Struct" in type) {
-    const { name } = type.Struct;
-    return name;
+    const { name, typeArguments } = type.Struct;
+    return `${name}${
+      typeArguments.length > 0
+        ? `<${typeArguments
+            .map((t) =>
+              parseTypeStringFromSuiMoveNomalizedType(t, typeParameterNames)
+            )
+            .join(", ")}>`
+        : ""
+    }`;
   } else if ("TypeParameter" in type && typeParameterNames) {
     return typeParameterNames[type.TypeParameter];
   }
