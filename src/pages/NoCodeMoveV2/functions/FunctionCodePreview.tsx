@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import AssignVariableDialog from "./AssignVariableDialog";
 import useFunctionDataHook from "./useFunctionDataHook";
+import ExecuteFunctionDialog from "./ExecuteFunctionDialog";
 
 export default function FunctionCodePreview() {
   const { functions, selectedFunction } = useContext(SuiMoveModuleContext);
@@ -90,12 +91,19 @@ export default function FunctionCodePreview() {
             />
           </Dialog>
 
-          <Button
-            variant={"outline"}
-            className="cursor-pointer active:bg-black active:text-white"
-          >
-            Execute Function
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="cursor-pointer h-full">
+                Execute Function
+              </Button>
+            </DialogTrigger>
+            <ExecuteFunctionDialog
+              addFunction={(line) => {
+                setInsideCodes((prev) => [...prev, line]);
+              }}
+            />
+          </Dialog>
+
           <Button
             variant={"outline"}
             className="cursor-pointer active:bg-black active:text-white"
