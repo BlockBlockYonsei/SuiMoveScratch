@@ -4,58 +4,21 @@ import ImportPreview from "./imports/ImportPreview";
 import CodePreview from "./CodePreview";
 import { useContext, useEffect } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
-import {
-  generateFunctionCode,
-  generateImportsCode,
-  generateModuleDeclaration,
-  generateStructCode,
-} from "@/lib/generateCode";
 import FunctionCodePreview from "./functions/FunctionCodePreview";
 
 export default function MainScreen({
   menu,
   moduleName,
-  setModuleCodes,
 }: {
   menu: "Import" | "Struct" | "Function" | "FunctionCode" | "CodePreview";
   moduleName: string;
-  setModuleCodes: React.Dispatch<React.SetStateAction<Record<string, string>>>;
 }) {
-  const {
-    setModuleName,
-    imports,
-    structs,
-    functions,
-    selectedFunction,
-    setSelectedFunction,
-  } = useContext(SuiMoveModuleContext);
+  const { setModuleName, functions, selectedFunction, setSelectedFunction } =
+    useContext(SuiMoveModuleContext);
 
   useEffect(() => {
     setModuleName(moduleName);
   }, [moduleName]);
-
-  useEffect(() => {
-    const moduleDeclaration = generateModuleDeclaration({
-      packageName: "0x0",
-      moduleName,
-    });
-
-    const importsCode = generateImportsCode(imports);
-
-    const structsCode =
-      Array.from(structs.values())
-        .map((struct) => generateStructCode(struct))
-        .join("\n") + "\n";
-
-    const functionsCode =
-      Array.from(functions.values())
-        .map((func) => generateFunctionCode(func))
-        .join("\n") + "\n";
-
-    const code = moduleDeclaration + importsCode + structsCode + functionsCode;
-
-    setModuleCodes((prev) => ({ ...prev, [moduleName]: code }));
-  }, [moduleName, imports, structs, functions]);
 
   return (
     <div className="flex-1 space-y-6 text-sm font-mono">

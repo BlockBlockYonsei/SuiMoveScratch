@@ -147,7 +147,7 @@ export default function useStructDataHook() {
               ...newStructData,
               variableName: line.variableName,
               typeArguments: line.typeArguments,
-              fieldVariableNames: line.fieldVariableNames,
+              fieldVariableNames: newStructData.fields.map((f) => f.name),
             };
           } else if ("functionName" in line) {
             // 귀찮다 일단 대충 해

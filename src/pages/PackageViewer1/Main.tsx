@@ -17,7 +17,7 @@ export default function Main() {
     },
     {
       enabled: true,
-    },
+    }
   );
 
   const [isStructsOpen, setIsStructsOpen] = useState<{
@@ -30,8 +30,6 @@ export default function Main() {
   if (isPending) return <div>Loading...</div>;
 
   if (error) return <div>Error: {error?.message || "error"}</div>;
-
-  // console.log(data);
 
   return (
     <div>
@@ -78,14 +76,14 @@ export default function Main() {
                     {Object.entries(moduleData.structs).map(
                       ([structName, structData]: [
                         string,
-                        SuiMoveNormalizedStruct,
+                        SuiMoveNormalizedStruct
                       ]) => (
                         <StructCard
                           key={structName}
                           structName={structName}
                           structData={structData}
                         />
-                      ),
+                      )
                     )}
                   </div>
                 )}
@@ -115,14 +113,14 @@ export default function Main() {
                         functionName={funcName}
                         functionData={funcData}
                       />
-                    ),
+                    )
                   )}
                 <h2 className="my-5  text-2xl">enums</h2>
                 <div>{JSON.stringify(moduleData.enums)}</div>
               </div>
             </div>
           );
-        },
+        }
       )}
     </div>
   );

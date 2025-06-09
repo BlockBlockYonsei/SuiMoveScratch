@@ -4,6 +4,7 @@ import PackageViewer1 from "./pages/PackageViewer1/Main";
 import PackageViewer2 from "./pages/PackageViewer2/Main";
 import NoCodeMove2 from "./pages/NoCodeMoveV2/Main";
 import LandingPage from "./pages/LandingPage/Main";
+import { SuiMovePackageProvider } from "./context/SuiMovePackageContext";
 
 export default function Routers() {
   return (
@@ -11,7 +12,14 @@ export default function Routers() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/nocodemove" element={<NoCodeMove2 />} />
+          <Route
+            path="/nocodemove"
+            element={
+              <SuiMovePackageProvider>
+                <NoCodeMove2 />
+              </SuiMovePackageProvider>
+            }
+          />
           <Route path="/packageviewer1" element={<PackageViewer1 />} />
           <Route path="/packageviewer2" element={<PackageViewer2 />} />
         </Route>

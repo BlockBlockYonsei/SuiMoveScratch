@@ -1,22 +1,26 @@
-import { TabsList } from "@/components/ui/tabs";
+import { TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { SuiMovePackageContext } from "@/context/SuiMovePackageContext";
-import ModuleNameCard from "./ModuleNameCard";
+import { Button } from "@/components/ui/button";
 
 interface Props {
-  currentTab: string;
+  moduleName: string;
+  index: number;
   setCurrentTab: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function ModuleTabs({ currentTab, setCurrentTab }: Props) {
+export default function ModuleNameCard({
+  moduleName,
+  index,
+  setCurrentTab,
+}: Props) {
   const [inputValue, setInputValue] = useState("");
+  // const [inputValue2, setInputValue2] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [moduleNames, setModuleNames] = useState<string[]>([]);
+  // const [moduleNames, setModuleNames] = useState<string[]>([]);
 
   const { suiMovePackageData, setSuiMovePackageData } = useContext(
     SuiMovePackageContext
@@ -28,55 +32,24 @@ export default function ModuleTabs({ currentTab, setCurrentTab }: Props) {
     }
   }, [isEditing]);
 
-  useEffect(() => {
-    // 일단 보류
-    if (moduleNames.length > 0) {
-      setCurrentTab(moduleNames[moduleNames.length - 1]);
-    }
-  }, [moduleNames]);
-
-  useEffect(() => {
-    setModuleNames([...suiMovePackageData.keys()]);
-  }, [suiMovePackageData]);
-
   return (
-    <TabsList
-      className="p-2 h-14 gap-2 bg-neutral-500 rounded-sm"
-      defaultValue={currentTab}
-    >
-      {moduleNames.length === 0 ? (
-        <div
-          className=" cursor-pointer text-white text-2xl min-w-80 rounded-md text-center"
-          onClick={() => {
-            setIsEditing((prev) => !prev);
-          }}
-        >
-          Create New Module
-        </div>
-      ) : (
-        moduleNames.map((moduleName, index) => (
-          <ModuleNameCard
-            moduleName={moduleName}
-            index={index}
-            setCurrentTab={setCurrentTab}
-          />
-        ))
-      )}
-
-      {/* Add New Module Button & Input */}
-      <div className="relative ">
+    <div className="min-w-20 h-full flex">
+      <TabsTrigger
+        className="w-full relative group bg-pink-300 rounded-sm cursor-pointer"
+        value={moduleName}
+      >
+        <div>{moduleName}</div>
         <Button
-          className="cursor-pointer"
-          variant={"default"}
+          className="cursor-pointer hidden group-hover:block absolute top-8"
           onClick={() => {
-            setIsEditing((prev) => !prev);
+            setIsEditing(true);
           }}
         >
-          <Plus />
+          Edit
         </Button>
         {isEditing && (
           <Input
-            className="absolute w-50 h-10 bg-white border-2 border-black rounded-sm"
+            className="absolute top-12 left-0 w-50 h-10 bg-white border-2 border-black rounded-sm"
             ref={inputRef}
             value={inputValue}
             onChange={(e) => {
@@ -95,22 +68,24 @@ export default function ModuleTabs({ currentTab, setCurrentTab }: Props) {
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 setSuiMovePackageData((prev) => {
+                  const newMap = new Map();
                   if (
                     [...prev.keys()].includes(inputValue) ||
                     !inputValue.trim()
                   )
                     return prev;
 
-                  const newMap = new Map(prev);
-                  newMap.set(inputValue, {
-                    imports: {},
-                    structs: new Map(),
-                    functions: new Map(),
+                  [...prev.entries()].forEach(([name, data], i) => {
+                    if (index === i) {
+                      newMap.set(inputValue, data);
+                    } else {
+                      newMap.set(name, data);
+                    }
                   });
                   return newMap;
                 });
 
-                setInputValue("");
+                setCurrentTab(inputValue);
                 setIsEditing(false);
               } else if (e.key === "Escape") {
                 setIsEditing(false);
@@ -119,7 +94,7 @@ export default function ModuleTabs({ currentTab, setCurrentTab }: Props) {
             }}
           />
         )}
-      </div>
-    </TabsList>
+      </TabsTrigger>
+    </div>
   );
 }

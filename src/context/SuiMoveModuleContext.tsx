@@ -5,7 +5,8 @@ import {
   SuiMoveFunction,
   SuiMoveStruct,
 } from "@/types/move-type";
-import { createContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { SuiMovePackageContext } from "./SuiMovePackageContext";
 
 interface Value {
   moduleName: string;
@@ -54,6 +55,46 @@ export const SuiMoveModuleProvider = ({
 
   const [selectedStruct, setSelectedStruct] = useState<SuiMoveStruct>();
   const [selectedFunction, setSelectedFunction] = useState<SuiMoveFunction>();
+
+  const {
+    updateDataTrigger,
+    setUpdateDataTrigger,
+    setIsDoneToSaveModule,
+    suiMovePackageData,
+    setSuiMovePackageData,
+  } = useContext(SuiMovePackageContext);
+
+  useEffect(() => {
+    if (!moduleName) return;
+
+    const moduleData = suiMovePackageData.get(moduleName);
+
+    if (moduleData) {
+      setImports(moduleData.imports);
+      setStructs(moduleData.structs);
+      setFunctions(moduleData.functions);
+      // setLoadDataTrigger(false);
+    }
+  }, [moduleName, suiMovePackageData]);
+
+  useEffect(() => {
+    console.log("imports", imports);
+    console.log("structs", structs);
+    console.log("function", functions);
+    setUpdateDataTrigger((prev) => !prev);
+  }, [imports, structs, functions]);
+
+  useEffect(() => {
+    if (!moduleName) return;
+
+    setSuiMovePackageData((prev) => {
+      const newMap = new Map(prev);
+      newMap.set(moduleName, { imports, structs, functions });
+      return newMap;
+    });
+
+    setIsDoneToSaveModule((prev) => ({ ...prev, [moduleName]: true }));
+  }, [updateDataTrigger]);
 
   return (
     <SuiMoveModuleContext.Provider

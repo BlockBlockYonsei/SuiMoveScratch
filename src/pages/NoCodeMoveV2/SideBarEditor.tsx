@@ -9,22 +9,50 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
+import {
+  generateFunctionCode,
+  generateImportsCode,
+  generateModuleDeclaration,
+  generateStructCode,
+} from "@/lib/generateCode";
+import { useContext } from "react";
+import { SuiMovePackageContext } from "@/context/SuiMovePackageContext";
 
 export function SideBarEditor({
   menu,
   setMenu,
-  moduleCodes,
 }: {
   menu: "Import" | "Struct" | "Function" | "FunctionCode" | "CodePreview";
   setMenu: (
     menu: "Import" | "Struct" | "Function" | "FunctionCode" | "CodePreview"
   ) => void;
-  moduleCodes: Record<string, string>;
 }) {
+  const { handleSavePackage, handleLoadPackage, suiMovePackageData } =
+    useContext(SuiMovePackageContext);
+
   const handleDownload = async () => {
     const zip = new JSZip();
 
-    Object.entries(moduleCodes).forEach(([moduleName, moduleCode]) => {
+    [...suiMovePackageData.entries()].forEach(([moduleName, moduleData]) => {
+      const moduleDeclaration = generateModuleDeclaration({
+        packageName: "0x0",
+        moduleName,
+      });
+
+      const importsCode = generateImportsCode(moduleData.imports);
+
+      const structsCode =
+        Array.from(moduleData.structs.values())
+          .map((struct) => generateStructCode(struct))
+          .join("\n") + "\n";
+
+      const functionsCode =
+        Array.from(moduleData.functions.values())
+          .map((func) => generateFunctionCode(func))
+          .join("\n") + "\n";
+
+      const moduleCode =
+        moduleDeclaration + importsCode + structsCode + functionsCode;
       zip.file(`sui_move/sources/${moduleName}.move`, moduleCode);
     });
 
@@ -112,15 +140,28 @@ export function SideBarEditor({
 
           <hr />
 
-          {/* <Button
+          <Button
             // variant={menu === "CodePreview" ? "default" : "ghost"}
             variant={"ghost"}
             className={`active:bg-black active:text-white hover:bg-gray-100
             cursor-pointer py-6 text-lg font-semibold`}
-            // onClick={() => setMenu("CodePreview")}
+            onClick={handleSavePackage}
           >
             Save Code
-          </Button> */}
+          </Button>
+          <Button
+            // variant={menu === "CodePreview" ? "default" : "ghost"}
+            variant={"ghost"}
+            className={`active:bg-black active:text-white hover:bg-gray-100
+            cursor-pointer py-6 text-lg font-semibold`}
+            // onClick={handleLoadPackage}
+            onClick={() => {
+              // setLoadDataTrigger(true);
+              handleLoadPackage();
+            }}
+          >
+            Load Code
+          </Button>
           <Button
             // variant={menu === "CodePreview" ? "default" : "ghost"}
             variant={"ghost"}

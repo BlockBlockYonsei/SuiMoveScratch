@@ -4,6 +4,33 @@ import {
   SuiMoveNormalizedType,
 } from "@mysten/sui/client";
 
+// key : moduleName
+export type SuiMovePackageData = Map<string, SuiMoveModuleData>;
+
+export interface SuiMoveModuleData {
+  imports: ImportedModuleData;
+  structs: ModuleStructData;
+  functions: ModuleFunctionData;
+}
+
+export interface SuiMovePackageDataObject {
+  [moduleName: string]: SuiMoveModuleDataObject;
+}
+
+export interface SuiMoveModuleDataObject {
+  imports: {
+    [packageAddress: string]: {
+      [moduleName: string]: ImportedSuiMoveModule;
+    };
+  };
+  structs: {
+    [structName: string]: SuiMoveStruct;
+  };
+  functions: {
+    [functionName: string]: SuiMoveFunction;
+  };
+}
+
 // key : packageAddress
 export type ImportedModuleData = {
   [packageAddress: string]: Map<string, ImportedSuiMoveModule>;
