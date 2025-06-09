@@ -2,10 +2,7 @@ import { useContext } from "react";
 import { SuiMoveModuleContext } from "@/context/SuiMoveModuleContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import NameBox from "../components/NameBox";
-import {
-  parseStructNameFromSuiMoveNomalizedType,
-  parseTypeStringFromSuiMoveNomalizedType,
-} from "@/lib/convertType";
+import { parseTypeStringFromSuiMoveNomalizedType } from "@/lib/convertType";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 

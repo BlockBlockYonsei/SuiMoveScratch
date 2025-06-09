@@ -16,15 +16,10 @@ export default function ModuleNameCard({
   setCurrentTab,
 }: Props) {
   const [inputValue, setInputValue] = useState("");
-  // const [inputValue2, setInputValue2] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // const [moduleNames, setModuleNames] = useState<string[]>([]);
-
-  const { suiMovePackageData, setSuiMovePackageData } = useContext(
-    SuiMovePackageContext
-  );
+  const { setSuiMovePackageData } = useContext(SuiMovePackageContext);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
